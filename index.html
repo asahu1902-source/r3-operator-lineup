@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>R3 Operator Portal</title>
+  
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#07142b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="R3 Duty">
+  <link rel="apple-touch-icon" href="icon.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000000;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 10px 8px 30px 8px;
+    }
+
+    /* NAVY SPLASH SCREEN */
+    #splashScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #07142b;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s ease-out;
+    }
+
+    .splash-logo-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .splash-pulse-ring {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 3.5px dashed #facc15;
+      animation: spinRing 2.5s linear infinite;
+    }
+
+    .splash-app-icon {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ef4444;
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.45);
+      z-index: 2;
+      background: #07142b;
+    }
+
+    .splash-load-text {
+      color: #00ffff;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      animation: textPulse 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes spinRing { 100% { transform: rotate(360deg); } }
+    @keyframes textPulse { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 12px #00ffff; } }
+
+    /* OPERATOR APP WRAPPER */
+    .portal-box {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .portal-header {
+      background: linear-gradient(90deg, #1e3a8a, #07142b);
+      border: 2px solid #38bdf8;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .portal-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffff00;
+      letter-spacing: 0.5px;
+    }
+
+    .date-badge {
+      font-size: 13px;
+      color: #38bdf8;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    /* OPERATOR SELECT CARD */
+    .select-card {
+      background: #0a192f;
+      border: 2px solid #facc15;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .select-card label {
+      display: block;
+      color: #00ffff;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .operator-select {
+      width: 100%;
+      background: #000000;
+      color: #ffff00;
+      border: 2px solid #00ffff;
+      padding: 10px;
+      font-size: 15px;
+      font-weight: 900;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    /* PERSONAL DUTY DISPLAY */
+    .personal-card {
+      background: #000000;
+      border: 2px solid #00ff00;
+      border-radius: 10px;
+      padding: 14px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.25);
+    }
+
+    .personal-card.active { display: flex; }
+
+    .duty-assigned-box {
+      background: #111827;
+      border-left: 5px solid #facc15;
+      padding: 10px 12px;
+      border-radius: 4px;
+    }
+
+    .duty-label { font-size: 12px; color: #94a3b8; font-weight: bold; text-transform: uppercase; }
+    .duty-val { font-size: 20px; font-weight: 900; color: #ffff00; margin-top: 2px; }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .meta-item {
+      background: #111827;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+    }
+
+    .meta-item .m-title { font-size: 10px; color: #38bdf8; font-weight: bold; }
+    .meta-item .m-val { font-size: 13px; color: #ffffff; font-weight: 900; margin-top: 2px; }
+
+    /* HOLIDAY COMPONENT */
+    .holiday-card {
+      border: 2px solid #ef4444;
+      border-radius: 10px;
+      background: #000000;
+      padding: 10px;
+    }
+
+    .holiday-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #7f1d1d;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .animated-countdown-badge {
+      background-color: #facc15;
+      color: #000000;
+      padding: 4px 10px;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 900;
+      animation: badgePulse 1.2s infinite ease-in-out;
+    }
+
+    @keyframes badgePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .relay-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .relay-col {
+      flex: 1;
+      border: 1px solid #ef4444;
+      border-radius: 6px;
+      padding: 4px 2px;
+      text-align: center;
+    }
+
+    .relay-col .r-title { font-size: 10px; color: #00ffff; font-weight: bold; }
+    .relay-col .r-shf { font-size: 20px; font-weight: 900; color: #ffff00; }
+
+    /* IN-APP INSTALL PROMPT MODAL */
+    #installModal {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 440px;
+      background: #07142b;
+      border: 2.5px solid #25D366;
+      border-radius: 12px;
+      padding: 14px;
+      z-index: 100000;
+      display: none;
+      box-shadow: 0 0 25px rgba(37, 211, 102, 0.4);
+    }
+
+    .modal-content { display: flex; flex-direction: column; gap: 10px; }
+    .modal-top { display: flex; align-items: center; gap: 10px; }
+    .modal-icon { width: 44px; height: 44px; border-radius: 8px; border: 1.5px solid #25D366; }
+    .modal-text h4 { font-size: 14px; color: #ffffff; }
+    .modal-text p { font-size: 11px; color: #94a3b8; }
+
+    .modal-btns { display: flex; gap: 8px; }
+    .btn-install-now {
+      flex: 1;
+      background: #25D366;
+      color: #000000;
+      font-weight: 900;
+      font-size: 13px;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-dismiss {
+      background: transparent;
+      color: #94a3b8;
+      font-size: 12px;
+      border: 1px solid #334155;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* DIRECT ON-SCREEN PERCENTAGE LOADER */
+    #progressOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 20, 43, 0.95);
+      z-index: 100001;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .progress-bar-container {
+      width: 220px;
+      height: 16px;
+      background: #000000;
+      border: 2px solid #00ffff;
+      border-radius: 10px;
+      overflow: hidden;
+      padding: 2px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #25D366, #00ffff);
+      border-radius: 6px;
+      transition: width 0.15s ease;
+    }
+
+    .progress-number {
+      font-size: 32px;
+      font-weight: 900;
+      color: #ffff00;
+      text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navy Splash Screen -->
+  <div id="splashScreen">
+    <div class="splash-logo-container">
+      <div class="splash-pulse-ring"></div>
+      <img src="icon.png" alt="Logo" class="splash-app-icon">
+    </div>
+    <div class="splash-load-text">⚡ Connecting Operator Portal...</div>
+  </div>
+
+  <div class="portal-box">
+    <div class="portal-header">
+      <div class="portal-title">👷 RELAY - 3 OPERATOR PORTAL</div>
+      <div class="date-badge" id="uiDateBanner">Connecting...</div>
+    </div>
+
+    <!-- Dropdown Selector -->
+    <div class="select-card">
+      <label for="operatorSelect">Select Your Name</label>
+      <select id="operatorSelect" class="operator-select" onchange="onOperatorSelected()">
+        <option value="">-- Choose Name --</option>
+      </select>
+    </div>
+
+    <!-- Personalized Board Result -->
+    <div id="personalCard" class="personal-card">
+      <div class="duty-assigned-box">
+        <div class="duty-label">Today's Assigned Position</div>
+        <div class="duty-val" id="uiDutyPos">-</div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="m-title">CYCLE DUE COUNT</div>
+          <div class="m-val" id="uiDueCount">-</div>
+        </div>
+        <div class="meta-item">
+          <div class="m-title">LAST OPERATED</div>
+          <div class="m-val" id="uiLastDate">-</div>
+        </div>
+        <div class="meta-item">
+          <div class="m-title">DAY</div>
+          <div class="m-val" id="uiLastDay">-</div>
+        </div>
+        <div class="meta-item">
+          <div class="m-title">LAST SHIFT</div>
+          <div class="m-val" id="uiLastShift">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Next Holiday Widget -->
+    <div id="holidaySection" class="holiday-card" style="display:none;">
+      <div class="holiday-head">
+        <span id="uiHolTitle">🎉 Next Holiday</span>
+        <span id="uiHolBadge" class="animated-countdown-badge">0 Days</span>
+      </div>
+      <div class="relay-grid">
+        <div class="relay-col"><div class="r-title">R3</div><div class="r-shf" id="uiR3Shf">-</div></div>
+        <div class="relay-col"><div class="r-title">R2</div><div class="r-shf" id="uiR2Shf">-</div></div>
+        <div class="relay-col"><div class="r-title">R1</div><div class="r-shf" id="uiR1Shf">-</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- In-App Install Prompt Modal -->
+  <div id="installModal">
+    <div class="modal-content">
+      <div class="modal-top">
+        <img src="icon.png" class="modal-icon" alt="App">
+        <div class="modal-text">
+          <h4>Install R3 Duty App</h4>
+          <p id="installInstruction">Add to home screen for 1-tap duty access</p>
+        </div>
+      </div>
+      <div class="modal-btns">
+        <button id="btnInstall" class="btn-install-now" onclick="triggerAppInstall()">INSTALL NOW</button>
+        <button class="btn-dismiss" onclick="dismissInstall()">Later</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Direct On-Screen Percentage Progress Overlay -->
+  <div id="progressOverlay">
+    <div class="splash-load-text">INSTALLING APP DIRECTLY...</div>
+    <div class="progress-bar-container">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-number" id="progressNumber">0%</div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwd5t7mrO4c3FffIxgVi_XoCBaO6eTbGnhTiHOtDgZpUy8uLk9195KSqIpg1dFGIHPP/exec";
+    let globalRoster = [];
+    let deferredPrompt = null;
+
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(console.error);
+    }
+
+    // PWA Install Detection
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installModal').style.display = 'block';
+    });
+
+    // iPhone (iOS) Tooltip handling
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    if (isIos && !isStandalone) {
+      setTimeout(() => {
+        document.getElementById('installInstruction').innerHTML = 'Tap <strong>Share (⎋)</strong> then <strong>Add to Home Screen (➕)</strong>';
+        document.getElementById('btnInstall').style.display = 'none';
+        document.getElementById('installModal').style.display = 'block';
+      }, 1500);
+    }
+
+    function dismissInstall() {
+      document.getElementById('installModal').style.display = 'none';
+    }
+
+    // Trigger Install with Screen Percentage Progress
+    function triggerAppInstall() {
+      if (!deferredPrompt) return;
+      document.getElementById('installModal').style.display = 'none';
+      const overlay = document.getElementById('progressOverlay');
+      overlay.style.display = 'flex';
+
+      let count = 0;
+      const interval = setInterval(() => {
+        count += 4;
+        if (count > 100) count = 100;
+        document.getElementById('progressFill').style.width = count + '%';
+        document.getElementById('progressNumber').innerText = count + '%';
+
+        if (count === 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            overlay.style.display = 'none';
+            deferredPrompt.prompt();
+            deferredPrompt = null;
+          }, 300);
+        }
+      }, 35);
+    }
+
+    // JSONP Roster Handler
+    window.handleDutyData = function(data) {
+      if (!data) return;
+      document.getElementById('uiDateBanner').innerText = data.dateBanner || '-';
+      globalRoster = [];
+
+      const select = document.getElementById('operatorSelect');
+      select.innerHTML = '<option value="">-- Choose Name --</option>';
+
+      (data.rows || []).forEach(r => {
+        if (!r.isNotice && r.duty) {
+          const parts = r.duty.split('-').map(s => s.trim());
+          const opName = parts[0] || '';
+          if (opName) {
+            globalRoster.push({
+              name: opName,
+              pos: r.pos,
+              due: parts[1] || '-',
+              date: parts[2] || '-',
+              day: parts[3] || '-',
+              shift: parts[4] || '-'
+            });
+            const opt = document.createElement('option');
+            opt.value = opName;
+            opt.innerText = opName;
+            select.appendChild(opt);
+          }
+        }
+      });
+
+      // Holiday Widget
+      if (data.holidayCluster && data.holidayCluster.length > 0) {
+        const hol = data.holidayCluster[0];
+        document.getElementById('holidaySection').style.display = 'block';
+        document.getElementById('uiHolTitle').innerText = '🎈 ' + hol.name + ' (' + hol.date + ')';
+        document.getElementById('uiHolBadge').innerText = hol.daysToGo;
+        document.getElementById('uiR3Shf').innerText = hol.r3;
+        document.getElementById('uiR2Shf').innerText = hol.r2;
+        document.getElementById('uiR1Shf').innerText = hol.r1;
+      }
+
+      // Hide Splash
+      const splash = document.getElementById('splashScreen');
+      setTimeout(() => {
+        splash.style.opacity = '0';
+        setTimeout(() => { splash.style.display = 'none'; }, 400);
+      }, 400);
+    };
+
+    function onOperatorSelected() {
+      const selectedName = document.getElementById('operatorSelect').value;
+      const card = document.getElementById('personalCard');
+      if (!selectedName) {
+        card.classList.remove('active');
+        return;
+      }
+
+      const found = globalRoster.find(o => o.name === selectedName);
+      if (found) {
+        document.getElementById('uiDutyPos').innerText = found.pos;
+        document.getElementById('uiDueCount').innerText = found.due;
+        document.getElementById('uiLastDate').innerText = found.date;
+        document.getElementById('uiLastDay').innerText = found.day;
+        document.getElementById('uiLastShift').innerText = found.shift;
+        card.classList.add('active');
+      }
+    }
+
+    // Load Data using JSONP
+    window.onload = function() {
+      const s = document.createElement('script');
+      s.src = SCRIPT_URL + '?callback=handleDutyData&t=' + Date.now();
+      document.head.appendChild(s);
+    };
+  </script>
+</body>
+</html>
