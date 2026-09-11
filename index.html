@@ -558,7 +558,7 @@
       </div>
     </div>
 
-    <!-- PAGE 9: LOCAL FESTIVAL (BENGAL + NATIONAL + ODISHA) -->
+    <!-- PAGE 9: LOCAL FESTIVAL -->
     <div id="pageLocalFestival" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -582,7 +582,6 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHQ5BMKG-IHIGMCqL4N2efVOshdsP34EY3Gu054YwmhC5qYZBNyEkRvW0_3SAOmMK8fA/exec";
     const STORAGE_KEY = "r3_operator_user";
 
-    // Complete Festival Calendar (Bengal + National + Odisha)
     const BASE_FESTIVALS = [
       { name: "Swami Vivekananda Jayanti", d: "12", m: "01" },
       { name: "Makar Sankranti / Poush Parbon", d: "14", m: "01" },
@@ -778,7 +777,7 @@
       showPage('pagePosition');
     }
 
-    // 2. DUE HISTORY (WITH EXACT DAY NAME)
+    // 2. DUE HISTORY
     function renderDueHistory() {
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
@@ -858,7 +857,6 @@
       });
       html += '</tbody></table>';
 
-      // POSITION PERFORMANCE FULL TABLE (WITH WORKED DATES)
       if (res.performance && res.performance.length > 0) {
         html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & WORKED DATES</div>';
         html += '<table class="standard-table"><thead><tr>' +
@@ -898,7 +896,6 @@
         html += '</tbody></table>';
       }
 
-      // LEAVE & OT DATES
       if (res.leaveDates && res.leaveDates.length > 0) {
         html += '<div class="date-banner" style="margin-top:12px;">LEAVE RECORDED DATES</div>';
         html += '<div style="background:#000000; border:2px solid #ef4444; border-radius:6px; padding:8px;">';
@@ -933,14 +930,24 @@
         return;
       }
 
+      const d1 = new Date(fromDate + "T00:00:00");
+      const d2 = new Date(toDate + "T00:00:00");
+      if (d2 < d1) {
+        alert("To Date cannot be earlier than From Date.");
+        return;
+      }
+
+      const diffTime = d2.getTime() - d1.getTime();
+      const calcDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
       const btn = document.getElementById('btnSubmitLeave');
       btn.innerText = "Submitting...";
       btn.disabled = true;
 
-      lastSubmittedLeave = { name, type, fromDate, toDate, reason };
+      lastSubmittedLeave = { name, type, fromDate, toDate, days: calcDays, reason };
 
       const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=submitLeave&name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&reason=${encodeURIComponent(reason)}&callback=handleLeaveResponse&t=${Date.now()}`;
+      s.src = `${SCRIPT_URL}?action=submitLeave&name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&days=${calcDays}&reason=${encodeURIComponent(reason)}&callback=handleLeaveResponse&t=${Date.now()}`;
       document.head.appendChild(s);
     }
 
@@ -960,13 +967,12 @@
       const msg = `*LEAVE APPLICATION*\n` +
         `• Operator: ${lastSubmittedLeave.name}\n` +
         `• Type: ${lastSubmittedLeave.type}\n` +
-        `• From: ${lastSubmittedLeave.fromDate}\n` +
-        `• To: ${lastSubmittedLeave.toDate}\n` +
+        `• Period: ${lastSubmittedLeave.fromDate} to ${lastSubmittedLeave.toDate} (${lastSubmittedLeave.days} Days)\n` +
         `• Reason: ${lastSubmittedLeave.reason || 'Personal'}`;
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(msg);
     }
 
-    // 5. COMPANY HOLIDAY (UPCOMING ANIMATED BADGE)
+    // 5. COMPANY HOLIDAY
     function renderHolidayList() {
       const container = document.getElementById('uiHolidayContainer');
       container.innerHTML = '';
@@ -1060,7 +1066,7 @@
       }
     }
 
-    // 7. LOCAL FESTIVAL (BENGAL + NATIONAL + ODISHA)
+    // 7. LOCAL FESTIVAL
     function renderLocalFestival() {
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
@@ -1089,7 +1095,7 @@
       showPage('pageLocalFestival');
     }
 
-    // WHATSAPP SHARE FOR ALL PANELS
+    // WHATSAPP SHARE FUNCTIONS
     function sharePositionWhatsApp() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
