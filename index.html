@@ -33,6 +33,7 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
+    /* LOGIN SCREEN */
     .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
     .login-card img { width: 80px; height: 80px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
     .login-card h2 { color: #ffff00; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
@@ -41,25 +42,129 @@
     .operator-select { width: 100%; background: #000000; color: #ffff00; border: 2px solid #00ffff; padding: 12px; font-size: 16px; font-weight: 900; border-radius: 8px; outline: none; margin-bottom: 16px; }
     .btn-action-main { width: 100%; background: linear-gradient(90deg, #10b981, #059669); color: #ffffff; font-size: 15px; font-weight: 900; padding: 12px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
 
-    .welcome-header { background: linear-gradient(90deg, #1e3a8a, #07142b); border: 2px solid #38bdf8; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .welcome-header h3 { font-size: 16px; color: #ffff00; }
-    .welcome-header p { font-size: 12px; color: #38bdf8; font-weight: bold; }
-    .btn-switch-user { background: #000000; color: #f87171; border: 1px solid #f87171; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+    /* DASHBOARD HEADER WITH PROFILE PHOTO */
+    .welcome-header {
+      background: linear-gradient(90deg, #1e3a8a, #07142b);
+      border: 2px solid #38bdf8;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
 
+    .user-profile-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile-photo-container {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+    }
+
+    .profile-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #facc15;
+      background: #000;
+    }
+
+    .photo-edit-badge {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      background: #0284c7;
+      color: #fff;
+      font-size: 9px;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #fff;
+    }
+
+    .welcome-header h3 { font-size: 15px; color: #ffff00; }
+    .welcome-header p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
+
+    .btn-logout {
+      background: #270606;
+      color: #ef4444;
+      border: 1.5px solid #ef4444;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* MENU BUTTONS */
     .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
-    .menu-item-btn { background: #0a192f; border: 2px solid #facc15; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .menu-item-btn {
+      background: #0a192f;
+      border: 2px solid #facc15;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
     .menu-item-btn.disabled { background: #1e293b; border-color: #475569; opacity: 0.55; cursor: not-allowed; }
     .menu-item-icon { font-size: 26px; }
     .menu-item-info h4 { font-size: 14.5px; color: #ffff00; font-weight: 900; }
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
     .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
+    /* ACTION BAR */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
     .tools-group { display: flex; gap: 6px; }
-    .whatsapp-btn { background: #25D366; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
+
+    /* WhatsApp Styled for Dark Mode */
+    .whatsapp-btn {
+      background: #052e16;
+      color: #4ade80;
+      border: 1.5px solid #22c55e;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 6px 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .whatsapp-btn-large {
+      background: #052e16;
+      color: #4ade80;
+      border: 2px solid #22c55e;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 900;
+      padding: 12px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+    }
+
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
+    /* BOARD DESIGN */
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
     .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 15px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
 
@@ -102,6 +207,9 @@
 </head>
 <body>
 
+  <!-- Hidden Photo Input -->
+  <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+
   <div id="splashScreen">
     <div class="splash-logo-container">
       <div class="splash-pulse-ring"></div>
@@ -128,11 +236,17 @@
     <!-- PAGE 2: DASHBOARD MENU -->
     <div id="pageDashboard" class="screen-page">
       <div class="welcome-header">
-        <div>
-          <h3 id="uiWelcomeName">Welcome, Operator!</h3>
-          <p id="uiDashboardDate">Connecting...</p>
+        <div class="user-profile-box">
+          <div class="profile-photo-container" onclick="triggerPhotoUpload()" title="Tap to upload profile photo">
+            <img id="uiProfileImg" src="icon.png" class="profile-img" alt="User">
+            <div class="photo-edit-badge">📷</div>
+          </div>
+          <div>
+            <h3 id="uiWelcomeName">Welcome, Operator!</h3>
+            <p id="uiDashboardDate">Loading...</p>
+          </div>
         </div>
-        <button class="btn-switch-user" onclick="switchUser()">Change User</button>
+        <button class="btn-logout" onclick="performLogout()">Logout</button>
       </div>
 
       <div class="dashboard-menu">
@@ -199,7 +313,7 @@
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
-          <button class="whatsapp-btn" onclick="sharePositionWhatsApp()">WhatsApp</button>
+          <button class="whatsapp-btn" onclick="sharePositionWhatsApp()"><span>💬</span> WhatsApp</button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
@@ -220,7 +334,7 @@
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
-          <button class="whatsapp-btn" onclick="shareDueWhatsApp()">WhatsApp</button>
+          <button class="whatsapp-btn" onclick="shareDueWhatsApp()"><span>💬</span> WhatsApp</button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
@@ -288,8 +402,10 @@
         <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
 
         <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
-          <p style="color:#10b981; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
-          <button class="whatsapp-btn" style="padding:10px; font-size:13px;" onclick="forwardLeaveWhatsApp()">Forward to supervisor on whats app</button>
+          <p style="color:#4ade80; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
+          <button class="whatsapp-btn-large" onclick="forwardLeaveWhatsApp()">
+            <span>💬</span> Forward to supervisor on WhatsApp
+          </button>
         </div>
       </div>
     </div>
@@ -382,6 +498,7 @@
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
+        loadProfilePhoto(saved);
         showPage('pageDashboard');
       } else {
         showPage('pageLogin');
@@ -396,12 +513,44 @@
       }
       localStorage.setItem(STORAGE_KEY, sel);
       document.getElementById('uiWelcomeName').innerText = "Welcome, " + sel + "!";
+      loadProfilePhoto(sel);
       showPage('pageDashboard');
     }
 
-    function switchUser() {
-      localStorage.removeItem(STORAGE_KEY);
-      showPage('pageLogin');
+    function performLogout() {
+      if (confirm("Are you sure you want to log out?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        showPage('pageLogin');
+      }
+    }
+
+    // PROFILE PHOTO HANDLERS
+    function triggerPhotoUpload() {
+      document.getElementById('filePhotoInput').click();
+    }
+
+    function handlePhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64 = e.target.result;
+        const currentOp = localStorage.getItem(STORAGE_KEY);
+        if (currentOp) {
+          localStorage.setItem('photo_' + currentOp, base64);
+          document.getElementById('uiProfileImg').src = base64;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadProfilePhoto(opName) {
+      const savedPhoto = localStorage.getItem('photo_' + opName);
+      if (savedPhoto) {
+        document.getElementById('uiProfileImg').src = savedPhoto;
+      } else {
+        document.getElementById('uiProfileImg').src = 'icon.png';
+      }
     }
 
     function applySecurity(sec) {
@@ -451,10 +600,11 @@
       else if (type === "localFestival") renderLocalFestival();
     }
 
+    // 1. POSITION BOARD
     function renderPositionBoard() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
-      document.getElementById('uiBoardDate').innerText = b.dateBanner || 'Lineup';
+      document.getElementById('uiBoardDate').innerText = b.dateBanner || 'Daily Lineup';
       const myName = (localStorage.getItem(STORAGE_KEY) || "").toLowerCase().trim();
 
       let html = '';
@@ -485,10 +635,20 @@
       showPage('pagePosition');
     }
 
+    // 2. MY DUE HISTORY
     function renderDueHistory() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
-      const records = (portalData && portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
+      
+      let records = [];
+      if (portalData && portalData.dueMatrix) {
+        // Direct or case-insensitive search
+        records = portalData.dueMatrix[myName] || [];
+        if (records.length === 0) {
+          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.toLowerCase() === myName.toLowerCase());
+          if (matchedKey) records = portalData.dueMatrix[matchedKey];
+        }
+      }
 
       let html = '';
       records.forEach(rec => {
@@ -501,13 +661,14 @@
       });
 
       if (records.length === 0) {
-        html = `<tr><td colspan="4" style="padding:15px; color:#94a3b8;">No personal due records found.</td></tr>`;
+        html = `<tr><td colspan="4" style="padding:15px; color:#94a3b8;">No personal due records found for ${myName}.</td></tr>`;
       }
 
       document.getElementById('uiDueTbody').innerHTML = html;
       showPage('pageDueHistory');
     }
 
+    // 3. MONTHLY REPORT
     function renderMonthlyReport() {
       showPage('pageMonthlyReport');
       const s = document.createElement('script');
@@ -525,6 +686,7 @@
       document.getElementById('uiMonthlyAttendance').innerHTML = html;
     };
 
+    // 4. LEAVE ENTRY
     function openLeaveEntry() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       document.getElementById('uiLeaveName').value = myName;
@@ -578,6 +740,7 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(msg);
     }
 
+    // 5. COMPANY HOLIDAY
     function renderHolidayList() {
       const container = document.getElementById('uiHolidayContainer');
       container.innerHTML = '';
@@ -598,9 +761,13 @@
         `;
         container.appendChild(item);
       });
+      if (list.length === 0) {
+        container.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:15px;">No holidays found in Holiday_List sheet.</div>';
+      }
       showPage('pageHolidayList');
     }
 
+    // 6. SHIFT SCHEDULE LOOKUP
     function openShiftSchedule() {
       document.getElementById('uiScheduleResult').style.display = 'none';
       showPage('pageShiftSchedule');
@@ -621,11 +788,12 @@
         document.getElementById('uiSchedR1').innerText = sched.r1;
         resBox.style.display = 'block';
       } else {
-        alert("Date not found in Shift Schedule sheet.");
+        alert("Date " + formatted + " not found in Shift Schedule sheet.");
         resBox.style.display = 'none';
       }
     }
 
+    // 7. LOCAL FESTIVALS
     function renderLocalFestival() {
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
@@ -651,11 +819,12 @@
       showPage('pageLocalFestival');
     }
 
+    // WHATSAPP SHARE
     function sharePositionWhatsApp() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
       let text = `*R3 DUTY LINEUP*\n📅 ${b.dateBanner}\n\n`;
-      b.rows.forEach(r => { text += `• ${r.pos}: ${r.duty}\n`; });
+      (b.rows || []).forEach(r => { text += `• ${r.pos}: ${r.duty}\n`; });
       text += `\n*Available:* ${b.availableCount} | *Stand By:* ${b.standBy}\n*OFF Day:* ${b.offDay}\n*Leave:* ${b.leave}`;
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
@@ -668,6 +837,7 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
+    // INITIAL LOAD VIA JSONP
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
