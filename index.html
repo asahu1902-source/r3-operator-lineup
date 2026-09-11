@@ -193,6 +193,16 @@
 
     .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
+    /* PROGRESS BAR STYLING */
+    #leaveProgressBarContainer {
+      width: 100%; height: 8px; background: #1e293b; border-radius: 4px;
+      overflow: hidden; margin-top: 8px; display: none; border: 1px solid #38bdf8;
+    }
+    #leaveProgressBarFill {
+      width: 0%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
+      transition: width 0.4s ease-in-out;
+    }
+
     /* ANIMATED ZOOM-IN COUNTDOWN BADGE */
     @keyframes zoomPulse {
       0% { transform: scale(1); }
@@ -527,6 +537,11 @@
         </div>
 
         <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
+        
+        <!-- PROGRESS BAR -->
+        <div id="leaveProgressBarContainer">
+          <div id="leaveProgressBarFill"></div>
+        </div>
 
         <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
           <p style="color:#4ade80; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
@@ -946,7 +961,7 @@
       area.innerHTML = html;
     };
 
-    // 4. LEAVE ENTRY
+    // 4. LEAVE ENTRY (WITH DD/MM/YYYY FORMAT & PROGRESS BAR)
     function openLeaveEntry() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       document.getElementById('uiLeaveName').value = myName;
@@ -955,20 +970,29 @@
       showPage('pageLeaveEntry');
     }
 
+    function formatDateToDDMMYYYY(dateStr) {
+      if (!dateStr) return "-";
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return dateStr;
+    }
+
     function submitLeave() {
       const name = localStorage.getItem(STORAGE_KEY) || "";
       const type = document.getElementById('uiLeaveType').value;
-      const fromDate = document.getElementById('uiLeaveFrom').value;
-      const toDate = document.getElementById('uiLeaveTo').value;
+      const fromDateVal = document.getElementById('uiLeaveFrom').value;
+      const toDateVal = document.getElementById('uiLeaveTo').value;
       const reason = document.getElementById('uiLeaveReason').value;
 
-      if (!fromDate || !toDate) {
+      if (!fromDateVal || !toDateVal) {
         alert("Please select both From and To dates.");
         return;
       }
 
-      const d1 = new Date(fromDate + "T00:00:00");
-      const d2 = new Date(toDate + "T00:00:00");
+      const d1 = new Date(fromDateVal + "T00:00:00");
+      const d2 = new Date(toDateVal + "T00:00:00");
       if (d2 < d1) {
         alert("To Date cannot be earlier than From Date.");
         return;
@@ -977,9 +1001,19 @@
       const diffTime = d2.getTime() - d1.getTime();
       const calcDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
+      const fromDate = formatDateToDDMMYYYY(fromDateVal);
+      const toDate = formatDateToDDMMYYYY(toDateVal);
+
       const btn = document.getElementById('btnSubmitLeave');
-      btn.innerText = "Submitting...";
+      btn.innerText = "Submitting Leave...";
       btn.disabled = true;
+
+      const barContainer = document.getElementById('leaveProgressBarContainer');
+      const barFill = document.getElementById('leaveProgressBarFill');
+      barContainer.style.display = 'block';
+      barFill.style.width = '30%';
+
+      setTimeout(() => { barFill.style.width = '70%'; }, 200);
 
       lastSubmittedLeave = { name, type, fromDate, toDate, days: calcDays, reason };
 
@@ -990,13 +1024,21 @@
 
     window.handleLeaveResponse = function(res) {
       const btn = document.getElementById('btnSubmitLeave');
-      btn.innerText = "Submit Leave Request";
-      if (res && res.status === "success") {
-        document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
-      } else {
-        alert("Error: " + (res ? res.message : "Submission failed"));
-        btn.disabled = false;
-      }
+      const barFill = document.getElementById('leaveProgressBarFill');
+      
+      barFill.style.width = '100%';
+
+      setTimeout(() => {
+        btn.innerText = "Submit Leave Request";
+        if (res && res.status === "success") {
+          document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
+        } else {
+          alert("Error: " + (res ? res.message : "Submission failed"));
+          btn.disabled = false;
+        }
+        document.getElementById('leaveProgressBarContainer').style.display = 'none';
+        barFill.style.width = '0%';
+      }, 400);
     };
 
     function forwardLeaveWhatsApp() {
