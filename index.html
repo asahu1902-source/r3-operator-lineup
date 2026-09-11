@@ -14,286 +14,58 @@
   <link rel="apple-touch-icon" href="icon.png">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    }
-
-    body {
-      background-color: #000000;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 8px 6px 30px 6px;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+    body { background-color: #000000; color: #ffffff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 8px 6px 30px 6px; }
 
     #splashScreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #07142b;
-      z-index: 99999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: #07142b; z-index: 99999; display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
       transition: opacity 0.3s ease-out;
     }
-
-    .splash-logo-container {
-      position: relative;
-      width: 130px;
-      height: 130px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .splash-pulse-ring {
-      position: absolute;
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      border: 3px dashed #facc15;
-      animation: spinRing 2.5s linear infinite;
-    }
-
-    .splash-app-icon {
-      width: 95px;
-      height: 95px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #ef4444;
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
-    }
-
-    .splash-load-text {
-      color: #00ffff;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
+    .splash-logo-container { position: relative; width: 130px; height: 130px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .splash-pulse-ring { position: absolute; width: 130px; height: 130px; border-radius: 50%; border: 3px dashed #facc15; animation: spinRing 2.5s linear infinite; }
+    .splash-app-icon { width: 95px; height: 95px; border-radius: 50%; object-fit: cover; border: 3px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
+    .splash-load-text { color: #00ffff; font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
     @keyframes spinRing { 100% { transform: rotate(360deg); } }
 
-    .app-viewport {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .app-viewport { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
+    .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
+    .screen-page.active { display: flex; }
 
-    .screen-page {
-      display: none;
-      width: 100%;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .screen-page.active {
-      display: flex;
-    }
-
-    .login-card {
-      background: #07142b;
-      border: 2px solid #38bdf8;
-      border-radius: 12px;
-      padding: 24px 16px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 20px;
-    }
-
-    .login-card img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 2.5px solid #ef4444;
-      margin-bottom: 12px;
-    }
-
+    .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
+    .login-card img { width: 80px; height: 80px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
     .login-card h2 { color: #ffff00; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
     .login-card p { color: #38bdf8; font-size: 13px; margin-bottom: 18px; }
 
-    .operator-select {
-      width: 100%;
-      background: #000000;
-      color: #ffff00;
-      border: 2px solid #00ffff;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: 900;
-      border-radius: 8px;
-      outline: none;
-      margin-bottom: 16px;
-    }
+    .operator-select { width: 100%; background: #000000; color: #ffff00; border: 2px solid #00ffff; padding: 12px; font-size: 16px; font-weight: 900; border-radius: 8px; outline: none; margin-bottom: 16px; }
+    .btn-action-main { width: 100%; background: linear-gradient(90deg, #10b981, #059669); color: #ffffff; font-size: 15px; font-weight: 900; padding: 12px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
 
-    .btn-action-main {
-      width: 100%;
-      background: linear-gradient(90deg, #10b981, #059669);
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 900;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    .welcome-header {
-      background: linear-gradient(90deg, #1e3a8a, #07142b);
-      border: 2px solid #38bdf8;
-      border-radius: 10px;
-      padding: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
+    .welcome-header { background: linear-gradient(90deg, #1e3a8a, #07142b); border: 2px solid #38bdf8; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
     .welcome-header h3 { font-size: 16px; color: #ffff00; }
     .welcome-header p { font-size: 12px; color: #38bdf8; font-weight: bold; }
+    .btn-switch-user { background: #000000; color: #f87171; border: 1px solid #f87171; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
 
-    .btn-switch-user {
-      background: #000000;
-      color: #f87171;
-      border: 1px solid #f87171;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .dashboard-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .menu-item-btn {
-      background: #0a192f;
-      border: 2px solid #facc15;
-      border-radius: 10px;
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-    }
-
-    .menu-item-btn.disabled {
-      background: #1e293b;
-      border-color: #475569;
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
+    .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
+    .menu-item-btn { background: #0a192f; border: 2px solid #facc15; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .menu-item-btn.disabled { background: #1e293b; border-color: #475569; opacity: 0.55; cursor: not-allowed; }
     .menu-item-icon { font-size: 26px; }
     .menu-item-info h4 { font-size: 14.5px; color: #ffff00; font-weight: 900; }
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
-    .menu-lock-tag {
-      background: #ef4444;
-      color: #ffffff;
-      font-size: 9px;
-      font-weight: 900;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-left: auto;
-    }
+    .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
-    .top-actions-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .btn-back {
-      background: #1e293b;
-      color: #38bdf8;
-      border: 1px solid #38bdf8;
-      border-radius: 5px;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 6px 10px;
-      cursor: pointer;
-    }
-
+    .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
+    .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
     .tools-group { display: flex; gap: 6px; }
-    .whatsapp-btn {
-      background: #25D366;
-      color: #ffffff;
-      border: none;
-      border-radius: 5px;
-      font-size: 11px;
-      font-weight: 900;
-      padding: 6px 10px;
-      cursor: pointer;
-    }
+    .whatsapp-btn { background: #25D366; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
+    .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
-    .pdf-btn {
-      background: #dc2626;
-      color: #ffffff;
-      border: none;
-      border-radius: 5px;
-      font-size: 11px;
-      font-weight: 900;
-      padding: 6px 10px;
-      cursor: pointer;
-    }
+    .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
+    .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 15px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
 
-    .board-container {
-      width: 100%;
-      border: 3px solid #00ff00;
-      background-color: #000000;
-      overflow: hidden;
-    }
-
-    .date-banner {
-      background-color: #ffff00;
-      color: #0000cd;
-      font-weight: 900;
-      font-size: 15px;
-      text-align: center;
-      padding: 6px 4px;
-      border-bottom: 1px solid #000000;
-    }
-
-    .standard-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
-
-    .standard-table th {
-      background-color: #ff8c00;
-      color: #000000;
-      font-weight: 900;
-      font-size: 11px;
-      padding: 6px 2px;
-      border: 1px solid #8b0000;
-      text-align: center;
-    }
-
-    .standard-table td {
-      border: 1px solid #8b0000;
-      padding: 5px 2px;
-      font-size: 11px;
-      font-weight: bold;
-      text-align: center;
-    }
-
+    .standard-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .standard-table th { background-color: #ff8c00; color: #000000; font-weight: 900; font-size: 11px; padding: 6px 2px; border: 1px solid #8b0000; text-align: center; }
+    .standard-table td { border: 1px solid #8b0000; padding: 5px 2px; font-size: 11px; font-weight: bold; text-align: center; }
     .cyan-cell { background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; }
     .name-cell { text-align: left !important; padding-left: 6px !important; color: #ffffff; }
     .due-cell { color: #ffff00; }
@@ -301,86 +73,22 @@
     .shift-cell { color: #00ff00; font-weight: 900; }
     .align-left { text-align: left !important; padding-left: 8px !important; }
 
-    .highlight-row td {
-      background-color: #064e3b !important;
-      border-top: 2px solid #00ff00 !important;
-      border-bottom: 2px solid #00ff00 !important;
-    }
+    .highlight-row td { background-color: #064e3b !important; border-top: 2px solid #00ff00 !important; border-bottom: 2px solid #00ff00 !important; }
     .highlight-row .name-cell { color: #00ff00 !important; }
-    .tag-you {
-      background-color: #facc15;
-      color: #000000;
-      font-size: 8.5px;
-      padding: 1px 4px;
-      border-radius: 3px;
-      margin-left: 3px;
-    }
+    .tag-you { background-color: #facc15; color: #000000; font-size: 8.5px; padding: 1px 4px; border-radius: 3px; margin-left: 3px; }
 
-    .form-card {
-      background: #07142b;
-      border: 2px solid #38bdf8;
-      border-radius: 10px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .form-group label {
-      display: block;
-      color: #00ffff;
-      font-size: 11.5px;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-
-    .form-input {
-      width: 100%;
-      background: #000000;
-      color: #ffff00;
-      border: 1.5px solid #38bdf8;
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 6px;
-      outline: none;
-    }
-
+    .form-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .form-group label { display: block; color: #00ffff; font-size: 11.5px; font-weight: 800; margin-bottom: 4px; }
+    .form-input { width: 100%; background: #000000; color: #ffff00; border: 1.5px solid #38bdf8; padding: 10px; font-size: 14px; border-radius: 6px; outline: none; }
     .form-input:disabled { opacity: 0.6; color: #94a3b8; }
 
-    .holiday-card-item {
-      background: #111827;
-      border-left: 5px solid #ef4444;
-      border-radius: 6px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .hol-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
+    .holiday-card-item { background: #111827; border-left: 5px solid #ef4444; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .hol-top { display: flex; justify-content: space-between; align-items: center; }
     .hol-top h5 { font-size: 14px; color: #ffff00; }
     .hol-top p { font-size: 11px; color: #38bdf8; }
 
-    .relay-badge-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .relay-chip {
-      flex: 1;
-      background: #000000;
-      border: 1px solid #38bdf8;
-      border-radius: 4px;
-      padding: 3px 4px;
-      text-align: center;
-    }
-
+    .relay-badge-row { display: flex; gap: 6px; margin-top: 4px; }
+    .relay-chip { flex: 1; background: #000000; border: 1px solid #38bdf8; border-radius: 4px; padding: 3px 4px; text-align: center; }
     .relay-chip span { display: block; font-size: 9px; color: #94a3b8; }
     .relay-chip strong { font-size: 13px; color: #00ff00; }
 
@@ -580,8 +288,8 @@
         <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
 
         <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
-          <p style="color:#10b981; font-weight:bold; text-align:center;">✅ Leave Recorded & Email Sent to asahu1902@gmail.com!</p>
-          <button class="whatsapp-btn" style="padding:10px; font-size:13px;" onclick="forwardLeaveWhatsApp()">Forward to Supervisor on WhatsApp</button>
+          <p style="color:#10b981; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
+          <button class="whatsapp-btn" style="padding:10px; font-size:13px;" onclick="forwardLeaveWhatsApp()">Forward to supervisor on whats app</button>
         </div>
       </div>
     </div>
@@ -642,7 +350,6 @@
   </div>
 
   <script>
-    // YOUR LIVE GOOGLE APPS SCRIPT WEB APP URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHQ5BMKG-IHIGMCqL4N2efVOshdsP34EY3Gu054YwmhC5qYZBNyEkRvW0_3SAOmMK8fA/exec";
     const STORAGE_KEY = "r3_operator_user";
 
@@ -698,14 +405,15 @@
     }
 
     function applySecurity(sec) {
+      if (!sec) return;
       const map = [
-        { id: "btnCheckPosition", allowed: sec.checkPosition },
-        { id: "btnMyDueHistory", allowed: sec.myDueHistory },
-        { id: "btnMonthlyReport", allowed: sec.monthlyReport },
-        { id: "btnLeaveEntry", allowed: sec.leaveEntry },
-        { id: "btnHolidayList", allowed: sec.holidayList },
-        { id: "btnShiftSchedule", allowed: sec.shiftSchedule },
-        { id: "btnLocalFestival", allowed: sec.localFestival }
+        { id: "btnCheckPosition", allowed: sec.checkPosition !== false },
+        { id: "btnMyDueHistory", allowed: sec.myDueHistory !== false },
+        { id: "btnMonthlyReport", allowed: sec.monthlyReport !== false },
+        { id: "btnLeaveEntry", allowed: sec.leaveEntry !== false },
+        { id: "btnHolidayList", allowed: sec.holidayList !== false },
+        { id: "btnShiftSchedule", allowed: sec.shiftSchedule !== false },
+        { id: "btnLocalFestival", allowed: sec.localFestival !== false }
       ];
 
       map.forEach(item => {
@@ -729,8 +437,7 @@
     }
 
     function openMenuAction(type) {
-      if (!portalData || !portalData.security) return;
-      if (!portalData.security[type]) {
+      if (portalData && portalData.security && portalData.security[type] === false) {
         alert("This section is currently disabled by the Supervisor.");
         return;
       }
@@ -744,8 +451,8 @@
       else if (type === "localFestival") renderLocalFestival();
     }
 
-    // 1. POSITION BOARD
     function renderPositionBoard() {
+      if (!portalData || !portalData.board) return;
       const b = portalData.board;
       document.getElementById('uiBoardDate').innerText = b.dateBanner || 'Lineup';
       const myName = (localStorage.getItem(STORAGE_KEY) || "").toLowerCase().trim();
@@ -778,11 +485,10 @@
       showPage('pagePosition');
     }
 
-    // 2. MY DUE HISTORY
     function renderDueHistory() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
-      const records = (portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
+      const records = (portalData && portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
 
       let html = '';
       records.forEach(rec => {
@@ -802,7 +508,6 @@
       showPage('pageDueHistory');
     }
 
-    // 3. MONTHLY REPORT
     function renderMonthlyReport() {
       showPage('pageMonthlyReport');
       const s = document.createElement('script');
@@ -811,16 +516,15 @@
     }
 
     window.handleMonthlyReport = function(res) {
-      if (res.status !== "success") return;
+      if (!res || res.status !== "success") return;
       let html = '<table class="standard-table"><thead><tr><th>Category</th><th>Count</th></tr></thead><tbody>';
-      res.attendance.forEach(item => {
+      (res.attendance || []).forEach(item => {
         html += `<tr><td class="cyan-cell">${item.label}</td><td style="color:#ffff00">${item.val}</td></tr>`;
       });
       html += '</tbody></table>';
       document.getElementById('uiMonthlyAttendance').innerHTML = html;
     };
 
-    // 4. LEAVE ENTRY
     function openLeaveEntry() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       document.getElementById('uiLeaveName').value = myName;
@@ -855,10 +559,10 @@
     window.handleLeaveResponse = function(res) {
       const btn = document.getElementById('btnSubmitLeave');
       btn.innerText = "Submit Leave Request";
-      if (res.status === "success") {
+      if (res && res.status === "success") {
         document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
       } else {
-        alert("Error: " + res.message);
+        alert("Error: " + (res ? res.message : "Submission failed"));
         btn.disabled = false;
       }
     };
@@ -874,11 +578,11 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(msg);
     }
 
-    // 5. COMPANY HOLIDAY
     function renderHolidayList() {
       const container = document.getElementById('uiHolidayContainer');
       container.innerHTML = '';
-      (portalData.holidays || []).forEach(h => {
+      const list = (portalData && portalData.holidays) ? portalData.holidays : [];
+      list.forEach(h => {
         const item = document.createElement('div');
         item.className = 'holiday-card-item';
         item.innerHTML = `
@@ -897,7 +601,6 @@
       showPage('pageHolidayList');
     }
 
-    // 6. CHECK SHIFT SCHEDULE
     function openShiftSchedule() {
       document.getElementById('uiScheduleResult').style.display = 'none';
       showPage('pageShiftSchedule');
@@ -908,7 +611,7 @@
       if (!val) return;
       const parts = val.split('-');
       const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
-      const sched = portalData.shiftScheduleMap ? portalData.shiftScheduleMap[formatted] : null;
+      const sched = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup[formatted] : null;
 
       const resBox = document.getElementById('uiScheduleResult');
       if (sched) {
@@ -918,16 +621,15 @@
         document.getElementById('uiSchedR1').innerText = sched.r1;
         resBox.style.display = 'block';
       } else {
-        alert("Date not found in Shift Schedule sheet. Please check the sheet.");
+        alert("Date not found in Shift Schedule sheet.");
         resBox.style.display = 'none';
       }
     }
 
-    // 7. LOCAL FESTIVAL
     function renderLocalFestival() {
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
-      const schedMap = portalData.shiftScheduleMap || {};
+      const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
 
       RUNNING_FESTIVALS.forEach(f => {
         const match = schedMap[f.date] || { day: "-", r3: "-", r2: "-", r1: "-" };
@@ -949,7 +651,6 @@
       showPage('pageLocalFestival');
     }
 
-    // WHATSAPP SHARE
     function sharePositionWhatsApp() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
@@ -961,13 +662,12 @@
 
     function shareDueWhatsApp() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
-      const recs = (portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
+      const recs = (portalData && portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
       let text = `*DUE MATRIX - ${myName}*\n\n`;
       recs.forEach(r => { text += `• ${r.pos} ➔ Due: ${r.due} (Last: ${r.lastDate} - ${r.lastShift})\n`; });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    // INITIAL DATA HANDLER
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
@@ -985,10 +685,10 @@
       if (data.security) applySecurity(data.security);
 
       const splash = document.getElementById('splashScreen');
-      setTimeout(() => {
+      if (splash) {
         splash.style.opacity = '0';
         setTimeout(() => { splash.style.display = 'none'; }, 300);
-      }, 300);
+      }
     };
 
     window.onload = function() {
