@@ -33,7 +33,7 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
-    /* LOGIN SCREEN */
+    /* LOGIN */
     .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
     .login-card img { width: 80px; height: 80px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
     .login-card h2 { color: #ffff00; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
@@ -53,12 +53,10 @@
       align-items: center;
       gap: 10px;
     }
-
     .user-profile-box { display: flex; align-items: center; gap: 10px; }
     .profile-photo-container { position: relative; width: 44px; height: 44px; cursor: pointer; }
     .profile-img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #facc15; background: #000; }
     .photo-edit-badge { position: absolute; bottom: -2px; right: -2px; background: #0284c7; color: #fff; font-size: 9px; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border: 1px solid #fff; }
-
     .welcome-header h3 { font-size: 15px; color: #ffff00; }
     .welcome-header p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
     .btn-logout { background: #270606; color: #ef4444; border: 1.5px solid #ef4444; font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
@@ -84,57 +82,58 @@
     /* ACTION BAR */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
-    .tools-group { display: flex; gap: 6px; }
+    .tools-group { display: flex; gap: 8px; align-items: center; }
 
-    /* LARGE, BOLD WHATSAPP BUTTON WITH PROMINENT SVG ICON */
+    /* EXTRA LARGE BOLD WHATSAPP BUTTON */
     .whatsapp-btn {
-      background: #052e16;
-      color: #25d366;
-      border: 2px solid #25d366;
-      border-radius: 6px;
-      font-size: 12px;
+      background: #128C7E;
+      color: #ffffff;
+      border: 2px solid #25D366;
+      border-radius: 7px;
+      font-size: 13px;
       font-weight: 900;
+      letter-spacing: 0.5px;
       padding: 6px 12px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      box-shadow: 0 0 10px rgba(37, 211, 102, 0.3);
+      gap: 8px;
+      box-shadow: 0 0 10px rgba(37, 211, 102, 0.4);
     }
-
     .whatsapp-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: #25d366;
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
+      flex-shrink: 0;
     }
 
     .whatsapp-btn-large {
-      background: #052e16;
-      color: #25d366;
-      border: 2px solid #25d366;
+      background: #128C7E;
+      color: #ffffff;
+      border: 2px solid #25D366;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 900;
-      padding: 12px;
+      padding: 13px;
       cursor: pointer;
       width: 100%;
       text-align: center;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
-      box-shadow: 0 0 14px rgba(37, 211, 102, 0.4);
+      gap: 12px;
+      box-shadow: 0 0 15px rgba(37, 211, 102, 0.45);
     }
-
     .whatsapp-btn-large svg {
-      width: 22px;
-      height: 22px;
-      fill: #25d366;
+      width: 30px;
+      height: 30px;
+      fill: #ffffff;
+      flex-shrink: 0;
     }
 
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
-    /* BOARD & TABLES */
+    /* TABLES & CONTAINERS */
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
     .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 15px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
 
@@ -157,18 +156,12 @@
     .form-input { width: 100%; background: #000000; color: #ffff00; border: 1.5px solid #38bdf8; padding: 10px; font-size: 14px; border-radius: 6px; outline: none; }
     .form-input:disabled { opacity: 0.6; color: #94a3b8; }
 
-    /* DYNAMIC FILTER ROW FOR MONTHLY REPORT */
-    .filter-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
+    .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .holiday-card-item { background: #111827; border-left: 5px solid #ef4444; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
     .hol-top { display: flex; justify-content: space-between; align-items: center; }
     .hol-top h5 { font-size: 14px; color: #ffff00; }
     .hol-top p { font-size: 11px; color: #38bdf8; }
-
     .relay-badge-row { display: flex; gap: 6px; margin-top: 4px; }
     .relay-chip { flex: 1; background: #000000; border: 1px solid #38bdf8; border-radius: 4px; padding: 3px 4px; text-align: center; }
     .relay-chip span { display: block; font-size: 9px; color: #94a3b8; }
@@ -290,7 +283,7 @@
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
           <button class="whatsapp-btn" onclick="sharePositionWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.983.541 1.761.821 2.796.821 3.183 0 5.769-2.587 5.77-5.766.001-3.182-2.585-5.768-5.77-5.768zm3.376 8.204c-.14.394-.712.723-1.01.769-.297.046-.684.06-1.995-.487-1.579-.658-2.607-2.276-2.686-2.381-.079-.105-.632-.84-.632-1.603 0-.762.396-1.137.536-1.292.14-.155.306-.194.409-.194.103 0 .206.001.295.006.094.005.221-.036.345.263.128.308.438 1.069.476 1.147.039.078.064.169.013.272-.051.103-.077.167-.154.256-.077.09-.162.2-.232.269-.077.077-.158.16-.068.314.09.155.399.658.857 1.066.59.525 1.088.687 1.243.765.155.078.245.065.335-.039.09-.104.387-.45.49-.605.103-.155.206-.129.346-.078.14.051.892.42 1.045.497.153.077.256.116.294.181.039.065.039.378-.101.772zm-3.376-10.376c6.627 0 12 5.373 12 12s-5.373 12-12 12c-2.124 0-4.116-.554-5.854-1.523l-6.146 1.523 1.554-5.992c-1.043-1.79-1.554-3.864-1.554-6.008 0-6.627 5.373-12 12-12zm0 2c-5.514 0-10 4.486-10 10 0 1.956.574 3.78 1.564 5.314l-.999 3.854 3.962-.982c1.488.924 3.239 1.454 5.113 1.454 5.514 0 10-4.486 10-10s-4.486-10-10-10z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             WhatsApp
           </button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
@@ -314,7 +307,7 @@
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
           <button class="whatsapp-btn" onclick="shareDueWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.983.541 1.761.821 2.796.821 3.183 0 5.769-2.587 5.77-5.766.001-3.182-2.585-5.768-5.77-5.768zm3.376 8.204c-.14.394-.712.723-1.01.769-.297.046-.684.06-1.995-.487-1.579-.658-2.607-2.276-2.686-2.381-.079-.105-.632-.84-.632-1.603 0-.762.396-1.137.536-1.292.14-.155.306-.194.409-.194.103 0 .206.001.295.006.094.005.221-.036.345.263.128.308.438 1.069.476 1.147.039.078.064.169.013.272-.051.103-.077.167-.154.256-.077.09-.162.2-.232.269-.077.077-.158.16-.068.314.09.155.399.658.857 1.066.59.525 1.088.687 1.243.765.155.078.245.065.335-.039.09-.104.387-.45.49-.605.103-.155.206-.129.346-.078.14.051.892.42 1.045.497.153.077.256.116.294.181.039.065.039.378-.101.772zm-3.376-10.376c6.627 0 12 5.373 12 12s-5.373 12-12 12c-2.124 0-4.116-.554-5.854-1.523l-6.146 1.523 1.554-5.992c-1.043-1.79-1.554-3.864-1.554-6.008 0-6.627 5.373-12 12-12zm0 2c-5.514 0-10 4.486-10 10 0 1.956.574 3.78 1.564 5.314l-.999 3.854 3.962-.982c1.488.924 3.239 1.454 5.113 1.454 5.514 0 10-4.486 10-10s-4.486-10-10-10z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             WhatsApp
           </button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
@@ -340,33 +333,44 @@
       <div class="form-card">
         <h4 style="color:#ffff00; font-size:15px;">📊 Monthly Performance Summary</h4>
         
-        <!-- Filter Bar -->
-        <div class="form-group">
-          <label>Select Month</label>
-          <select id="uiRepMonthSelect" class="form-input" onchange="onMonthDropdownChange()">
-            <option value="all">-- Custom Date Range --</option>
-            <option value="1">January 2026</option>
-            <option value="2">February 2026</option>
-            <option value="3">March 2026</option>
-            <option value="4">April 2026</option>
-            <option value="5">May 2026</option>
-            <option value="6">June 2026</option>
-            <option value="7">July 2026</option>
-            <option value="8">August 2026</option>
-            <option value="9" selected>September 2026</option>
-            <option value="10">October 2026</option>
-            <option value="11">November 2026</option>
-            <option value="12">December 2026</option>
-          </select>
+        <div class="filter-grid">
+          <div class="form-group">
+            <label>Select Month</label>
+            <select id="uiRepMonthSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
+              <option value="1">Jan</option>
+              <option value="2">Feb</option>
+              <option value="3">Mar</option>
+              <option value="4">Apr</option>
+              <option value="5">May</option>
+              <option value="6">Jun</option>
+              <option value="7">Jul</option>
+              <option value="8">Aug</option>
+              <option value="9" selected>Sep</option>
+              <option value="10">Oct</option>
+              <option value="11">Nov</option>
+              <option value="12">Dec</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Select Year</label>
+            <select id="uiRepYearSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+              <option value="2030">2030</option>
+            </select>
+          </div>
         </div>
 
         <div class="filter-grid">
           <div class="form-group">
-            <label>From Date</label>
+            <label>Start Date</label>
             <input type="date" id="uiRepFromDate" class="form-input" value="2026-09-01">
           </div>
           <div class="form-group">
-            <label>To Date</label>
+            <label>End Date</label>
             <input type="date" id="uiRepToDate" class="form-input" value="2026-09-30">
           </div>
         </div>
@@ -420,7 +424,7 @@
         <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
           <p style="color:#4ade80; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
           <button class="whatsapp-btn-large" onclick="forwardLeaveWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.983.541 1.761.821 2.796.821 3.183 0 5.769-2.587 5.77-5.766.001-3.182-2.585-5.768-5.77-5.768zm3.376 8.204c-.14.394-.712.723-1.01.769-.297.046-.684.06-1.995-.487-1.579-.658-2.607-2.276-2.686-2.381-.079-.105-.632-.84-.632-1.603 0-.762.396-1.137.536-1.292.14-.155.306-.194.409-.194.103 0 .206.001.295.006.094.005.221-.036.345.263.128.308.438 1.069.476 1.147.039.078.064.169.013.272-.051.103-.077.167-.154.256-.077.09-.162.2-.232.269-.077.077-.158.16-.068.314.09.155.399.658.857 1.066.59.525 1.088.687 1.243.765.155.078.245.065.335-.039.09-.104.387-.45.49-.605.103-.155.206-.129.346-.078.14.051.892.42 1.045.497.153.077.256.116.294.181.039.065.039.378-.101.772zm-3.376-10.376c6.627 0 12 5.373 12 12s-5.373 12-12 12c-2.124 0-4.116-.554-5.854-1.523l-6.146 1.523 1.554-5.992c-1.043-1.79-1.554-3.864-1.554-6.008 0-6.627 5.373-12 12-12zm0 2c-5.514 0-10 4.486-10 10 0 1.956.574 3.78 1.564 5.314l-.999 3.854 3.962-.982c1.488.924 3.239 1.454 5.113 1.454 5.514 0 10-4.486 10-10s-4.486-10-10-10z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             Forward to supervisor on WhatsApp
           </button>
         </div>
@@ -684,21 +688,18 @@
       showPage('pageDueHistory');
     }
 
-    // 3. DYNAMIC MONTHLY REPORT SCREEN
+    // 3. MONTHLY REPORT
     function openMonthlyReportScreen() {
       showPage('pageMonthlyReport');
-      loadDynamicMonthlyReport();
+      syncDateInputsFromDropdown();
     }
 
-    function onMonthDropdownChange() {
-      const sel = document.getElementById('uiRepMonthSelect').value;
-      if (sel === "all") return;
-
-      const m = parseInt(sel);
-      const y = 2026;
+    function syncDateInputsFromDropdown() {
+      const m = parseInt(document.getElementById('uiRepMonthSelect').value);
+      const y = parseInt(document.getElementById('uiRepYearSelect').value);
       const lastDay = new Date(y, m, 0).getDate();
-
       const pad = (n) => n < 10 ? '0' + n : n;
+
       document.getElementById('uiRepFromDate').value = `${y}-${pad(m)}-01`;
       document.getElementById('uiRepToDate').value = `${y}-${pad(m)}-${pad(lastDay)}`;
       loadDynamicMonthlyReport();
@@ -709,7 +710,7 @@
       const fDate = document.getElementById('uiRepFromDate').value;
       const tDate = document.getElementById('uiRepToDate').value;
 
-      document.getElementById('uiMonthlyResultArea').innerHTML = '<div style="color:#38bdf8; text-align:center; padding:10px;">⚡ Generating report...</div>';
+      document.getElementById('uiMonthlyResultArea').innerHTML = '<div style="color:#38bdf8; text-align:center; padding:12px;">⚡ Calculating report...</div>';
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getMonthlyReport&name=${encodeURIComponent(op)}&fromDate=${fDate}&toDate=${tDate}&callback=handleMonthlyReport&t=${Date.now()}`;
@@ -719,24 +720,32 @@
     window.handleMonthlyReport = function(res) {
       const area = document.getElementById('uiMonthlyResultArea');
       if (!res || res.status !== "success") {
-        area.innerHTML = '<div style="color:#ef4444;">Failed to load report.</div>';
+        area.innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
         return;
       }
 
-      let html = '<table class="standard-table"><thead><tr><th style="width:60%;">Category</th><th style="width:40%;">Count</th></tr></thead><tbody>';
+      let html = '<div class="date-banner">ATTENDANCE SUMMARY</div>';
+      html += '<table class="standard-table"><thead><tr><th style="width:65%;">Category</th><th style="width:35%;">Count</th></tr></thead><tbody>';
       (res.attendance || []).forEach(item => {
         html += `<tr><td class="cyan-cell align-left">${item.label}</td><td style="color:#ffff00; font-size:13px;">${item.val}</td></tr>`;
       });
       html += '</tbody></table>';
 
-      // Positional Breakdown Table
       if (res.performance && res.performance.length > 0) {
-        html += '<h5 style="color:#ffff00; margin-top:8px;">Position Allocation</h5>';
-        html += '<table class="standard-table"><thead><tr><th>Position</th><th>Times</th><th>%</th></tr></thead><tbody>';
+        html += '<div class="date-banner" style="margin-top:12px;">POSITION PERFORMANCE</div>';
+        html += '<table class="standard-table"><thead><tr><th style="width:45%;">Position</th><th style="width:25%;">Times</th><th style="width:30%;">Allocation</th></tr></thead><tbody>';
+        let grandTotal = 0;
         res.performance.forEach(p => {
-          html += `<tr><td class="cyan-cell">${p.position}</td><td style="color:#ffffff;">${p.timesWorked}</td><td style="color:#00ff00;">${p.allocation}</td></tr>`;
+          grandTotal += p.timesWorked;
+          html += `<tr><td class="cyan-cell align-left">${p.position}</td><td style="color:#ffffff;">${p.timesWorked}</td><td style="color:#00ff00;">${p.allocation}</td></tr>`;
         });
+        html += `<tr style="background:#1e3a8a;"><td class="cyan-cell align-left">Total</td><td style="color:#ffff00; font-weight:900;">${grandTotal}</td><td style="color:#ffff00; font-weight:900;">100%</td></tr>`;
         html += '</tbody></table>';
+      }
+
+      if (res.leaveDates && res.leaveDates.length > 0) {
+        html += '<div class="date-banner" style="margin-top:12px;">LEAVE RECORDED DATES</div>';
+        html += `<div style="background:#111827; border:1px solid #38bdf8; border-radius:6px; padding:8px; font-size:12px; color:#facc15;">${res.leaveDates.join(', ')}</div>`;
       }
 
       area.innerHTML = html;
@@ -823,7 +832,7 @@
       showPage('pageHolidayList');
     }
 
-    // 6. SHIFT SCHEDULE LOOKUP
+    // 6. SHIFT SCHEDULE
     function openShiftSchedule() {
       document.getElementById('uiScheduleResult').style.display = 'none';
       showPage('pageShiftSchedule');
@@ -849,7 +858,7 @@
       }
     }
 
-    // 7. LOCAL FESTIVALS
+    // 7. LOCAL FESTIVAL
     function renderLocalFestival() {
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
@@ -893,7 +902,7 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    // INITIAL LOAD VIA JSONP
+    // INITIAL LOAD
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
