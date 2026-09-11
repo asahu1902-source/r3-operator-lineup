@@ -42,7 +42,7 @@
     .operator-select { width: 100%; background: #000000; color: #ffff00; border: 2px solid #00ffff; padding: 12px; font-size: 16px; font-weight: 900; border-radius: 8px; outline: none; margin-bottom: 16px; }
     .btn-action-main { width: 100%; background: linear-gradient(90deg, #10b981, #059669); color: #ffffff; font-size: 15px; font-weight: 900; padding: 12px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
 
-    /* DASHBOARD HEADER WITH PROFILE PHOTO */
+    /* DASHBOARD HEADER */
     .welcome-header {
       background: linear-gradient(90deg, #1e3a8a, #07142b);
       border: 2px solid #38bdf8;
@@ -54,57 +54,14 @@
       gap: 10px;
     }
 
-    .user-profile-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .profile-photo-container {
-      position: relative;
-      width: 44px;
-      height: 44px;
-      cursor: pointer;
-    }
-
-    .profile-img {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #facc15;
-      background: #000;
-    }
-
-    .photo-edit-badge {
-      position: absolute;
-      bottom: -2px;
-      right: -2px;
-      background: #0284c7;
-      color: #fff;
-      font-size: 9px;
-      border-radius: 50%;
-      width: 16px;
-      height: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid #fff;
-    }
+    .user-profile-box { display: flex; align-items: center; gap: 10px; }
+    .profile-photo-container { position: relative; width: 44px; height: 44px; cursor: pointer; }
+    .profile-img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #facc15; background: #000; }
+    .photo-edit-badge { position: absolute; bottom: -2px; right: -2px; background: #0284c7; color: #fff; font-size: 9px; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border: 1px solid #fff; }
 
     .welcome-header h3 { font-size: 15px; color: #ffff00; }
     .welcome-header p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
-
-    .btn-logout {
-      background: #270606;
-      color: #ef4444;
-      border: 1.5px solid #ef4444;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+    .btn-logout { background: #270606; color: #ef4444; border: 1.5px solid #ef4444; font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
 
     /* MENU BUTTONS */
     .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
@@ -124,16 +81,16 @@
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
     .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
-    /* ACTION BAR */
+    /* TOP ACTIONS BAR */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
     .tools-group { display: flex; gap: 6px; }
 
-    /* WhatsApp Styled for Dark Mode */
+    /* WHATSAPP BUTTONS WITH SVG ICONS */
     .whatsapp-btn {
       background: #052e16;
-      color: #4ade80;
-      border: 1.5px solid #22c55e;
+      color: #25d366;
+      border: 1.5px solid #25d366;
       border-radius: 5px;
       font-size: 11px;
       font-weight: 900;
@@ -141,13 +98,19 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
+    }
+
+    .whatsapp-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: #25d366;
     }
 
     .whatsapp-btn-large {
       background: #052e16;
-      color: #4ade80;
-      border: 2px solid #22c55e;
+      color: #25d366;
+      border: 2px solid #25d366;
       border-radius: 8px;
       font-size: 13.5px;
       font-weight: 900;
@@ -159,7 +122,13 @@
       justify-content: center;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.25);
+      box-shadow: 0 0 12px rgba(37, 211, 102, 0.25);
+    }
+
+    .whatsapp-btn-large svg {
+      width: 20px;
+      height: 20px;
+      fill: #25d366;
     }
 
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
@@ -207,7 +176,6 @@
 </head>
 <body>
 
-  <!-- Hidden Photo Input -->
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
 
   <div id="splashScreen">
@@ -313,7 +281,10 @@
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
-          <button class="whatsapp-btn" onclick="sharePositionWhatsApp()"><span>💬</span> WhatsApp</button>
+          <button class="whatsapp-btn" onclick="sharePositionWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.983.541 1.761.821 2.796.821 3.183 0 5.769-2.587 5.77-5.766.001-3.182-2.585-5.768-5.77-5.768zm3.376 8.204c-.14.394-.712.723-1.01.769-.297.046-.684.06-1.995-.487-1.579-.658-2.607-2.276-2.686-2.381-.079-.105-.632-.84-.632-1.603 0-.762.396-1.137.536-1.292.14-.155.306-.194.409-.194.103 0 .206.001.295.006.094.005.221-.036.345.263.128.308.438 1.069.476 1.147.039.078.064.169.013.272-.051.103-.077.167-.154.256-.077.09-.162.2-.232.269-.077.077-.158.16-.068.314.09.155.399.658.857 1.066.59.525 1.088.687 1.243.765.155.078.245.065.335-.039.09-.104.387-.45.49-.605.103-.155.206-.129.346-.078.14.051.892.42 1.045.497.153.077.256.116.294.181.039.065.039.378-.101.772zm-3.376-10.376c6.627 0 12 5.373 12 12s-5.373 12-12 12c-2.124 0-4.116-.554-5.854-1.523l-6.146 1.523 1.554-5.992c-1.043-1.79-1.554-3.864-1.554-6.008 0-6.627 5.373-12 12-12zm0 2c-5.514 0-10 4.486-10 10 0 1.956.574 3.78 1.564 5.314l-.999 3.854 3.962-.982c1.488.924 3.239 1.454 5.113 1.454 5.514 0 10-4.486 10-10s-4.486-10-10-10z"/></svg>
+            WhatsApp
+          </button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
@@ -334,7 +305,10 @@
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
-          <button class="whatsapp-btn" onclick="shareDueWhatsApp()"><span>💬</span> WhatsApp</button>
+          <button class="whatsapp-btn" onclick="shareDueWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.983.541 1.761.821 2.796.821 3.183 0 5.769-2.587 5.77-5.766.001-3.182-2.585-5.768-5.77-5.768zm3.376 8.204c-.14.394-.712.723-1.01.769-.297.046-.684.06-1.995-.487-1.579-.658-2.607-2.276-2.686-2.381-.079-.105-.632-.84-.632-1.603 0-.762.396-1.137.536-1.292.14-.155.306-.194.409-.194.103 0 .206.001.295.006.094.005.221-.036.345.263.128.308.438 1.069.476 1.147.039.078.064.169.013.272-.051.103-.077.167-.154.256-.077.09-.162.2-.232.269-.077.077-.158.16-.068.314.09.155.399.658.857 1.066.59.525 1.088.687 1.243.765.155.078.245.065.335-.039.09-.104.387-.45.49-.605.103-.155.206-.129.346-.078.14.051.892.42 1.045.497.153.077.256.116.294.181.039.065.039.378-.101.772zm-3.376-10.376c6.627 0 12 5.373 12 12s-5.373 12-12 12c-2.124 0-4.116-.554-5.854-1.523l-6.146 1.523 1.554-5.992c-1.043-1.79-1.554-3.864-1.554-6.008 0-6.627 5.373-12 12-12zm0 2c-5.514 0-10 4.486-10 10 0 1.956.574 3.78 1.564 5.314l-.999 3.854 3.962-.982c1.488.924 3.239 1.454 5.113 1.454 5.514 0 10-4.486 10-10s-4.486-10-10-10z"/></svg>
+            WhatsApp
+          </button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
@@ -404,7 +378,8 @@
         <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
           <p style="color:#4ade80; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
           <button class="whatsapp-btn-large" onclick="forwardLeaveWhatsApp()">
-            <span>💬</span> Forward to supervisor on WhatsApp
+            <svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.983.541 1.761.821 2.796.821 3.183 0 5.769-2.587 5.77-5.766.001-3.182-2.585-5.768-5.77-5.768zm3.376 8.204c-.14.394-.712.723-1.01.769-.297.046-.684.06-1.995-.487-1.579-.658-2.607-2.276-2.686-2.381-.079-.105-.632-.84-.632-1.603 0-.762.396-1.137.536-1.292.14-.155.306-.194.409-.194.103 0 .206.001.295.006.094.005.221-.036.345.263.128.308.438 1.069.476 1.147.039.078.064.169.013.272-.051.103-.077.167-.154.256-.077.09-.162.2-.232.269-.077.077-.158.16-.068.314.09.155.399.658.857 1.066.59.525 1.088.687 1.243.765.155.078.245.065.335-.039.09-.104.387-.45.49-.605.103-.155.206-.129.346-.078.14.051.892.42 1.045.497.153.077.256.116.294.181.039.065.039.378-.101.772zm-3.376-10.376c6.627 0 12 5.373 12 12s-5.373 12-12 12c-2.124 0-4.116-.554-5.854-1.523l-6.146 1.523 1.554-5.992c-1.043-1.79-1.554-3.864-1.554-6.008 0-6.627 5.373-12 12-12zm0 2c-5.514 0-10 4.486-10 10 0 1.956.574 3.78 1.564 5.314l-.999 3.854 3.962-.982c1.488.924 3.239 1.454 5.113 1.454 5.514 0 10-4.486 10-10s-4.486-10-10-10z"/></svg>
+            Forward to supervisor on WhatsApp
           </button>
         </div>
       </div>
@@ -637,15 +612,16 @@
 
     // 2. MY DUE HISTORY
     function renderDueHistory() {
-      const myName = localStorage.getItem(STORAGE_KEY) || "";
+      const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
       
       let records = [];
       if (portalData && portalData.dueMatrix) {
-        // Direct or case-insensitive search
-        records = portalData.dueMatrix[myName] || [];
+        const cleanKey = myName.toLowerCase();
+        records = portalData.dueMatrix[cleanKey] || portalData.dueMatrix[myName] || [];
+        
         if (records.length === 0) {
-          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.toLowerCase() === myName.toLowerCase());
+          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.trim().toLowerCase() === cleanKey);
           if (matchedKey) records = portalData.dueMatrix[matchedKey];
         }
       }
