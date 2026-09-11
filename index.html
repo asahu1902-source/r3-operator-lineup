@@ -61,7 +61,7 @@
     .welcome-header p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
     .btn-logout { background: #270606; color: #ef4444; border: 1.5px solid #ef4444; font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
 
-    /* DASHBOARD MENU */
+    /* MENU */
     .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
     .menu-item-btn {
       background: #0a192f;
@@ -79,12 +79,12 @@
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
     .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
-    /* ACTION BAR */
+    /* ACTIONS */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
     .tools-group { display: flex; gap: 8px; align-items: center; }
 
-    /* EXTRA LARGE BOLD WHATSAPP BUTTON */
+    /* PROMINENT WHATSAPP BUTTON */
     .whatsapp-btn {
       background: #128C7E;
       color: #ffffff;
@@ -100,12 +100,7 @@
       gap: 8px;
       box-shadow: 0 0 10px rgba(37, 211, 102, 0.4);
     }
-    .whatsapp-btn svg {
-      width: 26px;
-      height: 26px;
-      fill: #ffffff;
-      flex-shrink: 0;
-    }
+    .whatsapp-btn svg { width: 26px; height: 26px; fill: #ffffff; flex-shrink: 0; }
 
     .whatsapp-btn-large {
       background: #128C7E;
@@ -124,18 +119,12 @@
       gap: 12px;
       box-shadow: 0 0 15px rgba(37, 211, 102, 0.45);
     }
-    .whatsapp-btn-large svg {
-      width: 30px;
-      height: 30px;
-      fill: #ffffff;
-      flex-shrink: 0;
-    }
-
+    .whatsapp-btn-large svg { width: 30px; height: 30px; fill: #ffffff; flex-shrink: 0; }
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
     /* TABLES & CONTAINERS */
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
-    .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 15px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
+    .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 14.5px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
 
     .standard-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .standard-table th { background-color: #ff8c00; color: #000000; font-weight: 900; font-size: 11px; padding: 6px 2px; border: 1px solid #8b0000; text-align: center; }
@@ -158,14 +147,47 @@
 
     .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    .holiday-card-item { background: #111827; border-left: 5px solid #ef4444; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    /* UPCOMING HOLIDAY HIGHLIGHT */
+    .holiday-card-item {
+      background: #111827;
+      border-left: 5px solid #ef4444;
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: transform 0.2s;
+    }
+
+    .holiday-upcoming {
+      border: 2px solid #facc15 !important;
+      border-left: 6px solid #10b981 !important;
+      background: #062419 !important;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+    }
+
     .hol-top { display: flex; justify-content: space-between; align-items: center; }
-    .hol-top h5 { font-size: 14px; color: #ffff00; }
-    .hol-top p { font-size: 11px; color: #38bdf8; }
+    .hol-top h5 { font-size: 14px; color: #ffff00; font-weight: 900; }
+    .hol-top p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
+
+    .badge-upcoming {
+      background: #10b981;
+      color: #000000;
+      font-size: 9.5px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+
     .relay-badge-row { display: flex; gap: 6px; margin-top: 4px; }
-    .relay-chip { flex: 1; background: #000000; border: 1px solid #38bdf8; border-radius: 4px; padding: 3px 4px; text-align: center; }
-    .relay-chip span { display: block; font-size: 9px; color: #94a3b8; }
-    .relay-chip strong { font-size: 13px; color: #00ff00; }
+    .relay-chip { flex: 1; background: #000000; border: 1.5px solid #38bdf8; border-radius: 4px; padding: 4px 4px; text-align: center; }
+    .relay-chip span { display: block; font-size: 9.5px; color: #94a3b8; font-weight: 800; }
+    .relay-chip strong { font-size: 15px; color: #00ff00; font-weight: 900; }
+
+    /* DATE PILLS FOR POSITION BREAKDOWN */
+    .date-pill-container { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; }
+    .date-pill { background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; font-size: 9.5px; font-weight: 800; border-radius: 3px; padding: 2px 5px; }
 
     @media print {
       body { background: #ffffff !important; color: #000 !important; }
@@ -239,7 +261,7 @@
           <div class="menu-item-icon">📊</div>
           <div class="menu-item-info">
             <h4>My Monthly Report</h4>
-            <p>Attendance summary & position allocation</p>
+            <p>Attendance summary & position dates</p>
           </div>
         </div>
 
@@ -271,7 +293,7 @@
           <div class="menu-item-icon">🪔</div>
           <div class="menu-item-info">
             <h4>Local Festival</h4>
-            <p>Running year festivals with auto relay shifts</p>
+            <p>All running festivals with auto relay shifts</p>
           </div>
         </div>
       </div>
@@ -331,7 +353,7 @@
         </div>
       </div>
       <div class="form-card">
-        <h4 style="color:#ffff00; font-size:15px;">📊 Monthly Performance Summary</h4>
+        <h4 id="uiMonthlyRepHeading" style="color:#ffff00; font-size:15px; font-weight:900;">Monthly Performance Summary</h4>
         
         <div class="filter-grid">
           <div class="form-group">
@@ -441,7 +463,8 @@
       </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">🏢 Official Company Holidays</h3>
-        <div id="uiHolidayContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
+        <p style="font-size:11px; color:#94a3b8; margin-top:-6px;">Upcoming holidays highlighted with shift mapping</p>
+        <div id="uiHolidayContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
       </div>
     </div>
 
@@ -470,7 +493,7 @@
       </div>
     </div>
 
-    <!-- PAGE 9: LOCAL FESTIVAL -->
+    <!-- PAGE 9: LOCAL FESTIVAL (ALL ENRICHED FESTIVALS) -->
     <div id="pageLocalFestival" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -480,7 +503,7 @@
       </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">🪔 Local Festivals & Relay Shifts</h3>
-        <div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
+        <div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
       </div>
     </div>
 
@@ -490,20 +513,41 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHQ5BMKG-IHIGMCqL4N2efVOshdsP34EY3Gu054YwmhC5qYZBNyEkRvW0_3SAOmMK8fA/exec";
     const STORAGE_KEY = "r3_operator_user";
 
+    // Complete Enriched Festival Calendar for 2026
     const RUNNING_FESTIVALS = [
-      { name: "Makar Sankranti", date: "14/01/2026" },
+      { name: "Makar Sankranti / Pongal", date: "14/01/2026" },
+      { name: "Netaji Jayanti / Subhas Utsav", date: "23/01/2026" },
+      { name: "Saraswati Puja / Vasant Panchami", date: "23/01/2026" },
       { name: "Maha Shivratri", date: "15/02/2026" },
-      { name: "Holi", date: "03/03/2026" },
+      { name: "Holi / Dola Purnima", date: "03/03/2026" },
+      { name: "Eid-ul-Fitr", date: "21/03/2026" },
+      { name: "Utkal Divas (Odisha Day)", date: "01/04/2026" },
+      { name: "Good Friday", date: "03/04/2026" },
       { name: "Pana Sankranti / Odia New Year", date: "14/04/2026" },
+      { name: "Akshaya Tritiya / Chandan Yatra", date: "20/04/2026" },
+      { name: "Buddha Purnima", date: "01/05/2026" },
+      { name: "Sabitri Brata", date: "16/05/2026" },
+      { name: "Pahili Raja", date: "14/06/2026" },
       { name: "Raja Sankranti", date: "15/06/2026" },
-      { name: "Rath Yatra", date: "16/07/2026" },
-      { name: "Raksha Bandhan", date: "28/08/2026" },
+      { name: "Snana Purnima (Debasnana)", date: "29/06/2026" },
+      { name: "Rath Yatra (Puri Car Festival)", date: "16/07/2026" },
+      { name: "Bahuda Yatra (Return Car Festival)", date: "24/07/2026" },
+      { name: "Raksha Bandhan / Gamha Purnima", date: "28/08/2026" },
       { name: "Janmashtami", date: "04/09/2026" },
       { name: "Ganesh Chaturthi", date: "14/09/2026" },
-      { name: "Maha Navami (Durga Puja)", date: "20/10/2026" },
+      { name: "Nuakhai", date: "16/09/2026" },
+      { name: "Vishwakarma Puja", date: "17/09/2026" },
+      { name: "Mahalaya", date: "10/10/2026" },
+      { name: "Durga Puja (Maha Saptami)", date: "18/10/2026" },
+      { name: "Durga Puja (Maha Astami)", date: "19/10/2026" },
+      { name: "Durga Puja (Maha Navami)", date: "20/10/2026" },
       { name: "Vijaya Dashami (Dussehra)", date: "21/10/2026" },
-      { name: "Diwali", date: "09/11/2026" },
-      { name: "Chhath Puja", date: "15/11/2026" }
+      { name: "Kumar Purnima", date: "25/10/2026" },
+      { name: "Kali Puja / Diwali", date: "09/11/2026" },
+      { name: "Chhath Puja", date: "15/11/2026" },
+      { name: "Kartika Purnima / Boita Bandana", date: "24/11/2026" },
+      { name: "Prathamastami", date: "02/12/2026" },
+      { name: "Christmas Day", date: "25/12/2026" }
     ];
 
     let portalData = null;
@@ -690,6 +734,8 @@
 
     // 3. MONTHLY REPORT
     function openMonthlyReportScreen() {
+      const op = localStorage.getItem(STORAGE_KEY) || "Operator";
+      document.getElementById('uiMonthlyRepHeading').innerText = op + " - Monthly Performance Summary";
       showPage('pageMonthlyReport');
       syncDateInputsFromDropdown();
     }
@@ -724,6 +770,7 @@
         return;
       }
 
+      // ATTENDANCE SUMMARY
       let html = '<div class="date-banner">ATTENDANCE SUMMARY</div>';
       html += '<table class="standard-table"><thead><tr><th style="width:65%;">Category</th><th style="width:35%;">Count</th></tr></thead><tbody>';
       (res.attendance || []).forEach(item => {
@@ -731,21 +778,55 @@
       });
       html += '</tbody></table>';
 
+      // POSITION PERFORMANCE FULL TABLE (WITH DATES COLUMN)
       if (res.performance && res.performance.length > 0) {
-        html += '<div class="date-banner" style="margin-top:12px;">POSITION PERFORMANCE</div>';
-        html += '<table class="standard-table"><thead><tr><th style="width:45%;">Position</th><th style="width:25%;">Times</th><th style="width:30%;">Allocation</th></tr></thead><tbody>';
+        html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & DATES</div>';
+        html += '<table class="standard-table"><thead><tr>' +
+          '<th style="width:28%;">Position</th>' +
+          '<th style="width:12%;">Times</th>' +
+          '<th style="width:14%;">Alloc %</th>' +
+          '<th style="width:46%;">Dates Worked</th>' +
+          '</tr></thead><tbody>';
+
         let grandTotal = 0;
         res.performance.forEach(p => {
           grandTotal += p.timesWorked;
-          html += `<tr><td class="cyan-cell align-left">${p.position}</td><td style="color:#ffffff;">${p.timesWorked}</td><td style="color:#00ff00;">${p.allocation}</td></tr>`;
+          let datePillsHtml = '-';
+          if (p.dates && p.dates.length > 0) {
+            datePillsHtml = '<div class="date-pill-container">';
+            p.dates.forEach(d => {
+              datePillsHtml += `<span class="date-pill">${d}</span>`;
+            });
+            datePillsHtml += '</div>';
+          }
+
+          html += `<tr>` +
+            `<td class="cyan-cell align-left">${p.position}</td>` +
+            `<td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td>` +
+            `<td style="color:#00ff00; font-weight:bold;">${p.allocation}</td>` +
+            `<td class="align-left">${datePillsHtml}</td>` +
+            `</tr>`;
         });
-        html += `<tr style="background:#1e3a8a;"><td class="cyan-cell align-left">Total</td><td style="color:#ffff00; font-weight:900;">${grandTotal}</td><td style="color:#ffff00; font-weight:900;">100%</td></tr>`;
+
+        html += `<tr style="background:#1e3a8a;">` +
+          `<td class="cyan-cell align-left">Total</td>` +
+          `<td style="color:#ffff00; font-weight:900;">${grandTotal}</td>` +
+          `<td style="color:#ffff00; font-weight:900;">100%</td>` +
+          `<td style="color:#94a3b8; font-size:10px;">-</td>` +
+          `</tr>`;
+
         html += '</tbody></table>';
       }
 
+      // LEAVE & OT DATES
       if (res.leaveDates && res.leaveDates.length > 0) {
         html += '<div class="date-banner" style="margin-top:12px;">LEAVE RECORDED DATES</div>';
-        html += `<div style="background:#111827; border:1px solid #38bdf8; border-radius:6px; padding:8px; font-size:12px; color:#facc15;">${res.leaveDates.join(', ')}</div>`;
+        html += '<div style="background:#000000; border:2px solid #ef4444; border-radius:6px; padding:8px;">';
+        html += '<div class="date-pill-container">';
+        res.leaveDates.forEach(ld => {
+          html += `<span class="date-pill" style="border-color:#f87171; color:#f87171;">${ld}</span>`;
+        });
+        html += '</div></div>';
       }
 
       area.innerHTML = html;
@@ -805,18 +886,27 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(msg);
     }
 
-    // 5. COMPANY HOLIDAY
+    // 5. COMPANY HOLIDAY (UPCOMING HIGHLIGHT & ACCURATE RELAY LOOKUP)
     function renderHolidayList() {
       const container = document.getElementById('uiHolidayContainer');
       container.innerHTML = '';
       const list = (portalData && portalData.holidays) ? portalData.holidays : [];
+
       list.forEach(h => {
         const item = document.createElement('div');
-        item.className = 'holiday-card-item';
+        const isUpcoming = (h.daysLeft !== null && h.daysLeft >= 0 && h.daysLeft <= 45);
+        item.className = 'holiday-card-item' + (isUpcoming ? ' holiday-upcoming' : '');
+
+        let badge = '';
+        if (h.daysLeft !== null) {
+          if (h.daysLeft === 0) badge = '<span class="badge-upcoming" style="background:#facc15;">TODAY</span>';
+          else if (h.daysLeft > 0 && h.daysLeft <= 30) badge = `<span class="badge-upcoming">In ${h.daysLeft} Days</span>`;
+        }
+
         item.innerHTML = `
           <div class="hol-top">
-            <h5>🎈 ${h.name}</h5>
-            <p>${h.date} (${h.day})</p>
+            <h5>🎈 ${h.name}${badge}</h5>
+            <p>${h.rawDate} (${h.day})</p>
           </div>
           <div class="relay-badge-row">
             <div class="relay-chip"><span>R3</span><strong>${h.r3}</strong></div>
@@ -826,6 +916,7 @@
         `;
         container.appendChild(item);
       });
+
       if (list.length === 0) {
         container.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:15px;">No holidays found in Holiday_List sheet.</div>';
       }
