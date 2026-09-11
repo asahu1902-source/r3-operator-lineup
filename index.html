@@ -42,7 +42,7 @@
     .operator-select { width: 100%; background: #000000; color: #ffff00; border: 2px solid #00ffff; padding: 12px; font-size: 16px; font-weight: 900; border-radius: 8px; outline: none; margin-bottom: 16px; }
     .btn-action-main { width: 100%; background: linear-gradient(90deg, #10b981, #059669); color: #ffffff; font-size: 15px; font-weight: 900; padding: 12px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
 
-    /* CENTERED PROFILE HEADER */
+    /* BIG CENTER PROFILE HERO */
     .profile-hero-card {
       background: linear-gradient(180deg, #0f2b5c, #07142b);
       border: 2px solid #38bdf8;
@@ -125,7 +125,7 @@
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
     .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
-    /* ACTION BAR */
+    /* TOP ACTION BAR */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
     .tools-group { display: flex; gap: 8px; align-items: center; }
@@ -168,7 +168,7 @@
     .whatsapp-btn-large svg { width: 28px; height: 28px; fill: #ffffff; flex-shrink: 0; }
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
-    /* TABLES & CONTAINERS */
+    /* TABLES */
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
     .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 14.5px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
 
@@ -373,7 +373,7 @@
       </div>
     </div>
 
-    <!-- PAGE 4: MY DUE HISTORY (WITH DAY COLUMN) -->
+    <!-- PAGE 4: MY DUE HISTORY (WITH EXACT DAY NAME) -->
     <div id="pageDueHistory" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -778,7 +778,7 @@
       showPage('pagePosition');
     }
 
-    // 2. DUE HISTORY (NOW WITH DAY COLUMN)
+    // 2. DUE HISTORY (WITH EXACT DAY NAME)
     function renderDueHistory() {
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
@@ -858,7 +858,7 @@
       });
       html += '</tbody></table>';
 
-      // POSITION PERFORMANCE WITH ALL WORKED DATES
+      // POSITION PERFORMANCE FULL TABLE (WITH WORKED DATES)
       if (res.performance && res.performance.length > 0) {
         html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & WORKED DATES</div>';
         html += '<table class="standard-table"><thead><tr>' +
@@ -972,17 +972,48 @@
       container.innerHTML = '';
       const list = (portalData && portalData.holidays) ? portalData.holidays : [];
 
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
       list.forEach(h => {
         const item = document.createElement('div');
-        const isUpcoming = (h.daysLeft !== null && h.daysLeft >= 0 && h.daysLeft <= 45);
-        item.className = 'holiday-card-item' + (isUpcoming ? ' holiday-upcoming' : '');
-
-        let badge = '';
-        if (h.daysLeft !== null) {
-          if (h.daysLeft === 0) badge = '<span class="badge-zoom-animated" style="background:#facc15; color:#000;">TODAY</span>';
-          else if (h.daysLeft > 0 && h.daysLeft <= 45) badge = `<span class="badge-zoom-animated">In ${h.daysLeft} Days</span>`;
+        
+        let daysLeft = null;
+        if (h.date) {
+          const parts = h.date.split('/');
+          if (parts.length === 3) {
+            const hDate = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+            hDate.setHours(0, 0, 0, 0);
+            const diffTime = hDate.getTime() - today.getTime();
+            daysLeft = Math.round(diffTime / (1000 * 60 * 60 * 24));
+          }
         }
 
+        const isFuture = (daysLeft !== null && daysLeft >= 0);
+        const isUrgent = (isFuture && daysLeft <= 30);
+        const isMedium = (isFuture && daysLeft > 30 && daysLeft <= 90);
+
+        let cardClass = 'holiday-card-item';
+        let badge = '';
+
+        if (isFuture) {
+          cardClass += ' holiday-upcoming';
+          if (daysLeft === 0) {
+            badge = '<span class="badge-zoom-animated" style="background:#facc15; color:#000;">TODAY</span>';
+          } else if (daysLeft === 1) {
+            badge = '<span class="badge-zoom-animated" style="background:#ef4444; color:#fff;">TOMORROW</span>';
+          } else if (isUrgent) {
+            badge = `<span class="badge-zoom-animated" style="background:#10b981; color:#fff;">In ${daysLeft} Days</span>`;
+          } else if (isMedium) {
+            badge = `<span class="badge-zoom-animated" style="background:#0284c7; color:#fff;">In ${daysLeft} Days</span>`;
+          } else {
+            badge = `<span class="badge-zoom-animated" style="background:#334155; color:#38bdf8;">In ${daysLeft} Days</span>`;
+          }
+        } else if (daysLeft !== null && daysLeft < 0) {
+          badge = `<span style="font-size:9.5px; color:#64748b; margin-left:6px; font-weight:bold;">(Passed)</span>`;
+        }
+
+        item.className = cardClass;
         item.innerHTML = `
           <div class="hol-top">
             <h5>🎈 ${h.name}${badge}</h5>
@@ -1029,7 +1060,7 @@
       }
     }
 
-    // 7. LOCAL FESTIVAL (AUTO MULTI-YEAR BENGAL + NATIONAL + ODISHA)
+    // 7. LOCAL FESTIVAL (BENGAL + NATIONAL + ODISHA)
     function renderLocalFestival() {
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
@@ -1058,7 +1089,7 @@
       showPage('pageLocalFestival');
     }
 
-    // WHATSAPP SHARE FUNCTIONS FOR ALL PANELS
+    // WHATSAPP SHARE FOR ALL PANELS
     function sharePositionWhatsApp() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
@@ -1118,7 +1149,7 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    // INITIAL DATA HANDLER
+    // INITIAL LOAD
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
