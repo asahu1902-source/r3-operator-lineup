@@ -35,33 +35,92 @@
 
     /* LOGIN */
     .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
-    .login-card img { width: 80px; height: 80px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
+    .login-card img { width: 85px; height: 85px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
     .login-card h2 { color: #ffff00; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
     .login-card p { color: #38bdf8; font-size: 13px; margin-bottom: 18px; }
 
     .operator-select { width: 100%; background: #000000; color: #ffff00; border: 2px solid #00ffff; padding: 12px; font-size: 16px; font-weight: 900; border-radius: 8px; outline: none; margin-bottom: 16px; }
     .btn-action-main { width: 100%; background: linear-gradient(90deg, #10b981, #059669); color: #ffffff; font-size: 15px; font-weight: 900; padding: 12px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
 
-    /* DASHBOARD HEADER */
-    .welcome-header {
-      background: linear-gradient(90deg, #1e3a8a, #07142b);
+    /* CENTERED BIG PROFILE CARD */
+    .profile-hero-card {
+      background: linear-gradient(180deg, #0f2b5c, #07142b);
       border: 2px solid #38bdf8;
-      border-radius: 10px;
-      padding: 10px 12px;
+      border-radius: 14px;
+      padding: 16px 14px 14px 14px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      position: relative;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
-    .user-profile-box { display: flex; align-items: center; gap: 10px; }
-    .profile-photo-container { position: relative; width: 44px; height: 44px; cursor: pointer; }
-    .profile-img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #facc15; background: #000; }
-    .photo-edit-badge { position: absolute; bottom: -2px; right: -2px; background: #0284c7; color: #fff; font-size: 9px; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border: 1px solid #fff; }
-    .welcome-header h3 { font-size: 15px; color: #ffff00; }
-    .welcome-header p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
-    .btn-logout { background: #270606; color: #ef4444; border: 1.5px solid #ef4444; font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
 
-    /* MENU */
+    .btn-logout-corner {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #270606;
+      color: #ef4444;
+      border: 1.5px solid #ef4444;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .profile-big-container {
+      position: relative;
+      width: 85px;
+      height: 85px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .profile-img-big {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #facc15;
+      background: #000;
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.45);
+    }
+
+    .photo-edit-badge-big {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: #0284c7;
+      color: #fff;
+      font-size: 12px;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      box-shadow: 0 0 8px rgba(0,0,0,0.6);
+    }
+
+    .hero-welcome-text {
+      font-size: 18px;
+      font-weight: 900;
+      color: #ffff00;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .hero-date-text {
+      font-size: 13px;
+      font-weight: bold;
+      color: #38bdf8;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    /* DASHBOARD MENU */
     .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
     .menu-item-btn {
       background: #0a192f;
@@ -79,12 +138,12 @@
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
     .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
-    /* ACTIONS */
+    /* ACTION BAR */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
     .tools-group { display: flex; gap: 8px; align-items: center; }
 
-    /* PROMINENT WHATSAPP BUTTON */
+    /* LARGE PROMINENT WHATSAPP BUTTON */
     .whatsapp-btn {
       background: #128C7E;
       color: #ffffff;
@@ -100,7 +159,7 @@
       gap: 8px;
       box-shadow: 0 0 10px rgba(37, 211, 102, 0.4);
     }
-    .whatsapp-btn svg { width: 26px; height: 26px; fill: #ffffff; flex-shrink: 0; }
+    .whatsapp-btn svg { width: 24px; height: 24px; fill: #ffffff; flex-shrink: 0; }
 
     .whatsapp-btn-large {
       background: #128C7E;
@@ -119,10 +178,10 @@
       gap: 12px;
       box-shadow: 0 0 15px rgba(37, 211, 102, 0.45);
     }
-    .whatsapp-btn-large svg { width: 30px; height: 30px; fill: #ffffff; flex-shrink: 0; }
+    .whatsapp-btn-large svg { width: 28px; height: 28px; fill: #ffffff; flex-shrink: 0; }
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
-    /* TABLES & CONTAINERS */
+    /* TABLES */
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
     .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 14.5px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
 
@@ -147,7 +206,13 @@
 
     .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    /* UPCOMING HOLIDAY HIGHLIGHT */
+    /* ANIMATED REMAINING DAYS ZOOM-IN BADGE */
+    @keyframes zoomPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
     .holiday-card-item {
       background: #111827;
       border-left: 5px solid #ef4444;
@@ -156,28 +221,31 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      transition: transform 0.2s;
     }
 
     .holiday-upcoming {
       border: 2px solid #facc15 !important;
       border-left: 6px solid #10b981 !important;
-      background: #062419 !important;
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+      background: #06281c !important;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
     }
 
     .hol-top { display: flex; justify-content: space-between; align-items: center; }
     .hol-top h5 { font-size: 14px; color: #ffff00; font-weight: 900; }
     .hol-top p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
 
-    .badge-upcoming {
-      background: #10b981;
-      color: #000000;
-      font-size: 9.5px;
+    .badge-zoom-animated {
+      background: linear-gradient(90deg, #10b981, #059669);
+      color: #ffffff;
+      font-size: 10px;
       font-weight: 900;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-left: 6px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      margin-left: 8px;
+      display: inline-block;
+      animation: zoomPulse 1.8s infinite ease-in-out;
+      border: 1px solid #facc15;
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.6);
     }
 
     .relay-badge-row { display: flex; gap: 6px; margin-top: 4px; }
@@ -185,7 +253,6 @@
     .relay-chip span { display: block; font-size: 9.5px; color: #94a3b8; font-weight: 800; }
     .relay-chip strong { font-size: 15px; color: #00ff00; font-weight: 900; }
 
-    /* DATE PILLS FOR POSITION BREAKDOWN */
     .date-pill-container { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; }
     .date-pill { background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; font-size: 9.5px; font-weight: 800; border-radius: 3px; padding: 2px 5px; }
 
@@ -224,20 +291,16 @@
       </div>
     </div>
 
-    <!-- PAGE 2: DASHBOARD MENU -->
+    <!-- PAGE 2: DASHBOARD MENU WITH BIG CENTER PROFILE -->
     <div id="pageDashboard" class="screen-page">
-      <div class="welcome-header">
-        <div class="user-profile-box">
-          <div class="profile-photo-container" onclick="triggerPhotoUpload()" title="Tap to upload profile photo">
-            <img id="uiProfileImg" src="icon.png" class="profile-img" alt="User">
-            <div class="photo-edit-badge">📷</div>
-          </div>
-          <div>
-            <h3 id="uiWelcomeName">Welcome, Operator!</h3>
-            <p id="uiDashboardDate">Loading...</p>
-          </div>
+      <div class="profile-hero-card">
+        <button class="btn-logout-corner" onclick="performLogout()">Logout</button>
+        <div class="profile-big-container" onclick="triggerPhotoUpload()" title="Tap to change photo">
+          <img id="uiProfileImg" src="icon.png" class="profile-img-big" alt="Operator Photo">
+          <div class="photo-edit-badge-big">📷</div>
         </div>
-        <button class="btn-logout" onclick="performLogout()">Logout</button>
+        <h3 id="uiWelcomeName" class="hero-welcome-text">Welcome, Operator!</h3>
+        <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
       <div class="dashboard-menu">
@@ -253,7 +316,7 @@
           <div class="menu-item-icon">⏳</div>
           <div class="menu-item-info">
             <h4>My Due History</h4>
-            <p>Due counts, last operated dates & shifts</p>
+            <p>Due counts, last operated dates, days & shifts</p>
           </div>
         </div>
 
@@ -261,7 +324,7 @@
           <div class="menu-item-icon">📊</div>
           <div class="menu-item-info">
             <h4>My Monthly Report</h4>
-            <p>Attendance summary & position dates</p>
+            <p>Attendance summary & worked dates</p>
           </div>
         </div>
 
@@ -277,7 +340,7 @@
           <div class="menu-item-icon">🏢</div>
           <div class="menu-item-info">
             <h4>Company Holiday</h4>
-            <p>Official company holidays & relay shifts</p>
+            <p>Upcoming holidays countdown & shifts</p>
           </div>
         </div>
 
@@ -323,7 +386,7 @@
       </div>
     </div>
 
-    <!-- PAGE 4: MY DUE HISTORY -->
+    <!-- PAGE 4: MY DUE HISTORY (NOW WITH DAY COLUMN) -->
     <div id="pageDueHistory" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -338,7 +401,10 @@
       <div class="board-container">
         <div class="date-banner" id="uiDueOperatorTitle">My Position Due Matrix</div>
         <table class="standard-table">
-          <thead><tr><th>Position</th><th>Due</th><th>Last Date</th><th>Shift</th></tr></thead>
+          <colgroup>
+            <col style="width:28%"><col style="width:14%"><col style="width:30%"><col style="width:14%"><col style="width:14%">
+          </colgroup>
+          <thead><tr><th>Position</th><th>Due</th><th>Last Date</th><th>Day</th><th>Shift</th></tr></thead>
           <tbody id="uiDueTbody"></tbody>
         </table>
       </div>
@@ -349,11 +415,15 @@
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareMonthlyWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
       <div class="form-card">
-        <h4 id="uiMonthlyRepHeading" style="color:#ffff00; font-size:15px; font-weight:900;">Monthly Performance Summary</h4>
+        <h4 id="uiMonthlyRepHeading" style="color:#ffff00; font-size:15.5px; font-weight:900;">Monthly Performance Summary</h4>
         
         <div class="filter-grid">
           <div class="form-group">
@@ -458,12 +528,16 @@
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareHolidayWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">🏢 Official Company Holidays</h3>
-        <p style="font-size:11px; color:#94a3b8; margin-top:-6px;">Upcoming holidays highlighted with shift mapping</p>
+        <p style="font-size:11.5px; color:#38bdf8; margin-top:-6px;">Upcoming holidays with animated countdown badge</p>
         <div id="uiHolidayContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
       </div>
     </div>
@@ -473,6 +547,10 @@
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareScheduleWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
@@ -493,11 +571,15 @@
       </div>
     </div>
 
-    <!-- PAGE 9: LOCAL FESTIVAL (ALL ENRICHED FESTIVALS) -->
+    <!-- PAGE 9: LOCAL FESTIVAL -->
     <div id="pageLocalFestival" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareFestivalWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
@@ -513,45 +595,46 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHQ5BMKG-IHIGMCqL4N2efVOshdsP34EY3Gu054YwmhC5qYZBNyEkRvW0_3SAOmMK8fA/exec";
     const STORAGE_KEY = "r3_operator_user";
 
-    // Complete Enriched Festival Calendar for 2026
-    const RUNNING_FESTIVALS = [
-      { name: "Makar Sankranti / Pongal", date: "14/01/2026" },
-      { name: "Netaji Jayanti / Subhas Utsav", date: "23/01/2026" },
-      { name: "Saraswati Puja / Vasant Panchami", date: "23/01/2026" },
-      { name: "Maha Shivratri", date: "15/02/2026" },
-      { name: "Holi / Dola Purnima", date: "03/03/2026" },
-      { name: "Eid-ul-Fitr", date: "21/03/2026" },
-      { name: "Utkal Divas (Odisha Day)", date: "01/04/2026" },
-      { name: "Good Friday", date: "03/04/2026" },
-      { name: "Pana Sankranti / Odia New Year", date: "14/04/2026" },
-      { name: "Akshaya Tritiya / Chandan Yatra", date: "20/04/2026" },
-      { name: "Buddha Purnima", date: "01/05/2026" },
-      { name: "Sabitri Brata", date: "16/05/2026" },
-      { name: "Pahili Raja", date: "14/06/2026" },
-      { name: "Raja Sankranti", date: "15/06/2026" },
-      { name: "Snana Purnima (Debasnana)", date: "29/06/2026" },
-      { name: "Rath Yatra (Puri Car Festival)", date: "16/07/2026" },
-      { name: "Bahuda Yatra (Return Car Festival)", date: "24/07/2026" },
-      { name: "Raksha Bandhan / Gamha Purnima", date: "28/08/2026" },
-      { name: "Janmashtami", date: "04/09/2026" },
-      { name: "Ganesh Chaturthi", date: "14/09/2026" },
-      { name: "Nuakhai", date: "16/09/2026" },
-      { name: "Vishwakarma Puja", date: "17/09/2026" },
-      { name: "Mahalaya", date: "10/10/2026" },
-      { name: "Durga Puja (Maha Saptami)", date: "18/10/2026" },
-      { name: "Durga Puja (Maha Astami)", date: "19/10/2026" },
-      { name: "Durga Puja (Maha Navami)", date: "20/10/2026" },
-      { name: "Vijaya Dashami (Dussehra)", date: "21/10/2026" },
-      { name: "Kumar Purnima", date: "25/10/2026" },
-      { name: "Kali Puja / Diwali", date: "09/11/2026" },
-      { name: "Chhath Puja", date: "15/11/2026" },
-      { name: "Kartika Purnima / Boita Bandana", date: "24/11/2026" },
-      { name: "Prathamastami", date: "02/12/2026" },
-      { name: "Christmas Day", date: "25/12/2026" }
+    // Dynamic Multi-Year Festival Base Template
+    const BASE_FESTIVALS = [
+      { name: "Makar Sankranti / Pongal", d: "14", m: "01" },
+      { name: "Netaji Jayanti", d: "23", m: "01" },
+      { name: "Saraswati Puja / Vasant Panchami", d: "23", m: "01" },
+      { name: "Maha Shivratri", d: "15", m: "02" },
+      { name: "Holi / Dola Purnima", d: "03", m: "03" },
+      { name: "Eid-ul-Fitr", d: "21", m: "03" },
+      { name: "Utkal Divas (Odisha Day)", d: "01", m: "04" },
+      { name: "Good Friday", d: "03", m: "04" },
+      { name: "Pana Sankranti / Odia New Year", d: "14", m: "04" },
+      { name: "Akshaya Tritiya", d: "20", m: "04" },
+      { name: "Buddha Purnima", d: "01", m: "05" },
+      { name: "Sabitri Brata", d: "16", m: "05" },
+      { name: "Pahili Raja", d: "14", m: "06" },
+      { name: "Raja Sankranti", d: "15", m: "06" },
+      { name: "Snana Purnima", d: "29", m: "06" },
+      { name: "Rath Yatra (Puri Car Festival)", d: "16", m: "07" },
+      { name: "Bahuda Yatra", d: "24", m: "07" },
+      { name: "Raksha Bandhan / Gamha Purnima", d: "28", m: "08" },
+      { name: "Janmashtami", d: "04", m: "09" },
+      { name: "Ganesh Chaturthi", d: "14", m: "09" },
+      { name: "Nuakhai", d: "16", m: "09" },
+      { name: "Vishwakarma Puja", d: "17", m: "09" },
+      { name: "Mahalaya", d: "10", m: "10" },
+      { name: "Durga Puja (Maha Saptami)", d: "18", m: "10" },
+      { name: "Durga Puja (Maha Astami)", d: "19", m: "10" },
+      { name: "Durga Puja (Maha Navami)", d: "20", m: "10" },
+      { name: "Vijaya Dashami (Dussehra)", d: "21", m: "10" },
+      { name: "Kumar Purnima", d: "25", m: "10" },
+      { name: "Kali Puja / Diwali", d: "09", m: "11" },
+      { name: "Chhath Puja", d: "15", m: "11" },
+      { name: "Kartika Purnima / Boita Bandana", d: "24", m: "11" },
+      { name: "Prathamastami", d: "02", m: "12" },
+      { name: "Christmas Day", d: "25", m: "12" }
     ];
 
     let portalData = null;
     let lastSubmittedLeave = null;
+    let currentReportResult = null;
 
     function showPage(pageId) {
       document.querySelectorAll('.screen-page').forEach(p => p.classList.remove('active'));
@@ -699,7 +782,7 @@
       showPage('pagePosition');
     }
 
-    // 2. DUE HISTORY
+    // 2. DUE HISTORY (WITH EXACT DAY NAME DISPLAY)
     function renderDueHistory() {
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
@@ -720,12 +803,13 @@
           <td class="cyan-cell">${rec.pos}</td>
           <td class="due-cell">${rec.due}</td>
           <td>${rec.lastDate}</td>
+          <td class="day-cell">${rec.lastDay || '-'}</td>
           <td class="shift-cell">${rec.lastShift}</td>
         </tr>`;
       });
 
       if (records.length === 0) {
-        html = `<tr><td colspan="4" style="padding:15px; color:#94a3b8;">No personal due records found for ${myName}.</td></tr>`;
+        html = `<tr><td colspan="5" style="padding:15px; color:#94a3b8;">No personal due records found for ${myName}.</td></tr>`;
       }
 
       document.getElementById('uiDueTbody').innerHTML = html;
@@ -769,8 +853,8 @@
         area.innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
         return;
       }
+      currentReportResult = res;
 
-      // ATTENDANCE SUMMARY
       let html = '<div class="date-banner">ATTENDANCE SUMMARY</div>';
       html += '<table class="standard-table"><thead><tr><th style="width:65%;">Category</th><th style="width:35%;">Count</th></tr></thead><tbody>';
       (res.attendance || []).forEach(item => {
@@ -778,9 +862,9 @@
       });
       html += '</tbody></table>';
 
-      // POSITION PERFORMANCE FULL TABLE (WITH DATES COLUMN)
+      // POSITION PERFORMANCE FULL TABLE (WITH WORKED DATES)
       if (res.performance && res.performance.length > 0) {
-        html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & DATES</div>';
+        html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & WORKED DATES</div>';
         html += '<table class="standard-table"><thead><tr>' +
           '<th style="width:28%;">Position</th>' +
           '<th style="width:12%;">Times</th>' +
@@ -886,7 +970,7 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(msg);
     }
 
-    // 5. COMPANY HOLIDAY (UPCOMING HIGHLIGHT & ACCURATE RELAY LOOKUP)
+    // 5. COMPANY HOLIDAY (UPCOMING ANIMATED BADGE)
     function renderHolidayList() {
       const container = document.getElementById('uiHolidayContainer');
       container.innerHTML = '';
@@ -899,8 +983,8 @@
 
         let badge = '';
         if (h.daysLeft !== null) {
-          if (h.daysLeft === 0) badge = '<span class="badge-upcoming" style="background:#facc15;">TODAY</span>';
-          else if (h.daysLeft > 0 && h.daysLeft <= 30) badge = `<span class="badge-upcoming">In ${h.daysLeft} Days</span>`;
+          if (h.daysLeft === 0) badge = '<span class="badge-zoom-animated" style="background:#facc15; color:#000;">TODAY</span>';
+          else if (h.daysLeft > 0 && h.daysLeft <= 45) badge = `<span class="badge-zoom-animated">In ${h.daysLeft} Days</span>`;
         }
 
         item.innerHTML = `
@@ -949,20 +1033,24 @@
       }
     }
 
-    // 7. LOCAL FESTIVAL
+    // 7. LOCAL FESTIVAL (AUTO EVERY-YEAR UPDATE)
     function renderLocalFestival() {
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
       const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
 
-      RUNNING_FESTIVALS.forEach(f => {
-        const match = schedMap[f.date] || { day: "-", r3: "-", r2: "-", r1: "-" };
+      // Detect current year automatically
+      const currentYear = new Date().getFullYear();
+
+      BASE_FESTIVALS.forEach(f => {
+        const fullDate = `${f.d}/${f.m}/${currentYear}`;
+        const match = schedMap[fullDate] || { day: "-", r3: "-", r2: "-", r1: "-" };
         const item = document.createElement('div');
         item.className = 'holiday-card-item';
         item.innerHTML = `
           <div class="hol-top">
             <h5>🪔 ${f.name}</h5>
-            <p>${f.date} (${match.day})</p>
+            <p>${fullDate} (${match.day})</p>
           </div>
           <div class="relay-badge-row">
             <div class="relay-chip"><span>R3</span><strong>${match.r3}</strong></div>
@@ -975,7 +1063,7 @@
       showPage('pageLocalFestival');
     }
 
-    // WHATSAPP SHARE
+    // WHATSAPP SHARE FUNCTIONS FOR ALL PANELS
     function sharePositionWhatsApp() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
@@ -989,7 +1077,49 @@
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       const recs = (portalData && portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
       let text = `*DUE MATRIX - ${myName}*\n\n`;
-      recs.forEach(r => { text += `• ${r.pos} ➔ Due: ${r.due} (Last: ${r.lastDate} - ${r.lastShift})\n`; });
+      recs.forEach(r => { text += `• ${r.pos} ➔ Due: ${r.due} (Last: ${r.lastDate} [${r.lastDay}] - Shift ${r.lastShift})\n`; });
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
+    }
+
+    function shareMonthlyWhatsApp() {
+      const op = localStorage.getItem(STORAGE_KEY) || "Operator";
+      const mText = document.getElementById('uiRepMonthSelect').options[document.getElementById('uiRepMonthSelect').selectedIndex].text;
+      const yText = document.getElementById('uiRepYearSelect').value;
+      if (!currentReportResult) {
+        alert("Please generate report first.");
+        return;
+      }
+      let text = `*MONTHLY REPORT - ${op}*\n📅 Period: ${mText} ${yText}\n\n*ATTENDANCE:*\n`;
+      (currentReportResult.attendance || []).forEach(a => { text += `• ${a.label}: ${a.val}\n`; });
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
+    }
+
+    function shareHolidayWhatsApp() {
+      const list = (portalData && portalData.holidays) ? portalData.holidays : [];
+      let text = `*COMPANY HOLIDAYS & SHIFTS*\n\n`;
+      list.forEach(h => { text += `• ${h.name} (${h.rawDate}): R3:[${h.r3}] R2:[${h.r2}] R1:[${h.r1}]\n`; });
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
+    }
+
+    function shareScheduleWhatsApp() {
+      const title = document.getElementById('uiSchedDateTitle').innerText;
+      const r3 = document.getElementById('uiSchedR3').innerText;
+      const r2 = document.getElementById('uiSchedR2').innerText;
+      const r1 = document.getElementById('uiSchedR1').innerText;
+      if (title === "-") { alert("Please select a date first."); return; }
+      const text = `*SHIFT SCHEDULE*\n📅 ${title}\n• Relay-3: ${r3}\n• Relay-2: ${r2}\n• Relay-1: ${r1}`;
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
+    }
+
+    function shareFestivalWhatsApp() {
+      let text = `*LOCAL FESTIVALS & RELAY SHIFTS*\n\n`;
+      const currentYear = new Date().getFullYear();
+      const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
+      BASE_FESTIVALS.slice(0, 10).forEach(f => {
+        const fullDate = `${f.d}/${f.m}/${currentYear}`;
+        const match = schedMap[fullDate] || { r3: "-", r2: "-", r1: "-" };
+        text += `• ${f.name} (${fullDate}): R3:[${match.r3}] R2:[${match.r2}] R1:[${match.r1}]\n`;
+      });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
