@@ -341,6 +341,18 @@
     </div>
   </div>
 
+  <!-- CUSTOM CLEAR CHAT MODAL -->
+  <div id="customClearChatModal" class="custom-modal-backdrop">
+    <div class="custom-modal-box info-box">
+      <h4>🗑️ CLEAR CHAT</h4>
+      <p>Clear your chat history on this device?</p>
+      <div class="modal-btn-row">
+        <button class="btn-modal-secondary" onclick="closeClearChatModal()">Cancel</button>
+        <button class="btn-modal-danger" onclick="confirmClearChat()">Yes, Clear</button>
+      </div>
+    </div>
+  </div>
+
   <div id="splashScreen">
     <div class="splash-logo-container">
       <div class="splash-pulse-ring"></div>
@@ -364,7 +376,7 @@
       </div>
     </div>
 
-    <!-- PAGE 2: DASHBOARD MENU WITH BIG CENTER PROFILE -->
+    <!-- PAGE 2: DASHBOARD MENU -->
     <div id="pageDashboard" class="screen-page">
       <div class="profile-hero-card">
         <button class="btn-logout-corner" onclick="performLogout()">Logout</button>
@@ -690,7 +702,7 @@
         <div style="position: relative;">
           <button class="whatsapp-btn" style="padding: 6px 10px; font-size:16px;" onclick="toggleChatMenu(event)">⋮</button>
           <div id="chatDropdownMenu" style="display:none; position:absolute; right:0; top:35px; background:#07142b; border:1.5px solid #38bdf8; border-radius:6px; z-index:99; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
-            <div onclick="clearLocalChat()" style="padding: 10px 14px; font-size:12px; font-weight:bold; color:#ef4444; cursor:pointer; white-space:nowrap;">🗑️ Clear Chat</div>
+            <div onclick="openClearChatModal()" style="padding: 10px 14px; font-size:12px; font-weight:bold; color:#ef4444; cursor:pointer; white-space:nowrap;">🗑️ Clear Chat</div>
           </div>
         </div>
       </div>
@@ -904,7 +916,7 @@
       else if (type === "groupChat") openGroupChat();
     }
 
-    // 3-DOT CHAT MENU TOGGLE
+    // 3-DOT CHAT MENU & CUSTOM CLEAR CHAT MODAL
     function toggleChatMenu(e) {
       e.stopPropagation();
       const menu = document.getElementById('chatDropdownMenu');
@@ -916,13 +928,20 @@
       if (menu) menu.style.display = 'none';
     };
 
-    function clearLocalChat() {
-      if (confirm("Clear your chat history on this device?")) {
-        const myName = (localStorage.getItem(STORAGE_KEY) || "guest").toLowerCase();
-        localStorage.setItem('cleared_time_' + myName, Date.now().toString());
-        loadChatMessages();
-      }
+    function openClearChatModal() {
+      document.getElementById('customClearChatModal').style.display = 'flex';
       document.getElementById('chatDropdownMenu').style.display = 'none';
+    }
+
+    function closeClearChatModal() {
+      document.getElementById('customClearChatModal').style.display = 'none';
+    }
+
+    function confirmClearChat() {
+      const myName = (localStorage.getItem(STORAGE_KEY) || "guest").toLowerCase();
+      localStorage.setItem('cleared_time_' + myName, Date.now().toString());
+      loadChatMessages();
+      closeClearChatModal();
     }
 
     function openGroupChat() {
