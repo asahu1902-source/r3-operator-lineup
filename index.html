@@ -253,22 +253,34 @@
     .date-pill-container { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; }
     .date-pill { background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; font-size: 9.5px; font-weight: 800; border-radius: 3px; padding: 2px 5px; }
 
-    /* CUSTOM MODAL POPUP */
-    #customAlertModal {
+    /* CUSTOM MODAL POPUPS */
+    .custom-modal-backdrop {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.85); z-index: 999999;
       display: none; align-items: center; justify-content: center; padding: 20px;
     }
-    .custom-alert-box {
+    .custom-modal-box {
       background: #07142b; border: 2.5px solid #ef4444; border-radius: 12px;
       width: 100%; max-width: 310px; padding: 20px; text-align: center;
       display: flex; flex-direction: column; gap: 14px;
       box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
     }
-    .custom-alert-box h4 { color: #ef4444; font-size: 15px; font-weight: 900; }
-    .custom-alert-box p { color: #ffff00; font-size: 14px; font-weight: bold; }
-    .btn-alert-ok {
-      background: #10b981; color: #ffffff; border: none; font-size: 13px; font-weight: 900;
+    .custom-modal-box.info-box { border-color: #38bdf8; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); }
+    .custom-modal-box h4 { color: #ef4444; font-size: 15px; font-weight: 900; }
+    .custom-modal-box.info-box h4 { color: #facc15; }
+    .custom-modal-box p { color: #ffff00; font-size: 14px; font-weight: bold; }
+    
+    .modal-btn-row { display: flex; gap: 10px; margin-top: 4px; }
+    .btn-modal-primary {
+      flex: 1; background: #10b981; color: #ffffff; border: none; font-size: 13px; font-weight: 900;
+      padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
+    }
+    .btn-modal-danger {
+      flex: 1; background: #dc2626; color: #ffffff; border: none; font-size: 13px; font-weight: 900;
+      padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
+    }
+    .btn-modal-secondary {
+      flex: 1; background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; font-size: 13px; font-weight: 900;
       padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
     }
 
@@ -285,11 +297,23 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
 
   <!-- CUSTOM ALERT MODAL -->
-  <div id="customAlertModal">
-    <div class="custom-alert-box">
+  <div id="customAlertModal" class="custom-modal-backdrop">
+    <div class="custom-modal-box">
       <h4>🔒 LOCKED ACCESS</h4>
       <p id="customAlertMsg">This section is currently disabled.</p>
-      <button class="btn-alert-ok" onclick="closeCustomAlert()">OK</button>
+      <button class="btn-modal-primary" onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
+
+  <!-- CUSTOM LOGOUT MODAL -->
+  <div id="customLogoutModal" class="custom-modal-backdrop">
+    <div class="custom-modal-box info-box">
+      <h4>⚠️ CONFIRM LOGOUT</h4>
+      <p>Are you sure you want to log out?</p>
+      <div class="modal-btn-row">
+        <button class="btn-modal-secondary" onclick="closeCustomLogout()">Cancel</button>
+        <button class="btn-modal-danger" onclick="confirmLogout()">Yes, Logout</button>
+      </div>
     </div>
   </div>
 
@@ -704,10 +728,17 @@
     }
 
     function performLogout() {
-      if (confirm("Are you sure you want to log out?")) {
-        localStorage.removeItem(STORAGE_KEY);
-        showPage('pageLogin');
-      }
+      document.getElementById('customLogoutModal').style.display = 'flex';
+    }
+
+    function closeCustomLogout() {
+      document.getElementById('customLogoutModal').style.display = 'none';
+    }
+
+    function confirmLogout() {
+      localStorage.removeItem(STORAGE_KEY);
+      showPage('pageLogin');
+      closeCustomLogout();
     }
 
     function triggerPhotoUpload() {
