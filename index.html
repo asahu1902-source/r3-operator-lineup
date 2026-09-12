@@ -939,7 +939,7 @@
 
     function confirmClearChat() {
       const myName = (localStorage.getItem(STORAGE_KEY) || "guest").toLowerCase();
-      localStorage.setItem('cleared_time_' + myName, Date.now().toString());
+      localStorage.setItem('clear_ch_time_' + myName, Date.now().toString());
       loadChatMessages();
       closeClearChatModal();
     }
@@ -952,7 +952,7 @@
 
     function startChatPolling() {
       if (chatInterval) clearInterval(chatInterval);
-      chatInterval = setInterval(loadChatMessages, 2500); // 2.5s fast polling for real-time chat
+      chatInterval = setInterval(loadChatMessages, 2500);
     }
 
     function stopChatPolling() {
@@ -973,15 +973,24 @@
       if (!res || res.status !== "success") return;
 
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
-      const clearKey = 'cleared_time_' + myName;
-      const clearedTimestamp = parseInt(localStorage.getItem(clearKey) || "0", 10);
+      const clearKey = 'clear_ch_time_' + myName;
+      const clearedEpoch = parseInt(localStorage.getItem(clearKey) || "0", 10);
 
       let html = '';
       let displayedCount = 0;
 
       res.messages.forEach(m => {
-        const msgTimeEpoch = new Date(m.time.split('/').reverse().join('-')).getTime();
-        if (clearedTimestamp && msgTimeEpoch && msgTimeEpoch < clearedTimestamp) {
+        let msgEpoch = new Date().getTime();
+        try {
+          const parts = m.time.split(' ');
+          const dParts = parts[0].split('/');
+          if (dParts.length === 3) {
+            const isoStr = `${dParts[2]}-${dParts[1]}-${dParts[0]}T${parts[1] || '00:00:00'}`;
+            msgEpoch = new Date(isoStr).getTime();
+          }
+        } catch (e) {}
+
+        if (clearedEpoch && msgEpoch && msgEpoch <= clearedEpoch) {
           return;
         }
 
@@ -1004,7 +1013,7 @@
       if (isAtBottom) {
         container.scrollTop = container.scrollHeight;
       }
-    }
+    };
 
     function sendChatMessage() {
       const input = document.getElementById('chatMessageInput');
@@ -1012,8 +1021,24 @@
       const name = localStorage.getItem(STORAGE_KEY) || "Guest";
 
       if (!text) return;
-
       input.value = '';
+
+      const container = document.getElementById('chatMessagesContainer');
+      const nowStr = new Date().toLocaleString('en-GB', { hour12: false });
+      
+      if (container.innerHTML.includes("Loading messages...") || container.innerHTML.includes("Chat is cleared")) {
+        container.innerHTML = '';
+      }
+
+      const bubble = document.createElement('div');
+      bubble.className = "chat-bubble my-msg";
+      bubble.innerHTML = `
+        <div class="chat-meta"><span>${name}</span><span>${nowStr}</span></div>
+        <div class="chat-text">${text}</div>
+      `;
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=sendChat&name=${encodeURIComponent(name)}&message=${encodeURIComponent(text)}&callback=handleSendChatResponse&t=${Date.now()}`;
       document.head.appendChild(s);
@@ -1023,7 +1048,7 @@
       if (res && res.status === "success") {
         loadChatMessages();
       }
-    }
+    };
 
     // 1. POSITION BOARD
     function renderPositionBoard() {
