@@ -193,12 +193,12 @@
 
     .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    /* PROGRESS BAR STYLING */
-    #leaveProgressBarContainer {
+    /* PROGRESS BARS */
+    #leaveProgressBarContainer, #reportProgressBarContainer {
       width: 100%; height: 8px; background: #1e293b; border-radius: 4px;
       overflow: hidden; margin-top: 8px; display: none; border: 1px solid #38bdf8;
     }
-    #leaveProgressBarFill {
+    #leaveProgressBarFill, #reportProgressBarFill {
       width: 0%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
       transition: width 0.4s ease-in-out;
     }
@@ -518,6 +518,11 @@
 
         <button class="btn-action-main" onclick="loadDynamicMonthlyReport()">Generate Report ➔</button>
 
+        <!-- REPORT PROGRESS BAR -->
+        <div id="reportProgressBarContainer">
+          <div id="reportProgressBarFill"></div>
+        </div>
+
         <div id="uiMonthlyResultArea" style="margin-top:10px; display:flex; flex-direction:column; gap:12px;"></div>
       </div>
     </div>
@@ -562,7 +567,7 @@
 
         <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
         
-        <!-- PROGRESS BAR -->
+        <!-- LEAVE PROGRESS BAR -->
         <div id="leaveProgressBarContainer">
           <div id="leaveProgressBarFill"></div>
         </div>
@@ -918,7 +923,14 @@
       const fDate = document.getElementById('uiRepFromDate').value;
       const tDate = document.getElementById('uiRepToDate').value;
 
-      document.getElementById('uiMonthlyResultArea').innerHTML = '<div style="color:#38bdf8; text-align:center; padding:12px;">⚡ Calculating report...</div>';
+      document.getElementById('uiMonthlyResultArea').innerHTML = '';
+
+      const barContainer = document.getElementById('reportProgressBarContainer');
+      const barFill = document.getElementById('reportProgressBarFill');
+      barContainer.style.display = 'block';
+      barFill.style.width = '35%';
+
+      setTimeout(() => { barFill.style.width = '75%'; }, 200);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getMonthlyReport&name=${encodeURIComponent(op)}&fromDate=${fDate}&toDate=${tDate}&callback=handleMonthlyReport&t=${Date.now()}`;
@@ -926,70 +938,79 @@
     }
 
     window.handleMonthlyReport = function(res) {
-      const area = document.getElementById('uiMonthlyResultArea');
-      if (!res || res.status !== "success") {
-        area.innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
-        return;
-      }
-      currentReportResult = res;
+      const barFill = document.getElementById('reportProgressBarFill');
+      barFill.style.width = '100%';
 
-      let html = '<div class="date-banner">ATTENDANCE SUMMARY</div>';
-      html += '<table class="standard-table"><thead><tr><th style="width:65%;">Category</th><th style="width:35%;">Count</th></tr></thead><tbody>';
-      (res.attendance || []).forEach(item => {
-        html += `<tr><td class="cyan-cell align-left">${item.label}</td><td style="color:#ffff00; font-size:13px;">${item.val}</td></tr>`;
-      });
-      html += '</tbody></table>';
+      setTimeout(() => {
+        const area = document.getElementById('uiMonthlyResultArea');
+        if (!res || res.status !== "success") {
+          area.innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
+          document.getElementById('reportProgressBarContainer').style.display = 'none';
+          barFill.style.width = '0%';
+          return;
+        }
+        currentReportResult = res;
 
-      if (res.performance && res.performance.length > 0) {
-        html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & WORKED DATES</div>';
-        html += '<table class="standard-table"><thead><tr>' +
-          '<th style="width:28%;">Position</th>' +
-          '<th style="width:12%;">Times</th>' +
-          '<th style="width:14%;">Alloc %</th>' +
-          '<th style="width:46%;">Dates Worked</th>' +
-          '</tr></thead><tbody>';
-
-        let grandTotal = 0;
-        res.performance.forEach(p => {
-          grandTotal += p.timesWorked;
-          let datePillsHtml = '-';
-          if (p.dates && p.dates.length > 0) {
-            datePillsHtml = '<div class="date-pill-container">';
-            p.dates.forEach(d => {
-              datePillsHtml += `<span class="date-pill">${d}</span>`;
-            });
-            datePillsHtml += '</div>';
-          }
-
-          html += `<tr>` +
-            `<td class="cyan-cell align-left">${p.position}</td>` +
-            `<td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td>` +
-            `<td style="color:#00ff00; font-weight:bold;">${p.allocation}</td>` +
-            `<td class="align-left">${datePillsHtml}</td>` +
-            `</tr>`;
+        let html = '<div class="date-banner">ATTENDANCE SUMMARY</div>';
+        html += '<table class="standard-table"><thead><tr><th style="width:65%;">Category</th><th style="width:35%;">Count</th></tr></thead><tbody>';
+        (res.attendance || []).forEach(item => {
+          html += `<tr><td class="cyan-cell align-left">${item.label}</td><td style="color:#ffff00; font-size:13px;">${item.val}</td></tr>`;
         });
-
-        html += `<tr style="background:#1e3a8a;">` +
-          `<td class="cyan-cell align-left">Total</td>` +
-          `<td style="color:#ffff00; font-weight:900;">${grandTotal}</td>` +
-          `<td style="color:#ffff00; font-weight:900;">100%</td>` +
-          `<td style="color:#94a3b8; font-size:10px;">-</td>` +
-          `</tr>`;
-
         html += '</tbody></table>';
-      }
 
-      if (res.leaveDates && res.leaveDates.length > 0) {
-        html += '<div class="date-banner" style="margin-top:12px;">LEAVE RECORDED DATES</div>';
-        html += '<div style="background:#000000; border:2px solid #ef4444; border-radius:6px; padding:8px;">';
-        html += '<div class="date-pill-container">';
-        res.leaveDates.forEach(ld => {
-          html += `<span class="date-pill" style="border-color:#f87171; color:#f87171;">${ld}</span>`;
-        });
-        html += '</div></div>';
-      }
+        if (res.performance && res.performance.length > 0) {
+          html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & WORKED DATES</div>';
+          html += '<table class="standard-table"><thead><tr>' +
+            '<th style="width:28%;">Position</th>' +
+            '<th style="width:12%;">Times</th>' +
+            '<th style="width:14%;">Alloc %</th>' +
+            '<th style="width:46%;">Dates Worked</th>' +
+            '</tr></thead><tbody>';
 
-      area.innerHTML = html;
+          let grandTotal = 0;
+          res.performance.forEach(p => {
+            grandTotal += p.timesWorked;
+            let datePillsHtml = '-';
+            if (p.dates && p.dates.length > 0) {
+              datePillsHtml = '<div class="date-pill-container">';
+              p.dates.forEach(d => {
+                datePillsHtml += `<span class="date-pill">${d}</span>`;
+              });
+              datePillsHtml += '</div>';
+            }
+
+            html += `<tr>` +
+              `<td class="cyan-cell align-left">${p.position}</td>` +
+              `<td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td>` +
+              `<td style="color:#00ff00; font-weight:bold;">${p.allocation}</td>` +
+              `<td class="align-left">${datePillsHtml}</td>` +
+              `</tr>`;
+          });
+
+          html += `<tr style="background:#1e3a8a;">` +
+            `<td class="cyan-cell align-left">Total</td>` +
+            `<td style="color:#ffff00; font-weight:900;">${grandTotal}</td>` +
+            `<td style="color:#ffff00; font-weight:900;">100%</td>` +
+            `<td style="color:#94a3b8; font-size:10px;">-</td>` +
+            `</tr>`;
+
+          html += '</tbody></table>';
+        }
+
+        if (res.leaveDates && res.leaveDates.length > 0) {
+          html += '<div class="date-banner" style="margin-top:12px;">LEAVE RECORDED DATES</div>';
+          html += '<div style="background:#000000; border:2px solid #ef4444; border-radius:6px; padding:8px;">';
+          html += '<div class="date-pill-container">';
+          res.leaveDates.forEach(ld => {
+            html += `<span class="date-pill" style="border-color:#f87171; color:#f87171;">${ld}</span>`;
+          });
+          html += '</div></div>';
+        }
+
+        area.innerHTML = html;
+        document.getElementById('reportProgressBarContainer').style.display = 'none';
+        barFill.style.width = '0%';
+      }, 350);
     };
 
     // 4. LEAVE ENTRY
