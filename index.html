@@ -944,6 +944,7 @@
       closeClearChatModal();
     }
 
+    // LIVE GROUP CHAT WITH FAST AUTO-REFRESH (2.5s)
     function openGroupChat() {
       showPage('pageGroupChat');
       loadChatMessages();
@@ -951,7 +952,7 @@
 
     function startChatPolling() {
       if (chatInterval) clearInterval(chatInterval);
-      chatInterval = setInterval(loadChatMessages, 5000);
+      chatInterval = setInterval(loadChatMessages, 2500); // 2.5s fast polling for real-time chat
     }
 
     function stopChatPolling() {
@@ -998,8 +999,11 @@
         return;
       }
 
+      const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
       container.innerHTML = html;
-      container.scrollTop = container.scrollHeight;
+      if (isAtBottom) {
+        container.scrollTop = container.scrollHeight;
+      }
     }
 
     function sendChatMessage() {
