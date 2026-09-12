@@ -193,6 +193,22 @@
 
     .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
+    /* SUPERVISOR NOTICE BOX STYLING */
+    .supervisor-notice-card {
+      background: linear-gradient(135deg, #07142b, #0f2b5c);
+      border: 2px dashed #facc15;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.25);
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    .notice-title { color: #facc15; font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
+    .notice-body { color: #ffffff; font-size: 13px; font-weight: bold; line-height: 1.5; word-break: break-word; }
+
     /* PROGRESS BARS */
     #leaveProgressBarContainer, #reportProgressBarContainer {
       width: 100%; height: 8px; background: #1e293b; border-radius: 4px;
@@ -433,6 +449,9 @@
           <tbody id="uiBoardTbody"></tbody>
         </table>
       </div>
+
+      <!-- SUPERVISOR NOTICE CONTAINER -->
+      <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
     <!-- PAGE 4: MY DUE HISTORY -->
@@ -830,7 +849,7 @@
       else if (type === "localFestival") renderLocalFestival();
     }
 
-    // 1. POSITION BOARD
+    // 1. POSITION BOARD (WITH SUPERVISOR NOTICE BOX)
     function renderPositionBoard() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
@@ -862,6 +881,22 @@
         <tr><td class="cyan-cell">Info</td><td colspan="5" class="align-left">${b.info}</td></tr>
       `;
       document.getElementById('uiBoardTbody').innerHTML = html;
+
+      // Render Multi-line Notice Box if available in Security sheet D2:D10
+      const noticeBox = document.getElementById('uiSupervisorNoticeBox');
+      if (portalData.security && portalData.security.noticeMessage) {
+        noticeBox.style.display = 'block';
+        noticeBox.innerHTML = `
+          <div class="supervisor-notice-card" style="margin-top:12px;">
+            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
+            <div class="notice-body">${portalData.security.noticeMessage}</div>
+          </div>
+        `;
+      } else {
+        noticeBox.style.display = 'none';
+        noticeBox.innerHTML = '';
+      }
+
       showPage('pagePosition');
     }
 
