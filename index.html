@@ -193,6 +193,14 @@
 
     .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
+    /* CHAT STYLES */
+    .chat-container { background: #000; border: 2px solid #38bdf8; border-radius: 10px; height: 350px; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; }
+    .chat-bubble { background: #1e293b; border-left: 4px solid #38bdf8; border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .chat-bubble.my-msg { border-left-color: #10b981; background: #064e3b; align-self: flex-end; width: 85%; }
+    .chat-meta { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; font-weight: bold; }
+    .chat-text { font-size: 13px; color: #ffffff; word-break: break-word; }
+    .chat-input-row { display: flex; gap: 8px; margin-top: 6px; }
+
     /* SUPERVISOR NOTICE BOX STYLING */
     .supervisor-notice-card {
       background: linear-gradient(135deg, #07142b, #0f2b5c);
@@ -422,6 +430,14 @@
           <div class="menu-item-info">
             <h4>Local Festival</h4>
             <p>All running festivals with auto relay shifts</p>
+          </div>
+        </div>
+
+        <div id="btnGroupChat" class="menu-item-btn" onclick="openMenuAction('groupChat')">
+          <div class="menu-item-icon">💬</div>
+          <div class="menu-item-info">
+            <h4>Live Group Chat</h4>
+            <p>Chat with operators & supervisor in real-time</p>
           </div>
         </div>
       </div>
@@ -667,6 +683,23 @@
       </div>
     </div>
 
+    <!-- PAGE 10: LIVE GROUP CHAT -->
+    <div id="pageGroupChat" class="screen-page">
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+      </div>
+      <div class="form-card">
+        <h3 style="color:#ffff00; font-size:16px;">💬 Live Group Chat</h3>
+        <div id="chatMessagesContainer" class="chat-container">
+          <div style="color:#94a3b8; text-align:center; margin-top:20px;">Loading messages...</div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chatMessageInput" class="form-input" placeholder="Type message..." onkeydown="if(event.key==='Y' || event.key==='Enter') sendChatMessage()">
+          <button class="btn-action-main" style="width:100px;" onclick="sendChatMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -721,11 +754,18 @@
     let portalData = null;
     let lastSubmittedLeave = null;
     let currentReportResult = null;
+    let chatInterval = null;
 
     function showPage(pageId) {
       document.querySelectorAll('.screen-page').forEach(p => p.classList.remove('active'));
       const activeEl = document.getElementById(pageId);
       if (activeEl) activeEl.classList.add('active');
+
+      if (pageId === 'pageGroupChat') {
+        startChatPolling();
+      } else {
+        stopChatPolling();
+      }
     }
 
     function initUser() {
@@ -793,7 +833,7 @@
       }
     }
 
-    // APPLY SECURITY (HANDLES BOTH OPERATOR & GUEST PERMISSIONS)
+    // APPLY SECURITY (OPERATOR vs GUEST)
     function applySecurity(sec, guestSec) {
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       const activeSec = (currentUser.toLowerCase() === "guest") ? guestSec : sec;
@@ -806,7 +846,8 @@
         { id: "btnLeaveEntry", allowed: activeSec.leaveEntry !== false },
         { id: "btnHolidayList", allowed: activeSec.holidayList !== false },
         { id: "btnShiftSchedule", allowed: activeSec.shiftSchedule !== false },
-        { id: "btnLocalFestival", allowed: activeSec.localFestival !== false }
+        { id: "btnLocalFestival", allowed: activeSec.localFestival !== false },
+        { id: "btnGroupChat", allowed: activeSec.groupChat !== false }
       ];
 
       map.forEach(item => {
@@ -854,6 +895,75 @@
       else if (type === "holidayList") renderHolidayList();
       else if (type === "shiftSchedule") openShiftSchedule();
       else if (type === "localFestival") renderLocalFestival();
+      else if (type === "groupChat") openGroupChat();
+    }
+
+    // GROUP CHAT FUNCTIONS
+    function openGroupChat() {
+      showPage('pageGroupChat');
+      loadChatMessages();
+    }
+
+    function startChatPolling() {
+      if (chatInterval) clearInterval(chatInterval);
+      chatInterval = setInterval(loadChatMessages, 5000); // Poll every 5 seconds
+    }
+
+    function stopChatPolling() {
+      if (chatInterval) {
+        clearInterval(chatInterval);
+        chatInterval = null;
+      }
+    }
+
+    function loadChatMessages() {
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=getChat&callback=handleChatMessagesResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleChatMessagesResponse = function(res) {
+      const container = document.getElementById('chatMessagesContainer');
+      if (!res || res.status !== "success") return;
+
+      const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
+      let html = '';
+
+      if (res.messages.length === 0) {
+        container.innerHTML = '<div style="color:#94a3b8; text-align:center; margin-top:20px;">No messages yet. Say hello!</div>';
+        return;
+      }
+
+      res.messages.forEach(m => {
+        const isMe = m.name.toLowerCase() === myName;
+        const cls = isMe ? "chat-bubble my-msg" : "chat-bubble";
+        html += `<div class="${cls}">
+          <div class="chat-meta"><span>${m.name}</span><span>${m.time}</span></div>
+          <div class="chat-text">${m.text}</div>
+        </div>`;
+      });
+
+      container.innerHTML = html;
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chatMessageInput');
+      const text = input.value.trim();
+      const name = localStorage.getItem(STORAGE_KEY) || "Guest";
+
+      if (!text) return;
+
+      input.value = '';
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=sendChat&name=${encodeURIComponent(name)}&message=${encodeURIComponent(text)}&callback=handleSendChatResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleSendChatResponse = function(res) {
+      if (res && res.status === "success") {
+        loadChatMessages();
+      }
     }
 
     // 1. POSITION BOARD
@@ -889,7 +999,6 @@
       `;
       document.getElementById('uiBoardTbody').innerHTML = html;
 
-      // Render Multi-line Notice Box if available in Security sheet D2:D10
       const noticeBox = document.getElementById('uiSupervisorNoticeBox');
       if (portalData.security && portalData.security.noticeMessage) {
         noticeBox.style.display = 'block';
@@ -1025,7 +1134,7 @@
               `<td class="cyan-cell align-left">${p.position}</td>` +
               `<td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td>` +
               `<td style="color:#00ff00; font-weight:bold;">${p.allocation}</td>` +
-              `<td class="align-left">${datePillsHtml}</td>` +
+              `<td style="text-align:left;">${datePillsHtml}</td>` +
               `</tr>`;
           });
 
@@ -1328,7 +1437,7 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    // INITIAL LOAD (POPULATE LOGIN SELECT WITH OPERATORS + GUEST)
+    // INITIAL LOAD
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
@@ -1337,7 +1446,6 @@
       const sel = document.getElementById('loginSelect');
       sel.innerHTML = '<option value="">-- Choose Name --</option>';
       
-      // Add Guest option
       const guestOpt = document.createElement('option');
       guestOpt.value = "Guest";
       guestOpt.innerText = "Guest (Visitor)";
@@ -1350,7 +1458,6 @@
         sel.appendChild(opt);
       });
 
-      // Apply security based on who is logged in
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       if (currentUser) {
         applySecurity(data.security, data.guestSecurity);
