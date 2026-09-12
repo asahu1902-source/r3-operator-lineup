@@ -793,16 +793,20 @@
       }
     }
 
-    function applySecurity(sec) {
-      if (!sec) return;
+    // APPLY SECURITY (HANDLES BOTH OPERATOR & GUEST PERMISSIONS)
+    function applySecurity(sec, guestSec) {
+      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
+      const activeSec = (currentUser.toLowerCase() === "guest") ? guestSec : sec;
+      if (!activeSec) return;
+
       const map = [
-        { id: "btnCheckPosition", allowed: sec.checkPosition !== false },
-        { id: "btnMyDueHistory", allowed: sec.myDueHistory !== false },
-        { id: "btnMonthlyReport", allowed: sec.monthlyReport !== false },
-        { id: "btnLeaveEntry", allowed: sec.leaveEntry !== false },
-        { id: "btnHolidayList", allowed: sec.holidayList !== false },
-        { id: "btnShiftSchedule", allowed: sec.shiftSchedule !== false },
-        { id: "btnLocalFestival", allowed: sec.localFestival !== false }
+        { id: "btnCheckPosition", allowed: activeSec.checkPosition !== false },
+        { id: "btnMyDueHistory", allowed: activeSec.myDueHistory !== false },
+        { id: "btnMonthlyReport", allowed: activeSec.monthlyReport !== false },
+        { id: "btnLeaveEntry", allowed: activeSec.leaveEntry !== false },
+        { id: "btnHolidayList", allowed: activeSec.holidayList !== false },
+        { id: "btnShiftSchedule", allowed: activeSec.shiftSchedule !== false },
+        { id: "btnLocalFestival", allowed: activeSec.localFestival !== false }
       ];
 
       map.forEach(item => {
@@ -835,7 +839,10 @@
     }
 
     function openMenuAction(type) {
-      if (portalData && portalData.security && portalData.security[type] === false) {
+      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
+      const activeSec = (currentUser.toLowerCase() === "guest") ? portalData.guestSecurity : portalData.security;
+
+      if (activeSec && activeSec[type] === false) {
         showCustomAlert("This section is currently disabled.");
         return;
       }
@@ -849,7 +856,7 @@
       else if (type === "localFestival") renderLocalFestival();
     }
 
-    // 1. POSITION BOARD (WITH SUPERVISOR NOTICE BOX)
+    // 1. POSITION BOARD
     function renderPositionBoard() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
@@ -1321,7 +1328,7 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    // INITIAL LOAD
+    // INITIAL LOAD (POPULATE LOGIN SELECT WITH OPERATORS + GUEST)
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
@@ -1329,6 +1336,13 @@
 
       const sel = document.getElementById('loginSelect');
       sel.innerHTML = '<option value="">-- Choose Name --</option>';
+      
+      // Add Guest option
+      const guestOpt = document.createElement('option');
+      guestOpt.value = "Guest";
+      guestOpt.innerText = "Guest (Visitor)";
+      sel.appendChild(guestOpt);
+
       (data.operators || []).forEach(op => {
         const opt = document.createElement('option');
         opt.value = op.name;
@@ -1336,7 +1350,11 @@
         sel.appendChild(opt);
       });
 
-      if (data.security) applySecurity(data.security);
+      // Apply security based on who is logged in
+      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
+      if (currentUser) {
+        applySecurity(data.security, data.guestSecurity);
+      }
 
       const splash = document.getElementById('splashScreen');
       if (splash) {
