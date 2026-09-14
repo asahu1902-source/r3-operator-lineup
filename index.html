@@ -130,7 +130,6 @@
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
     .tools-group { display: flex; gap: 8px; align-items: center; }
 
-    /* PROMINENT WHATSAPP BUTTONS */
     .whatsapp-btn {
       background: #128C7E;
       color: #ffffff;
@@ -209,7 +208,6 @@
       transition: width 0.4s ease-in-out;
     }
 
-    /* ANIMATED ZOOM-IN COUNTDOWN BADGE */
     @keyframes zoomPulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.1); }
@@ -305,7 +303,7 @@
 
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
 
-  <!-- CUSTOM ALERT MODAL -->
+  <!-- CUSTOM MODALS -->
   <div id="customAlertModal" class="custom-modal-backdrop">
     <div class="custom-modal-box">
       <h4>🔒 LOCKED ACCESS</h4>
@@ -314,7 +312,6 @@
     </div>
   </div>
 
-  <!-- CUSTOM LOGOUT MODAL -->
   <div id="customLogoutModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box">
       <h4>⚠️ CONFIRM LOGOUT</h4>
@@ -326,7 +323,6 @@
     </div>
   </div>
 
-  <!-- CUSTOM CLEAR CHAT MODAL -->
   <div id="customClearChatModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box">
       <h4>🗑️ CLEAR CHAT</h4>
@@ -388,8 +384,8 @@
         <div id="btnCheckPosition" class="menu-item-btn" onclick="openMenuAction('checkPosition')">
           <div class="menu-item-icon">📋</div>
           <div class="menu-item-info">
-            <h4>Check Position</h4>
-            <p>Today's duty lineup & assigned positions</p>
+            <h4>Check Position & Confirm Duty</h4>
+            <p>Today's duty lineup & live submission status</p>
           </div>
         </div>
 
@@ -451,7 +447,7 @@
       </div>
     </div>
 
-    <!-- PAGE 3: CHECK POSITION -->
+    <!-- PAGE 3: CHECK POSITION & CONFIRM DUTY -->
     <div id="pagePosition" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -463,7 +459,39 @@
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
-      <div class="board-container">
+
+      <!-- MY PERSONAL SUBMISSION HERO CARD -->
+      <div id="myDutyActionCard" class="form-card" style="background: linear-gradient(135deg, #064e3b, #0f172a); border: 2px solid #10b981; display:none;">
+        <h3 style="color:#10b981; font-size:15px; font-weight:900;">🎯 My Assigned Duty Confirmation</h3>
+        <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
+        <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
+      </div>
+
+      <!-- LIVE STATUS COUNTER & LIST -->
+      <div class="form-card" style="background:#07142b; border:2px solid #38bdf8;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="color:#ffff00; font-size:15px;">📊 Live Duty Submission Status</h3>
+          <span id="uiSubmissionCounter" style="background:#10b981; color:#000; font-weight:900; font-size:12px; padding:3px 8px; border-radius:6px;">0 / 0 Submitted</span>
+        </div>
+        <div id="uiRemainingNotice" style="font-size:12px; color:#f87171; font-weight:bold;">Loading remaining list...</div>
+        
+        <div style="overflow-x:auto; margin-top:6px;">
+          <table class="standard-table">
+            <thead>
+              <tr>
+                <th>Position</th>
+                <th>Operator</th>
+                <th>Status / Time</th>
+              </tr>
+            </thead>
+            <tbody id="uiLiveSubmissionTbody">
+              <tr><td colspan="3" style="padding:12px; color:#94a3b8;">Loading status...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="board-container" style="margin-top:10px;">
         <div class="date-banner" id="uiBoardDate">-</div>
         <table class="standard-table">
           <colgroup>
@@ -502,7 +530,7 @@
       </div>
     </div>
 
-    <!-- PAGE 5: DYNAMIC MONTHLY REPORT -->
+    <!-- PAGE 5: MONTHLY REPORT -->
     <div id="pageMonthlyReport" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -611,7 +639,6 @@
 
         <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
         
-        <!-- LEAVE PROGRESS BAR -->
         <div id="leaveProgressBarContainer">
           <div id="leaveProgressBarFill"></div>
         </div>
@@ -772,23 +799,18 @@
     let chatInterval = null;
     let presenceInterval = null;
     let isScrollableReportMode = false;
+    let myAssignedPositionName = "";
 
     function showPage(pageId) {
       document.querySelectorAll('.screen-page').forEach(p => p.classList.remove('active'));
       const activeEl = document.getElementById(pageId);
       if (activeEl) activeEl.classList.add('active');
 
-      if (pageId === 'pageGroupChat') {
-        startChatPolling();
-      } else {
-        stopChatPolling();
-      }
+      if (pageId === 'pageGroupChat') startChatPolling();
+      else stopChatPolling();
 
-      if (pageId === 'pageDashboard') {
-        startPresenceHeartbeat();
-      } else {
-        stopPresenceHeartbeat();
-      }
+      if (pageId === 'pageDashboard') startPresenceHeartbeat();
+      else stopPresenceHeartbeat();
     }
 
     function initUser() {
@@ -955,7 +977,12 @@
         return;
       }
 
-      if (type === "checkPosition") renderPositionBoard();
+      if (type === "checkPosition") {
+        if (activeSec.dutySubmission === false) {
+          document.getElementById('myDutyActionCard').style.display = 'none';
+        }
+        renderPositionBoard();
+      }
       else if (type === "myDueHistory") renderDueHistory();
       else if (type === "monthlyReport") openMonthlyReportScreen();
       else if (type === "leaveEntry") openLeaveEntry();
@@ -1040,9 +1067,7 @@
           }
         } catch (e) {}
 
-        if (clearedEpoch && msgEpoch && msgEpoch <= clearedEpoch) {
-          return;
-        }
+        if (clearedEpoch && msgEpoch && msgEpoch <= clearedEpoch) return;
 
         displayedCount++;
         const isMe = (m.name || "").toLowerCase() === myName;
@@ -1060,9 +1085,7 @@
 
       const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
       container.innerHTML = html;
-      if (isAtBottom) {
-        container.scrollTop = container.scrollHeight;
-      }
+      if (isAtBottom) container.scrollTop = container.scrollHeight;
     };
 
     function sendChatMessage() {
@@ -1095,17 +1118,36 @@
     }
 
     window.handleSendChatResponse = function(res) {
-      if (res && res.status === "success") {
-        loadChatMessages();
-      }
+      if (res && res.status === "success") loadChatMessages();
     };
 
-    // 1. POSITION BOARD
+    // 1. POSITION BOARD & LIVE SUBMISSION
     function renderPositionBoard() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
       document.getElementById('uiBoardDate').innerText = b.dateBanner || 'Daily Lineup';
       const myName = (localStorage.getItem(STORAGE_KEY) || "").toLowerCase().trim();
+
+      myAssignedPositionName = "";
+      (b.rows || []).forEach(r => {
+        const parts = (r.duty || "").split('-').map(s => s.trim());
+        const opName = parts[0] || '-';
+        if (opName.toLowerCase() === myName) {
+          myAssignedPositionName = r.pos;
+        }
+      });
+
+      const card = document.getElementById('myDutyActionCard');
+      const txt = document.getElementById('uiMyAssignedText');
+      const currentUser = currentUserType();
+      const activeSec = (currentUser === "guest") ? portalData.guestSecurity : portalData.security;
+
+      if (myAssignedPositionName && activeSec.dutySubmission !== false) {
+        card.style.display = 'block';
+        txt.innerText = `You are assigned to position: "${myAssignedPositionName}"`;
+      } else {
+        card.style.display = 'none';
+      }
 
       let html = '';
       (b.rows || []).forEach(r => {
@@ -1133,6 +1175,8 @@
       `;
       document.getElementById('uiBoardTbody').innerHTML = html;
 
+      fetchDutySubmissionStatus();
+
       const noticeBox = document.getElementById('uiSupervisorNoticeBox');
       if (portalData.security && portalData.security.noticeMessage) {
         noticeBox.style.display = 'block';
@@ -1149,6 +1193,81 @@
 
       showPage('pagePosition');
     }
+
+    function currentUserType() {
+      return (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
+    }
+
+    function fetchDutySubmissionStatus() {
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=getDutyStatus&callback=handleDutyStatusResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleDutyStatusResponse = function(res) {
+      if (!res || res.status !== "success") return;
+      
+      document.getElementById('uiSubmissionCounter').innerText = `${res.submittedCount} / ${res.totalAssigned} Submitted`;
+      
+      let tbodyHtml = '';
+      let unsubmittedArr = [];
+
+      (res.summary || []).forEach(item => {
+        if (item.status === "submitted") {
+          tbodyHtml += `<tr>
+            <td class="cyan-cell">${item.pos}</td>
+            <td class="name-cell" style="color:#00ff00;">${item.operator}</td>
+            <td style="color:#4ade80; font-weight:bold;">Submitted ✅<br><span style="font-size:9px; color:#94a3b8;">${item.info}</span></td>
+          </tr>`;
+        } else {
+          unsubmittedArr.push(item.operator);
+          tbodyHtml += `<tr>
+            <td class="cyan-cell">${item.pos}</td>
+            <td class="name-cell">${item.operator}</td>
+            <td style="color:#f87171; font-weight:bold;">Pending ❌</td>
+          </tr>`;
+        }
+      });
+
+      document.getElementById('uiLiveSubmissionTbody').innerHTML = tbodyHtml;
+
+      const notice = document.getElementById('uiRemainingNotice');
+      if (unsubmittedArr.length > 0) {
+        notice.innerText = `Remaining (${unsubmittedArr.length}): ${unsubmittedArr.join(', ')} not submitted duty yet.`;
+      } else {
+        notice.style.color = '#4ade80';
+        notice.innerText = `🎉 All assigned operators have successfully submitted their duty!`;
+      }
+    };
+
+    function submitMyDutyConfirmation() {
+      const name = localStorage.getItem(STORAGE_KEY) || "";
+      if (!myAssignedPositionName) {
+        alert("No position assigned to you in today's lineup.");
+        return;
+      }
+
+      const btn = document.getElementById('btnConfirmMyDuty');
+      btn.innerText = "Submitting...";
+      btn.disabled = true;
+
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=submitMyDuty&name=${encodeURIComponent(name)}&position=${encodeURIComponent(myAssignedPositionName)}&callback=handleDutySubmitResult&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleDutySubmitResult = function(res) {
+      const btn = document.getElementById('btnConfirmMyDuty');
+      btn.innerText = "Confirm & Submit My Duty ✅";
+      btn.disabled = false;
+
+      if (res && res.status === "success") {
+        alert("Duty submitted successfully!");
+        fetchDutySubmissionStatus();
+      } else {
+        alert("Submission failed: " + (res ? res.message : "Unknown error"));
+      }
+    };
 
     // 2. DUE HISTORY
     function renderDueHistory() {
@@ -1195,14 +1314,8 @@
     function toggleReportLayout() {
       isScrollableReportMode = !isScrollableReportMode;
       const btn = document.getElementById('uiToggleLayoutBtn');
-      if (isScrollableReportMode) {
-        btn.innerText = "Standard View ⇄";
-      } else {
-        btn.innerText = "Day-wise Scroll View ⇄";
-      }
-      if (currentReportResult) {
-        renderMonthlyReportHTML(currentReportResult);
-      }
+      btn.innerText = isScrollableReportMode ? "Standard View ⇄" : "Day-wise Scroll View ⇄";
+      if (currentReportResult) renderMonthlyReportHTML(currentReportResult);
     }
 
     function syncDateInputsFromDropdown() {
@@ -1364,9 +1477,7 @@
     function formatDateToDDMMYYYY(dateStr) {
       if (!dateStr) return "-";
       const parts = dateStr.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
       return dateStr;
     }
 
@@ -1416,7 +1527,6 @@
     window.handleLeaveResponse = function(res) {
       const btn = document.getElementById('btnSubmitLeave');
       const barFill = document.getElementById('leaveProgressBarFill');
-      
       barFill.style.width = '100%';
 
       setTimeout(() => {
@@ -1447,13 +1557,11 @@
       const container = document.getElementById('uiHolidayContainer');
       container.innerHTML = '';
       const list = (portalData && portalData.holidays) ? portalData.holidays : [];
-
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
       list.forEach(h => {
         const item = document.createElement('div');
-        
         let daysLeft = null;
         if (h.date) {
           const parts = h.date.split('/');
@@ -1466,27 +1574,14 @@
         }
 
         const isFuture = (daysLeft !== null && daysLeft >= 0);
-        const isUrgent = (isFuture && daysLeft <= 30);
-        const isMedium = (isFuture && daysLeft > 30 && daysLeft <= 90);
-
         let cardClass = 'holiday-card-item';
         let badge = '';
 
         if (isFuture) {
           cardClass += ' holiday-upcoming';
-          if (daysLeft === 0) {
-            badge = '<span class="badge-zoom-animated" style="background:#facc15; color:#000;">TODAY</span>';
-          } else if (daysLeft === 1) {
-            badge = '<span class="badge-zoom-animated" style="background:#ef4444; color:#fff;">TOMORROW</span>';
-          } else if (isUrgent) {
-            badge = `<span class="badge-zoom-animated" style="background:#10b981; color:#fff;">In ${daysLeft} Days</span>`;
-          } else if (isMedium) {
-            badge = `<span class="badge-zoom-animated" style="background:#0284c7; color:#fff;">In ${daysLeft} Days</span>`;
-          } else {
-            badge = `<span class="badge-zoom-animated" style="background:#334155; color:#38bdf8;">In ${daysLeft} Days</span>`;
-          }
-        } else if (daysLeft !== null && daysLeft < 0) {
-          badge = `<span style="font-size:9.5px; color:#64748b; margin-left:6px; font-weight:bold;">(Passed)</span>`;
+          if (daysLeft === 0) badge = '<span class="badge-zoom-animated" style="background:#facc15; color:#000;">TODAY</span>';
+          else if (daysLeft === 1) badge = '<span class="badge-zoom-animated" style="background:#ef4444; color:#fff;">TOMORROW</span>';
+          else badge = `<span class="badge-zoom-animated" style="background:#10b981; color:#fff;">In ${daysLeft} Days</span>`;
         }
 
         item.className = cardClass;
@@ -1503,10 +1598,6 @@
         `;
         container.appendChild(item);
       });
-
-      if (list.length === 0) {
-        container.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:15px;">No holidays found in Holiday_List sheet.</div>';
-      }
       showPage('pageHolidayList');
     }
 
@@ -1541,7 +1632,6 @@
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
       const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
-
       const currentYear = new Date().getFullYear();
 
       BASE_FESTIVALS.forEach(f => {
@@ -1571,7 +1661,6 @@
       const b = portalData.board;
       let text = `*R3 DUTY LINEUP*\n📅 ${b.dateBanner}\n\n`;
       (b.rows || []).forEach(r => { text += `• ${r.pos}: ${r.duty}\n`; });
-      text += `\n*Available:* ${b.availableCount} | *Stand By:* ${b.standBy}\n*OFF Day:* ${b.offDay}\n*Leave:* ${b.leave}`;
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
@@ -1579,49 +1668,35 @@
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       const recs = (portalData && portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
       let text = `*DUE MATRIX - ${myName}*\n\n`;
-      recs.forEach(r => { text += `• ${r.pos} ➔ Due: ${r.due} (Last: ${r.lastDate} [${r.lastDay}] - Shift ${r.lastShift})\n`; });
+      recs.forEach(r => { text += `• ${r.pos} ➔ Due: ${r.due}\n`; });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
     function shareMonthlyWhatsApp() {
       const op = localStorage.getItem(STORAGE_KEY) || "Operator";
-      const mText = document.getElementById('uiRepMonthSelect').options[document.getElementById('uiRepMonthSelect').selectedIndex].text;
-      const yText = document.getElementById('uiRepYearSelect').value;
-      if (!currentReportResult) {
-        alert("Please generate report first.");
-        return;
-      }
-      let text = `*MONTHLY REPORT - ${op}*\n📅 Period: ${mText} ${yText}\n\n*ATTENDANCE:*\n`;
+      if (!currentReportResult) { alert("Please generate report first."); return; }
+      let text = `*MONTHLY REPORT - ${op}*\n\n*ATTENDANCE:*\n`;
       (currentReportResult.attendance || []).forEach(a => { text += `• ${a.label}: ${a.val}\n`; });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
     function shareHolidayWhatsApp() {
       const list = (portalData && portalData.holidays) ? portalData.holidays : [];
-      let text = `*COMPANY HOLIDAYS & SHIFTS*\n\n`;
-      list.forEach(h => { text += `• ${h.name} (${h.rawDate}): R3:[${h.r3}] R2:[${h.r2}] R1:[${h.r1}]\n`; });
+      let text = `*COMPANY HOLIDAYS*\n\n`;
+      list.forEach(h => { text += `• ${h.name} (${h.rawDate})\n`; });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
     function shareScheduleWhatsApp() {
       const title = document.getElementById('uiSchedDateTitle').innerText;
       const r3 = document.getElementById('uiSchedR3').innerText;
-      const r2 = document.getElementById('uiSchedR2').innerText;
-      const r1 = document.getElementById('uiSchedR1').innerText;
       if (title === "-") { alert("Please select a date first."); return; }
-      const text = `*SHIFT SCHEDULE*\n📅 ${title}\n• Relay-3: ${r3}\n• Relay-2: ${r2}\n• Relay-1: ${r1}`;
+      const text = `*SHIFT SCHEDULE*\n📅 ${title}\n• R3: ${r3}`;
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
     function shareFestivalWhatsApp() {
-      let text = `*LOCAL FESTIVALS & RELAY SHIFTS*\n\n`;
-      const currentYear = new Date().getFullYear();
-      const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
-      BASE_FESTIVALS.slice(0, 10).forEach(f => {
-        const fullDate = `${f.d}/${f.m}/${currentYear}`;
-        const match = schedMap[fullDate] || { r3: "-", r2: "-", r1: "-" };
-        text += `• ${f.name} (${fullDate}): R3:[${match.r3}] R2:[${match.r2}] R1:[${match.r1}]\n`;
-      });
+      let text = `*LOCAL FESTIVALS*\n\n`;
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
