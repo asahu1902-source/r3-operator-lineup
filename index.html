@@ -130,46 +130,8 @@
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
     .tools-group { display: flex; gap: 8px; align-items: center; }
 
-    /* PROMINENT WHATSAPP BUTTONS */
-    .whatsapp-btn {
-      background: #128C7E;
-      color: #ffffff;
-      border: 2px solid #25D366;
-      border-radius: 7px;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.5px;
-      padding: 6px 12px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 0 10px rgba(37, 211, 102, 0.4);
-    }
-    .whatsapp-btn svg { width: 24px; height: 24px; fill: #ffffff; flex-shrink: 0; }
-
-    .whatsapp-btn-large {
-      background: #128C7E;
-      color: #ffffff;
-      border: 2px solid #25D366;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 900;
-      padding: 13px;
-      cursor: pointer;
-      width: 100%;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 0 15px rgba(37, 211, 102, 0.45);
-    }
-    .whatsapp-btn-large svg { width: 28px; height: 28px; fill: #ffffff; flex-shrink: 0; }
-    .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
-
     /* TABLES */
-    .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
+    .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; border-radius: 8px; }
     .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 14.5px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
 
     .standard-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -177,107 +139,20 @@
     .standard-table td { border: 1px solid #8b0000; padding: 5px 2px; font-size: 11px; font-weight: bold; text-align: center; }
     .cyan-cell { background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; }
     .name-cell { text-align: left !important; padding-left: 6px !important; color: #ffffff; }
-    .due-cell { color: #ffff00; }
-    .day-cell { color: #38bdf8; }
-    .shift-cell { color: #00ff00; font-weight: 900; }
-    .align-left { text-align: left !important; padding-left: 8px !important; }
-
-    .highlight-row td { background-color: #064e3b !important; border-top: 2px solid #00ff00 !important; border-bottom: 2px solid #00ff00 !important; }
-    .highlight-row .name-cell { color: #00ff00 !important; }
-    .tag-you { background-color: #facc15; color: #000000; font-size: 8.5px; padding: 1px 4px; border-radius: 3px; margin-left: 3px; }
 
     .form-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
     .form-group label { display: block; color: #00ffff; font-size: 11.5px; font-weight: 800; margin-bottom: 4px; }
     .form-input { width: 100%; background: #000000; color: #ffff00; border: 1.5px solid #38bdf8; padding: 10px; font-size: 14px; border-radius: 6px; outline: none; }
-    .form-input:disabled { opacity: 0.6; color: #94a3b8; }
-
-    .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     /* CHAT STYLES */
-    .chat-container { background: #000; border: 2px solid #38bdf8; border-radius: 10px; height: 350px; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; }
+    .chat-container { background: #000; border: 2px solid #38bdf8; border-radius: 10px; height: 320px; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; }
     .chat-bubble { background: #1e293b; border-left: 4px solid #38bdf8; border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
     .chat-bubble.my-msg { border-left-color: #10b981; background: #064e3b; align-self: flex-end; width: 85%; }
     .chat-meta { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; font-weight: bold; }
     .chat-text { font-size: 13px; color: #ffffff; word-break: break-word; }
     .chat-input-row { display: flex; gap: 8px; margin-top: 6px; }
 
-    /* SUPERVISOR NOTICE BOX STYLING */
-    .supervisor-notice-card {
-      background: linear-gradient(135deg, #07142b, #0f2b5c);
-      border: 2px dashed #facc15;
-      border-radius: 8px;
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      box-shadow: 0 0 12px rgba(250, 204, 21, 0.25);
-      max-height: 250px;
-      overflow-y: auto;
-    }
-    .notice-title { color: #facc15; font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
-    .notice-body { color: #ffffff; font-size: 13px; font-weight: bold; line-height: 1.5; word-break: break-word; }
-
-    /* PROGRESS BARS */
-    #leaveProgressBarContainer, #reportProgressBarContainer {
-      width: 100%; height: 8px; background: #1e293b; border-radius: 4px;
-      overflow: hidden; margin-top: 8px; display: none; border: 1px solid #38bdf8;
-    }
-    #leaveProgressBarFill, #reportProgressBarFill {
-      width: 0%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
-      transition: width 0.4s ease-in-out;
-    }
-
-    /* ANIMATED ZOOM-IN COUNTDOWN BADGE */
-    @keyframes zoomPulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-
-    .holiday-card-item {
-      background: #111827;
-      border-left: 5px solid #ef4444;
-      border-radius: 6px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .holiday-upcoming {
-      border: 2px solid #facc15 !important;
-      border-left: 6px solid #10b981 !important;
-      background: #06281c !important;
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
-    }
-
-    .hol-top { display: flex; justify-content: space-between; align-items: center; }
-    .hol-top h5 { font-size: 14px; color: #ffff00; font-weight: 900; }
-    .hol-top p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
-
-    .badge-zoom-animated {
-      background: linear-gradient(90deg, #10b981, #059669);
-      color: #ffffff;
-      font-size: 10px;
-      font-weight: 900;
-      padding: 3px 8px;
-      border-radius: 5px;
-      margin-left: 8px;
-      display: inline-block;
-      animation: zoomPulse 1.8s infinite ease-in-out;
-      border: 1px solid #facc15;
-      box-shadow: 0 0 8px rgba(250, 204, 21, 0.6);
-    }
-
-    .relay-badge-row { display: flex; gap: 6px; margin-top: 4px; }
-    .relay-chip { flex: 1; background: #000000; border: 1.5px solid #38bdf8; border-radius: 4px; padding: 4px 4px; text-align: center; }
-    .relay-chip span { display: block; font-size: 9.5px; color: #94a3b8; font-weight: 800; }
-    .relay-chip strong { font-size: 15px; color: #00ff00; font-weight: 900; }
-
-    .date-pill-container { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; }
-    .date-pill { background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; font-size: 9.5px; font-weight: 800; border-radius: 3px; padding: 2px 5px; }
-
-    /* CUSTOM MODAL POPUPS */
+    /* MODALS */
     .custom-modal-backdrop {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.85); z-index: 999999;
@@ -287,38 +162,13 @@
       background: #07142b; border: 2.5px solid #ef4444; border-radius: 12px;
       width: 100%; max-width: 310px; padding: 20px; text-align: center;
       display: flex; flex-direction: column; gap: 14px;
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
     }
-    .custom-modal-box.info-box { border-color: #38bdf8; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); }
     .custom-modal-box h4 { color: #ef4444; font-size: 15px; font-weight: 900; }
-    .custom-modal-box.info-box h4 { color: #facc15; }
     .custom-modal-box p { color: #ffff00; font-size: 14px; font-weight: bold; }
-    
-    .modal-btn-row { display: flex; gap: 10px; margin-top: 4px; }
-    .btn-modal-primary {
-      flex: 1; background: #10b981; color: #ffffff; border: none; font-size: 13px; font-weight: 900;
-      padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
-    }
-    .btn-modal-danger {
-      flex: 1; background: #dc2626; color: #ffffff; border: none; font-size: 13px; font-weight: 900;
-      padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
-    }
-    .btn-modal-secondary {
-      flex: 1; background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; font-size: 13px; font-weight: 900;
-      padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
-    }
-
-    @media print {
-      body { background: #ffffff !important; color: #000 !important; }
-      .top-actions-bar, #splashScreen { display: none !important; }
-      .board-container { border: 2px solid #000 !important; }
-      .standard-table th, .standard-table td { border: 1px solid #000 !important; color: #000 !important; }
-    }
+    .btn-modal-primary { background: #10b981; color: #ffffff; border: none; font-size: 13px; font-weight: 900; padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
   </style>
 </head>
 <body>
-
-  <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
 
   <!-- CUSTOM ALERT MODAL -->
   <div id="customAlertModal" class="custom-modal-backdrop">
@@ -326,30 +176,6 @@
       <h4>🔒 LOCKED ACCESS</h4>
       <p id="customAlertMsg">This section is currently disabled.</p>
       <button class="btn-modal-primary" onclick="closeCustomAlert()">OK</button>
-    </div>
-  </div>
-
-  <!-- CUSTOM LOGOUT MODAL -->
-  <div id="customLogoutModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box info-box">
-      <h4>⚠️ CONFIRM LOGOUT</h4>
-      <p>Are you sure you want to log out?</p>
-      <div class="modal-btn-row">
-        <button class="btn-modal-secondary" onclick="closeCustomLogout()">Cancel</button>
-        <button class="btn-modal-danger" onclick="confirmLogout()">Yes, Logout</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CUSTOM CLEAR CHAT MODAL -->
-  <div id="customClearChatModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box info-box">
-      <h4>🗑️ CLEAR CHAT</h4>
-      <p>Clear your chat history on this device?</p>
-      <div class="modal-btn-row">
-        <button class="btn-modal-secondary" onclick="closeClearChatModal()">Cancel</button>
-        <button class="btn-modal-danger" onclick="confirmClearChat()">Yes, Clear</button>
-      </div>
     </div>
   </div>
 
@@ -364,7 +190,7 @@
   <div class="app-viewport">
 
     <!-- PAGE 1: LOGIN -->
-    <div id="pageLogin" class="screen-page">
+    <div id="pageLogin" class="screen-page active">
       <div class="login-card">
         <img src="icon.png" alt="R3 Logo">
         <h2>R-3 OPERATOR PORTAL</h2>
@@ -380,9 +206,8 @@
     <div id="pageDashboard" class="screen-page">
       <div class="profile-hero-card">
         <button class="btn-logout-corner" onclick="performLogout()">Logout</button>
-        <div class="profile-big-container" onclick="triggerPhotoUpload()" title="Tap to change photo">
+        <div class="profile-big-container">
           <img id="uiProfileImg" src="icon.png" class="profile-img-big" alt="Operator Photo">
-          <div class="photo-edit-badge-big">📷</div>
         </div>
         <h3 id="uiWelcomeName" class="hero-welcome-text">Welcome, Operator!</h3>
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
@@ -433,7 +258,7 @@
           <div class="menu-item-icon">📅</div>
           <div class="menu-item-info">
             <h4>Check Shift Schedule</h4>
-            <p>Look up any date (2026-2050+) for R1, R2, R3 shifts</p>
+            <p>Look up any date for R1, R2, R3 shifts</p>
           </div>
         </div>
 
@@ -449,271 +274,46 @@
           <div class="menu-item-icon">💬</div>
           <div class="menu-item-info">
             <h4>Live Group Chat</h4>
-            <p>Chat with operators & supervisor in real-time</p>
+            <p>Chat with operators & supervisor</p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- PAGE 3: CHECK POSITION -->
-    <div id="pagePosition" class="screen-page">
+    <div id="pageCheckPosition" class="screen-page">
       <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <div class="tools-group">
-          <button class="whatsapp-btn" onclick="sharePositionWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            WhatsApp
-          </button>
-          <button class="pdf-btn" onclick="window.print()">PDF</button>
-        </div>
+        <button class="btn-back" onclick="navigateTo('pageDashboard')">⬅ Back to Menu</button>
       </div>
       <div class="board-container">
-        <div class="date-banner" id="uiBoardDate">-</div>
+        <div id="boardDateBanner" class="date-banner">Lineup Board</div>
         <table class="standard-table">
-          <colgroup>
-            <col style="width:25%"><col style="width:27%"><col style="width:10%"><col style="width:22%"><col style="width:8%"><col style="width:8%">
-          </colgroup>
-          <thead><tr><th>Position</th><th>Name</th><th>Due</th><th>Last Date</th><th>Day</th><th>Shf</th></tr></thead>
-          <tbody id="uiBoardTbody"></tbody>
-        </table>
-      </div>
-
-      <!-- SUPERVISOR NOTICE CONTAINER -->
-      <div id="uiSupervisorNoticeBox" style="display:none;"></div>
-    </div>
-
-    <!-- PAGE 4: MY DUE HISTORY -->
-    <div id="pageDueHistory" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <div class="tools-group">
-          <button class="whatsapp-btn" onclick="shareDueWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            WhatsApp
-          </button>
-          <button class="pdf-btn" onclick="window.print()">PDF</button>
-        </div>
-      </div>
-      <div class="board-container">
-        <div class="date-banner" id="uiDueOperatorTitle">My Position Due Matrix</div>
-        <table class="standard-table">
-          <colgroup>
-            <col style="width:28%"><col style="width:14%"><col style="width:30%"><col style="width:14%"><col style="width:14%">
-          </colgroup>
-          <thead><tr><th>Position</th><th>Due</th><th>Last Date</th><th>Day</th><th>Shift</th></tr></thead>
-          <tbody id="uiDueTbody"></tbody>
+          <thead>
+            <tr>
+              <th>DUTY POSITION</th>
+              <th>ASSIGNED OPERATOR</th>
+            </tr>
+          </thead>
+          <tbody id="boardTableBody">
+            <tr><td colspan="2" style="padding:15px; color:#94a3b8;">Loading lineup...</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
 
-    <!-- PAGE 5: DYNAMIC MONTHLY REPORT -->
-    <div id="pageMonthlyReport" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <div class="tools-group">
-          <button class="whatsapp-btn" onclick="shareMonthlyWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            WhatsApp
-          </button>
-          <button class="pdf-btn" onclick="window.print()">PDF</button>
-        </div>
-      </div>
-      <div class="form-card">
-        <h4 id="uiMonthlyRepHeading" style="color:#ffff00; font-size:15.5px; font-weight:900;">Monthly Performance Summary</h4>
-        
-        <div class="filter-grid">
-          <div class="form-group">
-            <label>Select Month</label>
-            <select id="uiRepMonthSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
-              <option value="1">Jan</option>
-              <option value="2">Feb</option>
-              <option value="3">Mar</option>
-              <option value="4">Apr</option>
-              <option value="5">May</option>
-              <option value="6">Jun</option>
-              <option value="7">Jul</option>
-              <option value="8">Aug</option>
-              <option value="9" selected>Sep</option>
-              <option value="10">Oct</option>
-              <option value="11">Nov</option>
-              <option value="12">Dec</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Select Year</label>
-            <select id="uiRepYearSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
-              <option value="2025">2025</option>
-              <option value="2026" selected>2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-              <option value="2029">2029</option>
-              <option value="2030">2030</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="filter-grid">
-          <div class="form-group">
-            <label>Start Date</label>
-            <input type="date" id="uiRepFromDate" class="form-input" value="2026-09-01">
-          </div>
-          <div class="form-group">
-            <label>End Date</label>
-            <input type="date" id="uiRepToDate" class="form-input" value="2026-09-30">
-          </div>
-        </div>
-
-        <button class="btn-action-main" onclick="loadDynamicMonthlyReport()">Generate Report ➔</button>
-
-        <!-- REPORT PROGRESS BAR -->
-        <div id="reportProgressBarContainer">
-          <div id="reportProgressBarFill"></div>
-        </div>
-
-        <div id="uiMonthlyResultArea" style="margin-top:10px; display:flex; flex-direction:column; gap:12px;"></div>
-      </div>
-    </div>
-
-    <!-- PAGE 6: LEAVE ENTRY -->
-    <div id="pageLeaveEntry" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-      </div>
-      <div class="form-card">
-        <h3 style="color:#ffff00; font-size:16px;">📝 Apply Leave</h3>
-        
-        <div class="form-group">
-          <label>Operator Name</label>
-          <input type="text" id="uiLeaveName" class="form-input" disabled>
-        </div>
-
-        <div class="form-group">
-          <label>Leave Type</label>
-          <select id="uiLeaveType" class="form-input">
-            <option value="PL">PL (Privilege Leave)</option>
-            <option value="SL">SL (Sick Leave)</option>
-            <option value="CL">CL (Casual Leave)</option>
-            <option value="C/Off">C/Off (Compensatory Off)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>From Date</label>
-          <input type="date" id="uiLeaveFrom" class="form-input">
-        </div>
-
-        <div class="form-group">
-          <label>To Date</label>
-          <input type="date" id="uiLeaveTo" class="form-input">
-        </div>
-
-        <div class="form-group">
-          <label>Reason / Remarks</label>
-          <input type="text" id="uiLeaveReason" class="form-input" placeholder="Enter reason...">
-        </div>
-
-        <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
-        
-        <!-- LEAVE PROGRESS BAR -->
-        <div id="leaveProgressBarContainer">
-          <div id="leaveProgressBarFill"></div>
-        </div>
-
-        <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
-          <p style="color:#4ade80; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
-          <button class="whatsapp-btn-large" onclick="forwardLeaveWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            Forward to supervisor on WhatsApp
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE 7: COMPANY HOLIDAY -->
-    <div id="pageHolidayList" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <div class="tools-group">
-          <button class="whatsapp-btn" onclick="shareHolidayWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            WhatsApp
-          </button>
-          <button class="pdf-btn" onclick="window.print()">PDF</button>
-        </div>
-      </div>
-      <div class="form-card">
-        <h3 style="color:#ffff00; font-size:16px;">🏢 Official Company Holidays</h3>
-        <p style="font-size:11.5px; color:#38bdf8; margin-top:-6px;">Upcoming holidays with animated countdown badge</p>
-        <div id="uiHolidayContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
-      </div>
-    </div>
-
-    <!-- PAGE 8: CHECK SHIFT SCHEDULE -->
-    <div id="pageShiftSchedule" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <div class="tools-group">
-          <button class="whatsapp-btn" onclick="shareScheduleWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            WhatsApp
-          </button>
-          <button class="pdf-btn" onclick="window.print()">PDF</button>
-        </div>
-      </div>
-      <div class="form-card">
-        <h3 style="color:#ffff00; font-size:16px;">📅 Check Shift Schedule</h3>
-        <div class="form-group">
-          <label>Select Date</label>
-          <input type="date" id="uiScheduleDateInput" class="form-input" onchange="lookupShiftSchedule()">
-        </div>
-        <div id="uiScheduleResult" style="display:none; background:#000; border:2px solid #00ff00; border-radius:8px; padding:12px; margin-top:6px;">
-          <div id="uiSchedDateTitle" style="color:#facc15; font-weight:bold; font-size:14px; text-align:center; margin-bottom:10px;">-</div>
-          <div class="relay-badge-row">
-            <div class="relay-chip"><span>RELAY-3</span><strong id="uiSchedR3">-</strong></div>
-            <div class="relay-chip"><span>RELAY-2</span><strong id="uiSchedR2">-</strong></div>
-            <div class="relay-chip"><span>RELAY-1</span><strong id="uiSchedR1">-</strong></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE 9: LOCAL FESTIVAL -->
-    <div id="pageLocalFestival" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <div class="tools-group">
-          <button class="whatsapp-btn" onclick="shareFestivalWhatsApp()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            WhatsApp
-          </button>
-          <button class="pdf-btn" onclick="window.print()">PDF</button>
-        </div>
-      </div>
-      <div class="form-card">
-        <h3 style="color:#ffff00; font-size:16px;">🪔 Local Festivals & Relay Shifts</h3>
-        <div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
-      </div>
-    </div>
-
-    <!-- PAGE 10: LIVE GROUP CHAT -->
+    <!-- PAGE 4: LIVE GROUP CHAT -->
     <div id="pageGroupChat" class="screen-page">
       <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <div style="position: relative;">
-          <button class="whatsapp-btn" style="padding: 6px 10px; font-size:16px;" onclick="toggleChatMenu(event)">⋮</button>
-          <div id="chatDropdownMenu" style="display:none; position:absolute; right:0; top:35px; background:#07142b; border:1.5px solid #38bdf8; border-radius:6px; z-index:99; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
-            <div onclick="openClearChatModal()" style="padding: 10px 14px; font-size:12px; font-weight:bold; color:#ef4444; cursor:pointer; white-space:nowrap;">🗑️ Clear Chat</div>
-          </div>
-        </div>
+        <button class="btn-back" onclick="navigateTo('pageDashboard')">⬅ Back to Menu</button>
       </div>
-      <div class="form-card">
-        <h3 style="color:#ffff00; font-size:16px;">💬 Live Group Chat</h3>
-        <div id="chatMessagesContainer" class="chat-container">
+      <div class="card" style="background:#07142b; border:2px solid #38bdf8; border-radius:10px; padding:12px;">
+        <h3 style="color:#ffff00; font-size:15px; margin-bottom:8px;">💬 Live Group Chat</h3>
+        <div id="chatMessagesBox" class="chat-container">
           <div style="color:#94a3b8; text-align:center; margin-top:20px;">Loading messages...</div>
         </div>
         <div class="chat-input-row">
-          <input type="text" id="chatMessageInput" class="form-input" placeholder="Type message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-          <button class="btn-action-main" style="width:100px;" onclick="sendChatMessage()">Send</button>
+          <input type="text" id="chatInputText" class="form-input" placeholder="Type a message..." style="flex:1;">
+          <button class="btn-action-main" style="width:80px; padding:8px;" onclick="sendChatMessage()">Send</button>
         </div>
       </div>
     </div>
@@ -721,845 +321,141 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHQ5BMKG-IHIGMCqL4N2efVOshdsP34EY3Gu054YwmhC5qYZBNyEkRvW0_3SAOmMK8fA/exec";
-    const STORAGE_KEY = "r3_operator_user";
+    const API_URL = "https://script.google.com/macros/s/AKfycbxybGks2744Wmc3go7qwd7BJ_kEi_i577zQbaKyHX0Er3M7xssKxVmNpdep9ClMr3tHmw/exec";
+    let globalData = null;
+    let currentOperator = localStorage.getItem("r3_logged_operator") || "";
 
-    const BASE_FESTIVALS = [
-      { name: "Swami Vivekananda Jayanti", d: "12", m: "01" },
-      { name: "Makar Sankranti / Poush Parbon", d: "14", m: "01" },
-      { name: "Netaji Jayanti", d: "23", m: "01" },
-      { name: "Saraswati Puja (Basant Panchami)", d: "23", m: "01" },
-      { name: "Republic Day", d: "26", m: "01" },
-      { name: "Maha Shivratri", d: "15", m: "02" },
-      { name: "Dol Jatra / Holi", d: "03", m: "03" },
-      { name: "Eid-ul-Fitr", d: "21", m: "03" },
-      { name: "Utkal Divas", d: "01", m: "04" },
-      { name: "Good Friday", d: "03", m: "04" },
-      { name: "Pohila Baishakh (Bengali New Year)", d: "15", m: "04" },
-      { name: "Akshaya Tritiya", d: "20", m: "04" },
-      { name: "May Day / Labour Day", d: "01", m: "05" },
-      { name: "Rabindra Jayanti", d: "08", m: "05" },
-      { name: "Sabitri Brata", d: "16", m: "05" },
-      { name: "Kazi Nazrul Islam Jayanti", d: "26", m: "05" },
-      { name: "Pahili Raja", d: "14", m: "06" },
-      { name: "Raja Sankranti", d: "15", m: "06" },
-      { name: "Snana Purnima", d: "29", m: "06" },
-      { name: "Rath Yatra", d: "16", m: "07" },
-      { name: "Bahuda Yatra", d: "24", m: "07" },
-      { name: "Independence Day", d: "15", m: "08" },
-      { name: "Raksha Bandhan / Gamha Purnima", d: "28", m: "08" },
-      { name: "Janmashtami", d: "04", m: "09" },
-      { name: "Ganesh Chaturthi", d: "14", m: "09" },
-      { name: "Nuakhai", d: "16", m: "09" },
-      { name: "Vishwakarma Puja", d: "17", m: "09" },
-      { name: "Gandhi Jayanti", d: "02", m: "10" },
-      { name: "Mahalaya", d: "10", m: "10" },
-      { name: "Durga Puja (Maha Sasthi)", d: "17", m: "10" },
-      { name: "Durga Puja (Maha Saptami)", d: "18", m: "10" },
-      { name: "Durga Puja (Maha Astami)", d: "19", m: "10" },
-      { name: "Durga Puja (Maha Navami)", d: "20", m: "10" },
-      { name: "Bijoya Dashami (Dussehra)", d: "21", m: "10" },
-      { name: "Kojagari Lakshmi Puja", d: "25", m: "10" },
-      { name: "Kali Puja / Diwali", d: "09", m: "11" },
-      { name: "Bhai Phonta", d: "11", m: "11" },
-      { name: "Chhath Puja", d: "15", m: "11" },
-      { name: "Kartika Purnima / Boita Bandana", d: "24", m: "11" },
-      { name: "Guru Nanak Jayanti", d: "24", m: "11" },
-      { name: "Prathamastami", d: "02", m: "12" },
-      { name: "Christmas Day (Bara Din)", d: "25", m: "12" }
-    ];
+    function initApp() {
+      fetch(`${API_URL}?action=getDashboardData`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            globalData = data;
+            populateOperatorDropdown();
+            document.getElementById('splashScreen').style.opacity = '0';
+            setTimeout(() => document.getElementById('splashScreen').style.display = 'none', 300);
 
-    let portalData = null;
-    let lastSubmittedLeave = null;
-    let currentReportResult = null;
-    let chatInterval = null;
-
-    function showPage(pageId) {
-      document.querySelectorAll('.screen-page').forEach(p => p.classList.remove('active'));
-      const activeEl = document.getElementById(pageId);
-      if (activeEl) activeEl.classList.add('active');
-
-      if (pageId === 'pageGroupChat') {
-        startChatPolling();
-      } else {
-        stopChatPolling();
-      }
+            if (currentOperator) {
+              document.getElementById('uiWelcomeName').innerText = `Welcome, ${currentOperator}!`;
+              document.getElementById('uiDashboardDate').innerText = data.board.dateBanner || "";
+              navigateTo('pageDashboard');
+            } else {
+              navigateTo('pageLogin');
+            }
+          }
+        })
+        .catch(err => {
+          document.querySelector('.splash-load-text').innerText = "⚠️ Connection Error. Refresh page.";
+        });
     }
 
-    function initUser() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
-        loadProfilePhoto(saved);
-        showPage('pageDashboard');
-      } else {
-        showPage('pageLogin');
+    function populateOperatorDropdown() {
+      const select = document.getElementById('loginSelect');
+      select.innerHTML = '<option value="">-- Choose Name --</option>';
+      if (globalData && globalData.operators) {
+        globalData.operators.forEach(op => {
+          const opt = document.createElement('option');
+          opt.value = op.name;
+          opt.textContent = op.name;
+          select.appendChild(opt);
+        });
       }
     }
 
     function proceedLogin() {
-      const sel = document.getElementById('loginSelect').value;
-      if (!sel) {
+      const name = document.getElementById('loginSelect').value;
+      if (!name) {
         alert("Please select your name.");
         return;
       }
-      localStorage.setItem(STORAGE_KEY, sel);
-      document.getElementById('uiWelcomeName').innerText = "Welcome, " + sel + "!";
-      loadProfilePhoto(sel);
-      showPage('pageDashboard');
+      currentOperator = name;
+      localStorage.setItem("r3_logged_operator", name);
+      document.getElementById('uiWelcomeName').innerText = `Welcome, ${name}!`;
+      if (globalData && globalData.board) {
+        document.getElementById('uiDashboardDate').innerText = globalData.board.dateBanner || "";
+      }
+      navigateTo('pageDashboard');
     }
 
     function performLogout() {
-      document.getElementById('customLogoutModal').style.display = 'flex';
+      localStorage.removeItem("r3_logged_operator");
+      currentOperator = "";
+      navigateTo('pageLogin');
     }
 
-    function closeCustomLogout() {
-      document.getElementById('customLogoutModal').style.display = 'none';
+    function navigateTo(pageId) {
+      document.querySelectorAll('.screen-page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      window.scrollTo(0, 0);
     }
 
-    function confirmLogout() {
-      localStorage.removeItem(STORAGE_KEY);
-      showPage('pageLogin');
-      closeCustomLogout();
-    }
-
-    function triggerPhotoUpload() {
-      document.getElementById('filePhotoInput').click();
-    }
-
-    function handlePhotoUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const base64 = e.target.result;
-        const currentOp = localStorage.getItem(STORAGE_KEY);
-        if (currentOp) {
-          localStorage.setItem('photo_' + currentOp, base64);
-          document.getElementById('uiProfileImg').src = base64;
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function loadProfilePhoto(opName) {
-      const savedPhoto = localStorage.getItem('photo_' + opName);
-      if (savedPhoto) {
-        document.getElementById('uiProfileImg').src = savedPhoto;
+    function openMenuAction(actionKey) {
+      if (actionKey === 'checkPosition') {
+        renderCheckPositionBoard();
+        navigateTo('pageCheckPosition');
+      } else if (actionKey === 'groupChat') {
+        loadChatMessages();
+        navigateTo('pageGroupChat');
       } else {
-        document.getElementById('uiProfileImg').src = 'icon.png';
+        alert("This feature is loading...");
       }
     }
 
-    // APPLY SECURITY (OPERATOR vs GUEST)
-    function applySecurity(sec, guestSec) {
-      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      const activeSec = (currentUser.toLowerCase() === "guest") ? guestSec : sec;
-      if (!activeSec) return;
-
-      const map = [
-        { id: "btnCheckPosition", allowed: activeSec.checkPosition !== false },
-        { id: "btnMyDueHistory", allowed: activeSec.myDueHistory !== false },
-        { id: "btnMonthlyReport", allowed: activeSec.monthlyReport !== false },
-        { id: "btnLeaveEntry", allowed: activeSec.leaveEntry !== false },
-        { id: "btnHolidayList", allowed: activeSec.holidayList !== false },
-        { id: "btnShiftSchedule", allowed: activeSec.shiftSchedule !== false },
-        { id: "btnLocalFestival", allowed: activeSec.localFestival !== false },
-        { id: "btnGroupChat", allowed: activeSec.groupChat !== false }
-      ];
-
-      map.forEach(item => {
-        const el = document.getElementById(item.id);
-        if (el) {
-          if (!item.allowed) {
-            el.classList.add('disabled');
-            if (!el.querySelector('.menu-lock-tag')) {
-              const tag = document.createElement('span');
-              tag.className = 'menu-lock-tag';
-              tag.innerText = '🔒 Locked';
-              el.appendChild(tag);
-            }
-          } else {
-            el.classList.remove('disabled');
-            const tag = el.querySelector('.menu-lock-tag');
-            if (tag) tag.remove();
-          }
-        }
+    function renderCheckPositionBoard() {
+      if (!globalData || !globalData.board) return;
+      document.getElementById('boardDateBanner').innerText = globalData.board.dateBanner;
+      const tbody = document.getElementById('boardTableBody');
+      let html = '';
+      globalData.board.rows.forEach(r => {
+        const isYou = r.duty.toLowerCase() === currentOperator.toLowerCase();
+        html += `<tr>
+          <td class="cyan-cell">${r.pos}</td>
+          <td class="name-cell ${isYou ? 'highlight-row' : ''}">${r.duty} ${isYou ? '<span class="tag-you">YOU</span>' : ''}</td>
+        </tr>`;
       });
-    }
-
-    function showCustomAlert(msg) {
-      document.getElementById('customAlertMsg').innerText = msg;
-      document.getElementById('customAlertModal').style.display = 'flex';
-    }
-
-    function closeCustomAlert() {
-      document.getElementById('customAlertModal').style.display = 'none';
-    }
-
-    function openMenuAction(type) {
-      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      const activeSec = (currentUser.toLowerCase() === "guest") ? portalData.guestSecurity : portalData.security;
-
-      if (activeSec && activeSec[type] === false) {
-        showCustomAlert("This section is currently disabled.");
-        return;
-      }
-
-      if (type === "checkPosition") renderPositionBoard();
-      else if (type === "myDueHistory") renderDueHistory();
-      else if (type === "monthlyReport") openMonthlyReportScreen();
-      else if (type === "leaveEntry") openLeaveEntry();
-      else if (type === "holidayList") renderHolidayList();
-      else if (type === "shiftSchedule") openShiftSchedule();
-      else if (type === "localFestival") renderLocalFestival();
-      else if (type === "groupChat") openGroupChat();
-    }
-
-    // 3-DOT CHAT MENU & CUSTOM CLEAR CHAT MODAL
-    function toggleChatMenu(e) {
-      e.stopPropagation();
-      const menu = document.getElementById('chatDropdownMenu');
-      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-
-    window.onclick = function() {
-      const menu = document.getElementById('chatDropdownMenu');
-      if (menu) menu.style.display = 'none';
-    };
-
-    function openClearChatModal() {
-      document.getElementById('customClearChatModal').style.display = 'flex';
-      document.getElementById('chatDropdownMenu').style.display = 'none';
-    }
-
-    function closeClearChatModal() {
-      document.getElementById('customClearChatModal').style.display = 'none';
-    }
-
-    function confirmClearChat() {
-      const myName = (localStorage.getItem(STORAGE_KEY) || "guest").toLowerCase();
-      localStorage.setItem('clear_ch_time_' + myName, Date.now().toString());
-      loadChatMessages();
-      closeClearChatModal();
-    }
-
-    // LIVE GROUP CHAT WITH FAST AUTO-REFRESH (2.5s)
-    function openGroupChat() {
-      showPage('pageGroupChat');
-      loadChatMessages();
-    }
-
-    function startChatPolling() {
-      if (chatInterval) clearInterval(chatInterval);
-      chatInterval = setInterval(loadChatMessages, 2500);
-    }
-
-    function stopChatPolling() {
-      if (chatInterval) {
-        clearInterval(chatInterval);
-        chatInterval = null;
-      }
+      tbody.innerHTML = html;
     }
 
     function loadChatMessages() {
-      const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=getChat&callback=handleChatMessagesResponse&t=${Date.now()}`;
-      document.head.appendChild(s);
-    }
-
-    window.handleChatMessagesResponse = function(res) {
-      const container = document.getElementById('chatMessagesContainer');
-      if (!res || res.status !== "success") return;
-
-      const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
-      const clearKey = 'clear_ch_time_' + myName;
-      const clearedEpoch = parseInt(localStorage.getItem(clearKey) || "0", 10);
-
-      let html = '';
-      let displayedCount = 0;
-
-      res.messages.forEach(m => {
-        let msgEpoch = new Date().getTime();
-        try {
-          const parts = m.time.split(' ');
-          const dParts = parts[0].split('/');
-          if (dParts.length === 3) {
-            const isoStr = `${dParts[2]}-${dParts[1]}-${dParts[0]}T${parts[1] || '00:00:00'}`;
-            msgEpoch = new Date(isoStr).getTime();
+      const box = document.getElementById('chatMessagesBox');
+      box.innerHTML = '<div style="color:#94a3b8; text-align:center;">Loading messages...</div>';
+      fetch(`${API_URL}?action=getChat`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            let html = '';
+            if (data.messages.length === 0) {
+              box.innerHTML = '<div style="color:#94a3b8; text-align:center; margin-top:20px;">No messages yet. Say hello!</div>';
+              return;
+            }
+            data.messages.forEach(m => {
+              const isMine = m.name.toLowerCase() === currentOperator.toLowerCase();
+              html += `<div class="chat-bubble ${isMine ? 'my-msg' : ''}">
+                <div class="chat-meta"><span>${m.name}</span><span>${m.timestamp}</span></div>
+                <div class="chat-text">${m.message}</div>
+              </div>`;
+            });
+            box.innerHTML = html;
+            box.scrollTop = box.scrollHeight;
           }
-        } catch (e) {}
-
-        if (clearedEpoch && msgEpoch && msgEpoch <= clearedEpoch) {
-          return;
-        }
-
-        displayedCount++;
-        const isMe = m.name.toLowerCase() === myName;
-        const cls = isMe ? "chat-bubble my-msg" : "chat-bubble";
-        html += `<div class="${cls}">
-          <div class="chat-meta"><span>${m.name}</span><span>${m.time}</span></div>
-          <div class="chat-text">${m.text}</div>
-        </div>`;
-      });
-
-      if (displayedCount === 0) {
-        container.innerHTML = '<div style="color:#94a3b8; text-align:center; margin-top:20px;">Chat is cleared. Type a new message!</div>';
-        return;
-      }
-
-      const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
-      container.innerHTML = html;
-      if (isAtBottom) {
-        container.scrollTop = container.scrollHeight;
-      }
-    };
+        });
+    }
 
     function sendChatMessage() {
-      const input = document.getElementById('chatMessageInput');
-      const text = input.value.trim();
-      const name = localStorage.getItem(STORAGE_KEY) || "Guest";
-
-      if (!text) return;
-      input.value = '';
-
-      const container = document.getElementById('chatMessagesContainer');
-      const nowStr = new Date().toLocaleString('en-GB', { hour12: false });
-      
-      if (container.innerHTML.includes("Loading messages...") || container.innerHTML.includes("Chat is cleared")) {
-        container.innerHTML = '';
-      }
-
-      const bubble = document.createElement('div');
-      bubble.className = "chat-bubble my-msg";
-      bubble.innerHTML = `
-        <div class="chat-meta"><span>${name}</span><span>${nowStr}</span></div>
-        <div class="chat-text">${text}</div>
-      `;
-      container.appendChild(bubble);
-      container.scrollTop = container.scrollHeight;
-
-      const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=sendChat&name=${encodeURIComponent(name)}&message=${encodeURIComponent(text)}&callback=handleSendChatResponse&t=${Date.now()}`;
-      document.head.appendChild(s);
-    }
-
-    window.handleSendChatResponse = function(res) {
-      if (res && res.status === "success") {
-        loadChatMessages();
-      }
-    };
-
-    // 1. POSITION BOARD
-    function renderPositionBoard() {
-      if (!portalData || !portalData.board) return;
-      const b = portalData.board;
-      document.getElementById('uiBoardDate').innerText = b.dateBanner || 'Daily Lineup';
-      const myName = (localStorage.getItem(STORAGE_KEY) || "").toLowerCase().trim();
-
-      let html = '';
-      (b.rows || []).forEach(r => {
-        const parts = (r.duty || "").split('-').map(s => s.trim());
-        const opName = parts[0] || '-';
-        const isMe = opName.toLowerCase() === myName;
-        const cls = isMe ? "highlight-row" : "";
-        const tag = isMe ? '<span class="tag-you">YOU</span>' : '';
-
-        html += `<tr class="${cls}">
-          <td class="cyan-cell">${r.pos || ''}</td>
-          <td class="name-cell">${opName}${tag}</td>
-          <td class="due-cell">${parts[1] || '-'}</td>
-          <td>${parts[2] || '-'}</td>
-          <td class="day-cell">${parts[3] || '-'}</td>
-          <td class="shift-cell">${parts[4] || '-'}</td>
-        </tr>`;
-      });
-
-      html += `
-        <tr><td class="cyan-cell">Available</td><td>${b.availableCount}</td><td colspan="2" class="cyan-cell">Stand By</td><td colspan="2">${b.standBy}</td></tr>
-        <tr><td class="cyan-cell">OFF Day</td><td colspan="5" class="align-left">${b.offDay}</td></tr>
-        <tr><td class="cyan-cell">Leave</td><td colspan="5" class="align-left">${b.leave}</td></tr>
-        <tr><td class="cyan-cell">Info</td><td colspan="5" class="align-left">${b.info}</td></tr>
-      `;
-      document.getElementById('uiBoardTbody').innerHTML = html;
-
-      const noticeBox = document.getElementById('uiSupervisorNoticeBox');
-      if (portalData.security && portalData.security.noticeMessage) {
-        noticeBox.style.display = 'block';
-        noticeBox.innerHTML = `
-          <div class="supervisor-notice-card" style="margin-top:12px;">
-            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
-            <div class="notice-body">${portalData.security.noticeMessage}</div>
-          </div>
-        `;
-      } else {
-        noticeBox.style.display = 'none';
-        noticeBox.innerHTML = '';
-      }
-
-      showPage('pagePosition');
-    }
-
-    // 2. DUE HISTORY
-    function renderDueHistory() {
-      const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
-      
-      let records = [];
-      if (portalData && portalData.dueMatrix) {
-        const cleanKey = myName.toLowerCase();
-        records = portalData.dueMatrix[cleanKey] || portalData.dueMatrix[myName] || [];
-        if (records.length === 0) {
-          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.trim().toLowerCase() === cleanKey);
-          if (matchedKey) records = portalData.dueMatrix[matchedKey];
-        }
-      }
-
-      let html = '';
-      records.forEach(rec => {
-        html += `<tr>
-          <td class="cyan-cell">${rec.pos}</td>
-          <td class="due-cell">${rec.due}</td>
-          <td>${rec.lastDate}</td>
-          <td class="day-cell">${rec.lastDay || '-'}</td>
-          <td class="shift-cell">${rec.lastShift}</td>
-        </tr>`;
-      });
-
-      if (records.length === 0) {
-        html = `<tr><td colspan="5" style="padding:15px; color:#94a3b8;">No personal due records found for ${myName}.</td></tr>`;
-      }
-
-      document.getElementById('uiDueTbody').innerHTML = html;
-      showPage('pageDueHistory');
-    }
-
-    // 3. MONTHLY REPORT
-    function openMonthlyReportScreen() {
-      const op = localStorage.getItem(STORAGE_KEY) || "Operator";
-      document.getElementById('uiMonthlyRepHeading').innerText = op + " - Monthly Performance Summary";
-      showPage('pageMonthlyReport');
-      syncDateInputsFromDropdown();
-    }
-
-    function syncDateInputsFromDropdown() {
-      const m = parseInt(document.getElementById('uiRepMonthSelect').value);
-      const y = parseInt(document.getElementById('uiRepYearSelect').value);
-      const lastDay = new Date(y, m, 0).getDate();
-      const pad = (n) => n < 10 ? '0' + n : n;
-
-      document.getElementById('uiRepFromDate').value = `${y}-${pad(m)}-01`;
-      document.getElementById('uiRepToDate').value = `${y}-${pad(m)}-${pad(lastDay)}`;
-      loadDynamicMonthlyReport();
-    }
-
-    function loadDynamicMonthlyReport() {
-      const op = localStorage.getItem(STORAGE_KEY) || "";
-      const fDate = document.getElementById('uiRepFromDate').value;
-      const tDate = document.getElementById('uiRepToDate').value;
-
-      document.getElementById('uiMonthlyResultArea').innerHTML = '';
-
-      const barContainer = document.getElementById('reportProgressBarContainer');
-      const barFill = document.getElementById('reportProgressBarFill');
-      barContainer.style.display = 'block';
-      barFill.style.width = '35%';
-
-      setTimeout(() => { barFill.style.width = '75%'; }, 200);
-
-      const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=getMonthlyReport&name=${encodeURIComponent(op)}&fromDate=${fDate}&toDate=${tDate}&callback=handleMonthlyReport&t=${Date.now()}`;
-      document.head.appendChild(s);
-    }
-
-    window.handleMonthlyReport = function(res) {
-      const barFill = document.getElementById('reportProgressBarFill');
-      barFill.style.width = '100%';
-
-      setTimeout(() => {
-        const area = document.getElementById('uiMonthlyResultArea');
-        if (!res || res.status !== "success") {
-          area.innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
-          document.getElementById('reportProgressBarContainer').style.display = 'none';
-          barFill.style.width = '0%';
-          return;
-        }
-        currentReportResult = res;
-
-        let html = '<div class="date-banner">ATTENDANCE SUMMARY</div>';
-        html += '<table class="standard-table"><thead><tr><th style="width:65%;">Category</th><th style="width:35%;">Count</th></tr></thead><tbody>';
-        (res.attendance || []).forEach(item => {
-          html += `<tr><td class="cyan-cell align-left">${item.label}</td><td style="color:#ffff00; font-size:13px;">${item.val}</td></tr>`;
+      const txt = document.getElementById('chatInputText');
+      const msg = txt.value.trim();
+      if (!msg) return;
+      txt.value = '';
+      fetch(`${API_URL}?action=sendChat&name=${encodeURIComponent(currentOperator)}&message=${encodeURIComponent(msg)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            loadChatMessages();
+          }
         });
-        html += '</tbody></table>';
-
-        if (res.performance && res.performance.length > 0) {
-          html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & WORKED DATES</div>';
-          html += '<table class="standard-table"><thead><tr>' +
-            '<th style="width:28%;">Position</th>' +
-            '<th style="width:12%;">Times</th>' +
-            '<th style="width:14%;">Alloc %</th>' +
-            '<th style="width:46%;">Dates Worked</th>' +
-            '</tr></thead><tbody>';
-
-          let grandTotal = 0;
-          res.performance.forEach(p => {
-            grandTotal += p.timesWorked;
-            let datePillsHtml = '-';
-            if (p.dates && p.dates.length > 0) {
-              datePillsHtml = '<div class="date-pill-container">';
-              p.dates.forEach(d => {
-                datePillsHtml += `<span class="date-pill">${d}</span>`;
-              });
-              datePillsHtml += '</div>';
-            }
-
-            html += `<tr>` +
-              `<td class="cyan-cell align-left">${p.position}</td>` +
-              `<td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td>` +
-              `<td style="color:#00ff00; font-weight:bold;">${p.allocation}</td>` +
-              `<td style="text-align:left;">${datePillsHtml}</td>` +
-              `</tr>`;
-          });
-
-          html += `<tr style="background:#1e3a8a;">` +
-            `<td class="cyan-cell align-left">Total</td>` +
-            `<td style="color:#ffff00; font-weight:900;">${grandTotal}</td>` +
-            `<td style="color:#ffff00; font-weight:900;">100%</td>` +
-            `<td style="color:#94a3b8; font-size:10px;">-</td>` +
-            `</tr>`;
-
-          html += '</tbody></table>';
-        }
-
-        if (res.leaveDates && res.leaveDates.length > 0) {
-          html += '<div class="date-banner" style="margin-top:12px;">LEAVE RECORDED DATES</div>';
-          html += '<div style="background:#000000; border:2px solid #ef4444; border-radius:6px; padding:8px;">';
-          html += '<div class="date-pill-container">';
-          res.leaveDates.forEach(ld => {
-            html += `<span class="date-pill" style="border-color:#f87171; color:#f87171;">${ld}</span>`;
-          });
-          html += '</div></div>';
-        }
-
-        area.innerHTML = html;
-        document.getElementById('reportProgressBarContainer').style.display = 'none';
-        barFill.style.width = '0%';
-      }, 350);
-    };
-
-    // 4. LEAVE ENTRY
-    function openLeaveEntry() {
-      const myName = localStorage.getItem(STORAGE_KEY) || "";
-      document.getElementById('uiLeaveName').value = myName;
-      document.getElementById('uiLeaveSuccessBox').style.display = 'none';
-      document.getElementById('btnSubmitLeave').disabled = false;
-      showPage('pageLeaveEntry');
     }
 
-    function formatDateToDDMMYYYY(dateStr) {
-      if (!dateStr) return "-";
-      const parts = dateStr.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
-      return dateStr;
-    }
-
-    function submitLeave() {
-      const name = localStorage.getItem(STORAGE_KEY) || "";
-      const type = document.getElementById('uiLeaveType').value;
-      const fromDateVal = document.getElementById('uiLeaveFrom').value;
-      const toDateVal = document.getElementById('uiLeaveTo').value;
-      const reason = document.getElementById('uiLeaveReason').value;
-
-      if (!fromDateVal || !toDateVal) {
-        alert("Please select both From and To dates.");
-        return;
-      }
-
-      const d1 = new Date(fromDateVal + "T00:00:00");
-      const d2 = new Date(toDateVal + "T00:00:00");
-      if (d2 < d1) {
-        alert("To Date cannot be earlier than From Date.");
-        return;
-      }
-
-      const diffTime = d2.getTime() - d1.getTime();
-      const calcDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
-
-      const fromDate = formatDateToDDMMYYYY(fromDateVal);
-      const toDate = formatDateToDDMMYYYY(toDateVal);
-
-      const btn = document.getElementById('btnSubmitLeave');
-      btn.innerText = "Submitting Leave...";
-      btn.disabled = true;
-
-      const barContainer = document.getElementById('leaveProgressBarContainer');
-      const barFill = document.getElementById('leaveProgressBarFill');
-      barContainer.style.display = 'block';
-      barFill.style.width = '30%';
-
-      setTimeout(() => { barFill.style.width = '70%'; }, 200);
-
-      lastSubmittedLeave = { name, type, fromDate, toDate, days: calcDays, reason };
-
-      const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=submitLeave&name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&days=${calcDays}&reason=${encodeURIComponent(reason)}&callback=handleLeaveResponse&t=${Date.now()}`;
-      document.head.appendChild(s);
-    }
-
-    window.handleLeaveResponse = function(res) {
-      const btn = document.getElementById('btnSubmitLeave');
-      const barFill = document.getElementById('leaveProgressBarFill');
-      
-      barFill.style.width = '100%';
-
-      setTimeout(() => {
-        btn.innerText = "Submit Leave Request";
-        if (res && res.status === "success") {
-          document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
-        } else {
-          alert("Error: " + (res ? res.message : "Submission failed"));
-          btn.disabled = false;
-        }
-        document.getElementById('leaveProgressBarContainer').style.display = 'none';
-        barFill.style.width = '0%';
-      }, 400);
-    };
-
-    function forwardLeaveWhatsApp() {
-      if (!lastSubmittedLeave) return;
-      const msg = `*LEAVE APPLICATION*\n` +
-        `• Operator: ${lastSubmittedLeave.name}\n` +
-        `• Type: ${lastSubmittedLeave.type}\n` +
-        `• Period: ${lastSubmittedLeave.fromDate} to ${lastSubmittedLeave.toDate} (${lastSubmittedLeave.days} Days)\n` +
-        `• Reason: ${lastSubmittedLeave.reason || 'Personal'}`;
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(msg);
-    }
-
-    // 5. COMPANY HOLIDAY
-    function renderHolidayList() {
-      const container = document.getElementById('uiHolidayContainer');
-      container.innerHTML = '';
-      const list = (portalData && portalData.holidays) ? portalData.holidays : [];
-
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      list.forEach(h => {
-        const item = document.createElement('div');
-        
-        let daysLeft = null;
-        if (h.date) {
-          const parts = h.date.split('/');
-          if (parts.length === 3) {
-            const hDate = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
-            hDate.setHours(0, 0, 0, 0);
-            const diffTime = hDate.getTime() - today.getTime();
-            daysLeft = Math.round(diffTime / (1000 * 60 * 60 * 24));
-          }
-        }
-
-        const isFuture = (daysLeft !== null && daysLeft >= 0);
-        const isUrgent = (isFuture && daysLeft <= 30);
-        const isMedium = (isFuture && daysLeft > 30 && daysLeft <= 90);
-
-        let cardClass = 'holiday-card-item';
-        let badge = '';
-
-        if (isFuture) {
-          cardClass += ' holiday-upcoming';
-          if (daysLeft === 0) {
-            badge = '<span class="badge-zoom-animated" style="background:#facc15; color:#000;">TODAY</span>';
-          } else if (daysLeft === 1) {
-            badge = '<span class="badge-zoom-animated" style="background:#ef4444; color:#fff;">TOMORROW</span>';
-          } else if (isUrgent) {
-            badge = `<span class="badge-zoom-animated" style="background:#10b981; color:#fff;">In ${daysLeft} Days</span>`;
-          } else if (isMedium) {
-            badge = `<span class="badge-zoom-animated" style="background:#0284c7; color:#fff;">In ${daysLeft} Days</span>`;
-          } else {
-            badge = `<span class="badge-zoom-animated" style="background:#334155; color:#38bdf8;">In ${daysLeft} Days</span>`;
-          }
-        } else if (daysLeft !== null && daysLeft < 0) {
-          badge = `<span style="font-size:9.5px; color:#64748b; margin-left:6px; font-weight:bold;">(Passed)</span>`;
-        }
-
-        item.className = cardClass;
-        item.innerHTML = `
-          <div class="hol-top">
-            <h5>🎈 ${h.name}${badge}</h5>
-            <p>${h.rawDate} (${h.day})</p>
-          </div>
-          <div class="relay-badge-row">
-            <div class="relay-chip"><span>R3</span><strong>${h.r3}</strong></div>
-            <div class="relay-chip"><span>R2</span><strong>${h.r2}</strong></div>
-            <div class="relay-chip"><span>R1</span><strong>${h.r1}</strong></div>
-          </div>
-        `;
-        container.appendChild(item);
-      });
-
-      if (list.length === 0) {
-        container.innerHTML = '<div style="color:#94a3b8; text-align:center; padding:15px;">No holidays found in Holiday_List sheet.</div>';
-      }
-      showPage('pageHolidayList');
-    }
-
-    // 6. SHIFT SCHEDULE
-    function openShiftSchedule() {
-      document.getElementById('uiScheduleResult').style.display = 'none';
-      showPage('pageShiftSchedule');
-    }
-
-    function lookupShiftSchedule() {
-      const val = document.getElementById('uiScheduleDateInput').value;
-      if (!val) return;
-      const parts = val.split('-');
-      const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
-      const sched = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup[formatted] : null;
-
-      const resBox = document.getElementById('uiScheduleResult');
-      if (sched) {
-        document.getElementById('uiSchedDateTitle').innerText = `${formatted} (${sched.day})`;
-        document.getElementById('uiSchedR3').innerText = sched.r3;
-        document.getElementById('uiSchedR2').innerText = sched.r2;
-        document.getElementById('uiSchedR1').innerText = sched.r1;
-        resBox.style.display = 'block';
-      } else {
-        alert("Date " + formatted + " not found in Shift Schedule sheet.");
-        resBox.style.display = 'none';
-      }
-    }
-
-    // 7. LOCAL FESTIVAL
-    function renderLocalFestival() {
-      const container = document.getElementById('uiFestivalContainer');
-      container.innerHTML = '';
-      const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
-
-      const currentYear = new Date().getFullYear();
-
-      BASE_FESTIVALS.forEach(f => {
-        const fullDate = `${f.d}/${f.m}/${currentYear}`;
-        const match = schedMap[fullDate] || { day: "-", r3: "-", r2: "-", r1: "-" };
-        const item = document.createElement('div');
-        item.className = 'holiday-card-item';
-        item.innerHTML = `
-          <div class="hol-top">
-            <h5>🪔 ${f.name}</h5>
-            <p>${fullDate} (${match.day})</p>
-          </div>
-          <div class="relay-badge-row">
-            <div class="relay-chip"><span>R3</span><strong>${match.r3}</strong></div>
-            <div class="relay-chip"><span>R2</span><strong>${match.r2}</strong></div>
-            <div class="relay-chip"><span>R1</span><strong>${match.r1}</strong></div>
-          </div>
-        `;
-        container.appendChild(item);
-      });
-      showPage('pageLocalFestival');
-    }
-
-    // WHATSAPP SHARE FUNCTIONS
-    function sharePositionWhatsApp() {
-      if (!portalData || !portalData.board) return;
-      const b = portalData.board;
-      let text = `*R3 DUTY LINEUP*\n📅 ${b.dateBanner}\n\n`;
-      (b.rows || []).forEach(r => { text += `• ${r.pos}: ${r.duty}\n`; });
-      text += `\n*Available:* ${b.availableCount} | *Stand By:* ${b.standBy}\n*OFF Day:* ${b.offDay}\n*Leave:* ${b.leave}`;
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
-    function shareDueWhatsApp() {
-      const myName = localStorage.getItem(STORAGE_KEY) || "";
-      const recs = (portalData && portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
-      let text = `*DUE MATRIX - ${myName}*\n\n`;
-      recs.forEach(r => { text += `• ${r.pos} ➔ Due: ${r.due} (Last: ${r.lastDate} [${r.lastDay}] - Shift ${r.lastShift})\n`; });
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
-    function shareMonthlyWhatsApp() {
-      const op = localStorage.getItem(STORAGE_KEY) || "Operator";
-      const mText = document.getElementById('uiRepMonthSelect').options[document.getElementById('uiRepMonthSelect').selectedIndex].text;
-      const yText = document.getElementById('uiRepYearSelect').value;
-      if (!currentReportResult) {
-        alert("Please generate report first.");
-        return;
-      }
-      let text = `*MONTHLY REPORT - ${op}*\n📅 Period: ${mText} ${yText}\n\n*ATTENDANCE:*\n`;
-      (currentReportResult.attendance || []).forEach(a => { text += `• ${a.label}: ${a.val}\n`; });
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
-    function shareHolidayWhatsApp() {
-      const list = (portalData && portalData.holidays) ? portalData.holidays : [];
-      let text = `*COMPANY HOLIDAYS & SHIFTS*\n\n`;
-      list.forEach(h => { text += `• ${h.name} (${h.rawDate}): R3:[${h.r3}] R2:[${h.r2}] R1:[${h.r1}]\n`; });
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
-    function shareScheduleWhatsApp() {
-      const title = document.getElementById('uiSchedDateTitle').innerText;
-      const r3 = document.getElementById('uiSchedR3').innerText;
-      const r2 = document.getElementById('uiSchedR2').innerText;
-      const r1 = document.getElementById('uiSchedR1').innerText;
-      if (title === "-") { alert("Please select a date first."); return; }
-      const text = `*SHIFT SCHEDULE*\n📅 ${title}\n• Relay-3: ${r3}\n• Relay-2: ${r2}\n• Relay-1: ${r1}`;
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
-    function shareFestivalWhatsApp() {
-      let text = `*LOCAL FESTIVALS & RELAY SHIFTS*\n\n`;
-      const currentYear = new Date().getFullYear();
-      const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
-      BASE_FESTIVALS.slice(0, 10).forEach(f => {
-        const fullDate = `${f.d}/${f.m}/${currentYear}`;
-        const match = schedMap[fullDate] || { r3: "-", r2: "-", r1: "-" };
-        text += `• ${f.name} (${fullDate}): R3:[${match.r3}] R2:[${match.r2}] R1:[${match.r1}]\n`;
-      });
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
-    // INITIAL LOAD
-    window.handleInitialData = function(data) {
-      if (!data) return;
-      portalData = data;
-      document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
-
-      const sel = document.getElementById('loginSelect');
-      sel.innerHTML = '<option value="">-- Choose Name --</option>';
-      
-      const guestOpt = document.createElement('option');
-      guestOpt.value = "Guest";
-      guestOpt.innerText = "Guest";
-      sel.appendChild(guestOpt);
-
-      (data.operators || []).forEach(op => {
-        const opt = document.createElement('option');
-        opt.value = op.name;
-        opt.innerText = op.name;
-        sel.appendChild(opt);
-      });
-
-      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      if (currentUser) {
-        applySecurity(data.security, data.guestSecurity);
-      }
-
-      const splash = document.getElementById('splashScreen');
-      if (splash) {
-        splash.style.opacity = '0';
-        setTimeout(() => { splash.style.display = 'none'; }, 300);
-      }
-    };
-
-    window.onload = function() {
-      initUser();
-      const s = document.createElement('script');
-      s.src = SCRIPT_URL + '?action=getDashboardData&callback=handleInitialData&t=' + Date.now();
-      document.head.appendChild(s);
-    };
+    window.onload = initApp;
   </script>
 </body>
 </html>
