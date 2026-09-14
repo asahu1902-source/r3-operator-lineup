@@ -33,6 +33,16 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
+    /* CUSTOM TOAST NOTIFICATION */
+    #customToast {
+      position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: linear-gradient(135deg, #059669, #10b981); color: #ffffff;
+      padding: 12px 20px; border-radius: 30px; font-weight: 900; font-size: 13.5px;
+      z-index: 999999; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+      display: flex; align-items: center; gap: 8px; transition: transform 0.3s ease-in-out;
+    }
+    #customToast.show { transform: translateX(-50%) translateY(0); }
+
     /* LOGIN SCREEN */
     .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
     .login-card img { width: 85px; height: 85px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
@@ -302,6 +312,9 @@
 <body>
 
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+
+  <!-- CUSTOM TOAST NOTIFICATION -->
+  <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
   <!-- CUSTOM MODALS -->
   <div id="customAlertModal" class="custom-modal-backdrop">
@@ -801,6 +814,13 @@
     let isScrollableReportMode = false;
     let myAssignedPositionName = "";
 
+    function showToast(msg) {
+      const t = document.getElementById('customToast');
+      document.getElementById('toastMsg').innerText = msg;
+      t.classList.add('show');
+      setTimeout(() => { t.classList.remove('show'); }, 3000);
+    }
+
     function showPage(pageId) {
       document.querySelectorAll('.screen-page').forEach(p => p.classList.remove('active'));
       const activeEl = document.getElementById(pageId);
@@ -1262,7 +1282,7 @@
       btn.disabled = false;
 
       if (res && res.status === "success") {
-        alert("Duty submitted successfully!");
+        showToast("Duty submitted successfully!");
         fetchDutySubmissionStatus();
       } else {
         alert("Submission failed: " + (res ? res.message : "Unknown error"));
