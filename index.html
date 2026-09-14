@@ -979,10 +979,13 @@
       let html = '';
       let displayedCount = 0;
 
-      res.messages.forEach(m => {
+      (res.messages || []).forEach(m => {
         let msgEpoch = new Date().getTime();
+        const msgTime = m.timestamp || m.time || "";
+        const msgText = m.message || m.text || "";
+
         try {
-          const parts = m.time.split(' ');
+          const parts = msgTime.split(' ');
           const dParts = parts[0].split('/');
           if (dParts.length === 3) {
             const isoStr = `${dParts[2]}-${dParts[1]}-${dParts[0]}T${parts[1] || '00:00:00'}`;
@@ -995,11 +998,11 @@
         }
 
         displayedCount++;
-        const isMe = m.name.toLowerCase() === myName;
+        const isMe = (m.name || "").toLowerCase() === myName;
         const cls = isMe ? "chat-bubble my-msg" : "chat-bubble";
         html += `<div class="${cls}">
-          <div class="chat-meta"><span>${m.name}</span><span>${m.time}</span></div>
-          <div class="chat-text">${m.text}</div>
+          <div class="chat-meta"><span>${m.name || 'Anonymous'}</span><span>${msgTime}</span></div>
+          <div class="chat-text">${msgText}</div>
         </div>`;
       });
 
