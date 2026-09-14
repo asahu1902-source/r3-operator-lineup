@@ -388,6 +388,17 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
+      <!-- ONLINE STATUS WIDGET CARD -->
+      <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
+        <h4 style="color:#10b981; font-size:13px; font-weight:900; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+          <span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 8px #10b981;"></span> 
+          ONLINE OPERATORS (<span id="onlineCountBadge">0</span>)
+        </h4>
+        <div id="onlineOperatorsList" style="font-size:12px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:6px;">
+          Checking online status...
+        </div>
+      </div>
+
       <div class="dashboard-menu">
         <div id="btnCheckPosition" class="menu-item-btn" onclick="openMenuAction('checkPosition')">
           <div class="menu-item-icon">📋</div>
@@ -773,6 +784,7 @@
     let lastSubmittedLeave = null;
     let currentReportResult = null;
     let chatInterval = null;
+    let presenceInterval = null;
 
     function showPage(pageId) {
       document.querySelectorAll('.screen-page').forEach(p => p.classList.remove('active'));
@@ -784,6 +796,12 @@
       } else {
         stopChatPolling();
       }
+
+      if (pageId === 'pageDashboard') {
+        startPresenceHeartbeat();
+      } else {
+        stopPresenceHeartbeat();
+      }
     }
 
     function initUser() {
@@ -792,6 +810,7 @@
         document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
         loadProfilePhoto(saved);
         showPage('pageDashboard');
+        startPresenceHeartbeat();
       } else {
         showPage('pageLogin');
       }
@@ -807,6 +826,7 @@
       document.getElementById('uiWelcomeName').innerText = "Welcome, " + sel + "!";
       loadProfilePhoto(sel);
       showPage('pageDashboard');
+      startPresenceHeartbeat();
     }
 
     function performLogout() {
@@ -818,6 +838,7 @@
     }
 
     function confirmLogout() {
+      stopPresenceHeartbeat();
       localStorage.removeItem(STORAGE_KEY);
       showPage('pageLogin');
       closeCustomLogout();
@@ -850,6 +871,49 @@
         document.getElementById('uiProfileImg').src = 'icon.png';
       }
     }
+
+    // ONLINE PRESENCE HEARTBEAT (Every 30s)
+    function startPresenceHeartbeat() {
+      sendPresencePing();
+      if (presenceInterval) clearInterval(presenceInterval);
+      presenceInterval = setInterval(sendPresencePing, 30000);
+    }
+
+    function stopPresenceHeartbeat() {
+      if (presenceInterval) {
+        clearInterval(presenceInterval);
+        presenceInterval = null;
+      }
+    }
+
+    function sendPresencePing() {
+      const currentOp = localStorage.getItem(STORAGE_KEY);
+      if (!currentOp || currentOp.toLowerCase() === "guest") return;
+
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=updatePresence&name=${encodeURIComponent(currentOp)}&callback=handlePresenceResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handlePresenceResponse = function(res) {
+      if (!res || res.status !== "success") return;
+      const listContainer = document.getElementById('onlineOperatorsList');
+      const countBadge = document.getElementById('onlineCountBadge');
+      const onlineUsers = res.onlineUsers || [];
+
+      countBadge.innerText = onlineUsers.length;
+      if (onlineUsers.length === 0) {
+        listContainer.innerHTML = '<span style="color:#94a3b8; font-weight:normal;">No one else is online right now.</span>';
+        return;
+      }
+
+      let html = '';
+      onlineUsers.forEach(user => {
+        const isMe = (user.toLowerCase() === (localStorage.getItem(STORAGE_KEY) || "").toLowerCase());
+        html += `<span style="background:#064e3b; border:1px solid #10b981; padding:3px 8px; border-radius:4px; font-size:11.5px;">🟢 ${user} ${isMe ? '(You)' : ''}</span>`;
+      });
+      listContainer.innerHTML = html;
+    };
 
     // APPLY SECURITY (OPERATOR vs GUEST)
     function applySecurity(sec, guestSec) {
