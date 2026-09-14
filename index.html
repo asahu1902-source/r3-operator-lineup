@@ -290,14 +290,14 @@
       padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
     }
 
-    /* PRINT OPTIMIZATION FOR SINGLE-PAGE PDF */
     @media print {
-      body { background: #ffffff !important; color: #000 !important; font-size: 9px !important; }
-      .top-actions-bar, #splashScreen, .filter-grid, .btn-action-main, #reportProgressBarContainer { display: none !important; }
-      .form-card { border: none !important; padding: 0 !important; background: #fff !important; }
-      .standard-table th, .standard-table td { border: 1px solid #000 !important; color: #000 !important; padding: 3px 2px !important; font-size: 8.5px !important; }
+      body { background: #ffffff !important; color: #000 !important; font-size: 8px !important; zoom: 60%; }
+      .top-actions-bar, #splashScreen, .filter-grid, .btn-action-main, #reportProgressBarContainer, .toggle-btn { display: none !important; }
+      .app-viewport { max-width: 100% !important; width: 100% !important; gap: 4px !important; }
+      .form-card { border: none !important; padding: 0 !important; background: #fff !important; box-shadow: none !important; }
+      .standard-table th, .standard-table td { border: 1px solid #000 !important; color: #000 !important; padding: 2px 1px !important; font-size: 7px !important; white-space: nowrap !important; }
       .cyan-cell { background-color: #e0e0e0 !important; color: #000 !important; }
-      @page { size: landscape; margin: 5mm; }
+      @page { size: landscape; margin: 3mm; }
     }
   </style>
 </head>
@@ -771,7 +771,7 @@
     let currentReportResult = null;
     let chatInterval = null;
     let presenceInterval = null;
-    let isScrollableReportMode = false; // Toggle state
+    let isScrollableReportMode = false;
 
     function showPage(pageId) {
       document.querySelectorAll('.screen-page').forEach(p => p.classList.remove('active'));
@@ -859,7 +859,6 @@
       }
     }
 
-    // ONLINE PRESENCE HEARTBEAT
     function startPresenceHeartbeat() {
       sendPresencePing();
       if (presenceInterval) clearInterval(presenceInterval);
@@ -902,7 +901,6 @@
       listContainer.innerHTML = html;
     };
 
-    // APPLY SECURITY
     function applySecurity(sec, guestSec) {
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       const activeSec = (currentUser.toLowerCase() === "guest") ? guestSec : sec;
@@ -967,7 +965,6 @@
       else if (type === "groupChat") openGroupChat();
     }
 
-    // CHAT CLEAR & MENU
     function toggleChatMenu(e) {
       e.stopPropagation();
       const menu = document.getElementById('chatDropdownMenu');
@@ -1187,7 +1184,7 @@
       showPage('pageDueHistory');
     }
 
-    // 3. MONTHLY REPORT (WITH HIDE/UNHIDE & SCROLLABLE DAY-WISE VIEW)
+    // 3. MONTHLY REPORT
     function openMonthlyReportScreen() {
       const op = localStorage.getItem(STORAGE_KEY) || "Operator";
       document.getElementById('uiMonthlyRepHeading').innerText = op + " - Monthly Performance Summary";
@@ -1268,7 +1265,6 @@
 
       if (res.performance && res.performance.length > 0) {
         if (!isScrollableReportMode) {
-          // EXISTING SYSTEM (SCREENSHOT 1 STYLE)
           html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & WORKED DATES</div>';
           html += '<table class="standard-table"><thead><tr>' +
             '<th style="width:28%;">Position</th>' +
@@ -1306,12 +1302,10 @@
 
           html += '</tbody></table>';
         } else {
-          // SCROLLABLE DAY-WISE VIEW (SCREENSHOT 2 STYLE with Day1, Day2, Day3...)
           html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE (DAY-WISE SCROLL VIEW)</div>';
           html += '<div style="width:100%; overflow-x:auto;"><table class="standard-table" style="min-width:900px;"><thead><tr>';
           html += '<th style="width:120px;">Position</th><th style="width:60px;">Times</th><th style="width:70px;">Alloc %</th>';
           
-          // Find max number of worked dates across any position
           let maxDays = 1;
           res.performance.forEach(p => {
             if (p.dates && p.dates.length > maxDays) maxDays = p.dates.length;
