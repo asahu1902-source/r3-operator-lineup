@@ -13,9 +13,9 @@
   <meta name="apple-mobile-web-app-title" content="R3 Duty">
   <link rel="apple-touch-icon" href="icon.png">
 
-  <!-- FontAwesome for Production Icons -->
+  <!-- FontAwesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <!-- jsPDF for Production PDF Export -->
+  <!-- jsPDF for PDF Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
@@ -82,6 +82,7 @@
 
     .whatsapp-btn { background: #128C7E; color: #ffffff; border: 2px solid #25D366; border-radius: 7px; font-size: 13px; font-weight: 900; padding: 6px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
+    .toggle-btn { background: #0284c7; color: #ffffff; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
     .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 14.5px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
@@ -108,6 +109,17 @@
     .chat-meta { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; font-weight: bold; }
     .chat-text { font-size: 13px; color: #ffffff; word-break: break-word; }
     .chat-input-row { display: flex; gap: 8px; margin-top: 6px; }
+
+    .holiday-card-item { background: #111827; border-left: 5px solid #ef4444; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .hol-top { display: flex; justify-content: space-between; align-items: center; }
+    .hol-top h5 { font-size: 14px; color: #ffff00; font-weight: 900; }
+    .hol-top p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
+    .relay-badge-row { display: flex; gap: 6px; margin-top: 4px; }
+    .relay-chip { flex: 1; background: #000000; border: 1.5px solid #38bdf8; border-radius: 4px; padding: 4px; text-align: center; }
+    .relay-chip span { display: block; font-size: 9.5px; color: #94a3b8; font-weight: 800; }
+    .relay-chip strong { font-size: 15px; color: #00ff00; font-weight: 900; }
+    .date-pill-container { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; }
+    .date-pill { background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; font-size: 9.5px; font-weight: 800; border-radius: 3px; padding: 2px 5px; }
 
     /* VISAKA PRODUCTION STYLES */
     .prod-card { background:#07142b; border:2px solid #00bfff; border-radius:10px; padding:12px; margin-bottom:10px; }
@@ -165,12 +177,66 @@
     .report-btn { border:none; border-radius:7px; padding:12px 5px; color:#fff; font-size:12px; font-weight:900; cursor:pointer; }
     .whatsapp-report { background:#16a34a; }
     .pdf-report { background:#dc2626; }
+
+    .custom-modal-backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85); z-index: 999999;
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .custom-modal-box {
+      background: #07142b; border: 2.5px solid #ef4444; border-radius: 12px;
+      width: 100%; max-width: 310px; padding: 20px; text-align: center;
+      display: flex; flex-direction: column; gap: 14px;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+    }
+    .custom-modal-box.info-box { border-color: #38bdf8; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); }
+    .custom-modal-box h4 { color: #ef4444; font-size: 15px; font-weight: 900; }
+    .custom-modal-box.info-box h4 { color: #facc15; }
+    .custom-modal-box p { color: #ffff00; font-size: 14px; font-weight: bold; }
+    .modal-btn-row { display: flex; gap: 10px; margin-top: 4px; }
+    .btn-modal-primary, .btn-modal-danger, .btn-modal-secondary {
+      flex: 1; padding: 10px; border-radius: 6px; font-size: 13px; font-weight: 900; cursor: pointer; border: none; text-transform: uppercase;
+    }
+    .btn-modal-primary { background: #10b981; color: #fff; }
+    .btn-modal-danger { background: #dc2626; color: #fff; }
+    .btn-modal-secondary { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; }
   </style>
 </head>
 <body>
 
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
+
+  <div id="customAlertModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box">
+      <h4>🔒 LOCKED ACCESS</h4>
+      <p id="customAlertMsg">This section is currently disabled.</p>
+      <button class="btn-modal-primary" onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
+
+  <div id="customLogoutModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box info-box">
+      <h4>⚠️ CONFIRM LOGOUT</h4>
+      <p>Are you sure you want to log out?</p>
+      <div class="modal-btn-row">
+        <button class="btn-modal-secondary" onclick="closeCustomLogout()">Cancel</button>
+        <button class="btn-modal-danger" onclick="confirmLogout()">Yes, Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="custom-modal-backdrop" id="confirmModal" style="display:none;">
+    <div class="custom-modal-box">
+      <div style="color:#facc15; font-size:35px; margin-bottom:8px;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <h4 id="confirmTitle" style="color:#ffff00; font-size:19px;">Are you sure?</h4>
+      <p id="confirmMessage" style="color:#fff; font-size:14px; margin:10px 0 18px;">Please confirm.</p>
+      <div class="modal-btn-row">
+        <button class="btn-modal-secondary" onclick="closeConfirmModal()">CANCEL</button>
+        <button class="btn-modal-danger" id="confirmActionBtn">DELETE</button>
+      </div>
+    </div>
+  </div>
 
   <div id="splashScreen">
     <div class="splash-logo-container">
@@ -264,13 +330,11 @@
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
-
       <div id="myDutyActionCard" class="form-card" style="background: linear-gradient(135deg, #064e3b, #0f172a); border: 2px solid #10b981; display:none;">
         <h3 style="color:#10b981; font-size:15px; font-weight:900;">🎯 My Assigned Duty Confirmation</h3>
         <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
         <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
       </div>
-
       <div class="form-card" style="background:#07142b; border:2px solid #38bdf8;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 style="color:#ffff00; font-size:15px;">📊 Live Duty Submission Status</h3>
@@ -284,7 +348,6 @@
           </table>
         </div>
       </div>
-
       <div class="board-container" style="margin-top:10px;">
         <div class="date-banner" id="uiBoardDate">-</div>
         <table class="standard-table">
@@ -293,14 +356,11 @@
           <tbody id="uiBoardTbody"></tbody>
         </table>
       </div>
-      <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
     <!-- PAGE 4: VISAKA PRODUCTION DASHBOARD -->
     <div id="pageProdDashboard" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-      </div>
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
 
       <div class="target-panel">
         <div class="top-bar"><span id="bannerShift">Shift A</span><span id="bannerDate">-</span></div>
@@ -420,9 +480,12 @@
       </div>
     </div>
 
-    <!-- PAGE 5: MY DUE HISTORY -->
+    <!-- PAGE 5: DUE HISTORY -->
     <div id="pageDueHistory" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <button class="whatsapp-btn" onclick="shareDueWhatsApp()">WhatsApp</button>
+      </div>
       <div class="board-container">
         <div class="date-banner" id="uiDueOperatorTitle">My Position Due Matrix</div>
         <table class="standard-table">
@@ -433,12 +496,86 @@
       </div>
     </div>
 
-    <div id="pageMonthlyReport" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
-    <div id="pageLeaveEntry" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
-    <div id="pageHolidayList" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
-    <div id="pageShiftSchedule" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
-    <div id="pageLocalFestival" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
+    <!-- PAGE 6: MONTHLY REPORT -->
+    <div id="pageMonthlyReport" class="screen-page">
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <button class="toggle-btn" onclick="toggleReportLayout()" id="uiToggleLayoutBtn">Day-wise Scroll ⇄</button>
+      </div>
+      <div class="form-card">
+        <h4 id="uiMonthlyRepHeading" style="color:#ffff00; font-size:15.5px; font-weight:900;">Monthly Performance Summary</h4>
+        <div class="filter-grid">
+          <div class="form-group"><label>Select Month</label>
+            <select id="uiRepMonthSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
+              <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9" selected>Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Select Year</label>
+            <select id="uiRepYearSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
+              <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-grid">
+          <div class="form-group"><label>Start Date</label><input type="date" id="uiRepFromDate" class="form-input" value="2026-09-01"></div>
+          <div class="form-group"><label>End Date</label><input type="date" id="uiRepToDate" class="form-input" value="2026-09-30"></div>
+        </div>
+        <button class="btn-action-main" onclick="loadDynamicMonthlyReport()">Generate Report ➔</button>
+        <div id="uiMonthlyResultArea" style="margin-top:10px; display:flex; flex-direction:column; gap:12px;"></div>
+      </div>
+    </div>
 
+    <!-- PAGE 7: LEAVE ENTRY -->
+    <div id="pageLeaveEntry" class="screen-page">
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="form-card">
+        <h3 style="color:#ffff00; font-size:16px;">📝 Apply Leave</h3>
+        <div class="form-group"><label>Operator Name</label><input type="text" id="uiLeaveName" class="form-input" disabled></div>
+        <div class="form-group"><label>Leave Type</label>
+          <select id="uiLeaveType" class="form-input">
+            <option value="PL">PL</option><option value="SL">SL</option><option value="CL">CL</option><option value="C/Off">C/Off</option>
+          </select>
+        </div>
+        <div class="form-group"><label>From Date</label><input type="date" id="uiLeaveFrom" class="form-input"></div>
+        <div class="form-group"><label>To Date</label><input type="date" id="uiLeaveTo" class="form-input"></div>
+        <div class="form-group"><label>Reason / Remarks</label><input type="text" id="uiLeaveReason" class="form-input" placeholder="Enter reason..."></div>
+        <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
+        <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
+          <p style="color:#4ade80; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 8: HOLIDAY -->
+    <div id="pageHolidayList" class="screen-page">
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="form-card"><h3 style="color:#ffff00; font-size:16px;">🏢 Official Company Holidays</h3><div id="uiHolidayContainer" style="display:flex; flex-direction:column; gap:9px;"></div></div>
+    </div>
+
+    <!-- PAGE 9: SHIFT SCHEDULE -->
+    <div id="pageShiftSchedule" class="screen-page">
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="form-card">
+        <h3 style="color:#ffff00; font-size:16px;">📅 Check Shift Schedule</h3>
+        <input type="date" id="uiScheduleDateInput" class="form-input" onchange="lookupShiftSchedule()">
+        <div id="uiScheduleResult" style="display:none; background:#000; border:2px solid #00ff00; border-radius:8px; padding:12px; margin-top:6px;">
+          <div id="uiSchedDateTitle" style="color:#facc15; font-weight:bold; font-size:14px; text-align:center; margin-bottom:10px;">-</div>
+          <div class="relay-badge-row">
+            <div class="relay-chip"><span>RELAY-3</span><strong id="uiSchedR3">-</strong></div>
+            <div class="relay-chip"><span>RELAY-2</span><strong id="uiSchedR2">-</strong></div>
+            <div class="relay-chip"><span>RELAY-1</span><strong id="uiSchedR1">-</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 10: LOCAL FESTIVAL -->
+    <div id="pageLocalFestival" class="screen-page">
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="form-card"><h3 style="color:#ffff00; font-size:16px;">🪔 Local Festivals & Relay Shifts</h3><div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:9px;"></div></div>
+    </div>
+
+    <!-- PAGE 11: GROUP CHAT -->
     <div id="pageGroupChat" class="screen-page">
       <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
       <div class="form-card">
@@ -457,12 +594,25 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHQ5BMKG-IHIGMCqL4N2efVOshdsP34EY3Gu054YwmhC5qYZBNyEkRvW0_3SAOmMK8fA/exec";
     const STORAGE_KEY = "r3_operator_user";
 
+    const BASE_FESTIVALS = [
+      { name: "Swami Vivekananda Jayanti", d: "12", m: "01" }, { name: "Makar Sankranti", d: "14", m: "01" },
+      { name: "Republic Day", d: "26", m: "01" }, { name: "Maha Shivratri", d: "15", m: "02" },
+      { name: "Holi", d: "03", m: "03" }, { name: "Utkal Divas", d: "01", m: "04" },
+      { name: "May Day", d: "01", m: "05" }, { name: "Raja Sankranti", d: "15", m: "06" },
+      { name: "Rath Yatra", d: "16", m: "07" }, { name: "Independence Day", d: "15", m: "08" },
+      { name: "Ganesh Chaturthi", d: "14", m: "09" }, { name: "Vishwakarma Puja", d: "17", m: "09" },
+      { name: "Gandhi Jayanti", d: "02", m: "10" }, { name: "Durga Puja (Dasara)", d: "21", m: "10" },
+      { name: "Diwali", d: "09", m: "11" }, { name: "Christmas", d: "25", m: "12" }
+    ];
+
     let portalData = null;
     let globalProdData = [];
     let masterSettings = { targetProd: "", targetSize: "", batchWeight: "" };
-    let pendingDeleteRow = null;
+    let currentReportResult = null;
     let chatInterval = null;
     let presenceInterval = null;
+    let isScrollableReportMode = false;
+    let myAssignedPositionName = "";
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
@@ -479,12 +629,9 @@
       if (pageId === 'pageGroupChat') startChatPolling(); else stopChatPolling();
       if (pageId === 'pageDashboard') startPresenceHeartbeat(); else stopPresenceHeartbeat();
       if (pageId === 'pageProdDashboard') {
-        const loggedUser = localStorage.getItem(STORAGE_KEY) || "";
-        document.getElementById("opName").value = loggedUser;
+        document.getElementById("opName").value = localStorage.getItem(STORAGE_KEY) || "";
         loadProdDashboardData();
       }
-      if (pageId === 'pagePosition') renderPositionBoard();
-      if (pageId === 'pageDueHistory') renderDueHistory();
     }
 
     function initUser() {
@@ -494,9 +641,7 @@
         loadProfilePhoto(saved);
         showPage('pageDashboard');
         startPresenceHeartbeat();
-      } else {
-        showPage('pageLogin');
-      }
+      } else { showPage('pageLogin'); }
     }
 
     function proceedLogin() {
@@ -550,29 +695,6 @@
       document.getElementById('onlineOperatorsList').innerHTML = html || '<span style="color:#94a3b8;">No one online</span>';
     };
 
-    function applySecurity(sec, guestSec) {
-      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      const activeSec = (currentUser.toLowerCase() === "guest") ? guestSec : sec;
-      if (!activeSec) return;
-
-      const map = [
-        { id: "btnCheckPosition", allowed: activeSec.checkPosition !== false },
-        { id: "btnProdDashboard", allowed: activeSec.prodDashboard !== false },
-        { id: "btnMyDueHistory", allowed: activeSec.myDueHistory !== false },
-        { id: "btnMonthlyReport", allowed: activeSec.monthlyReport !== false },
-        { id: "btnLeaveEntry", allowed: activeSec.leaveEntry !== false },
-        { id: "btnHolidayList", allowed: activeSec.holidayList !== false },
-        { id: "btnShiftSchedule", allowed: activeSec.shiftSchedule !== false },
-        { id: "btnLocalFestival", allowed: activeSec.localFestival !== false },
-        { id: "btnGroupChat", allowed: activeSec.groupChat !== false }
-      ];
-
-      map.forEach(item => {
-        const el = document.getElementById(item.id);
-        if (el && !item.allowed) el.classList.add('disabled');
-      });
-    }
-
     function openMenuAction(type) {
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       const activeSec = (currentUser.toLowerCase() === "guest") ? portalData.guestSecurity : portalData.security;
@@ -581,11 +703,44 @@
       if (type === "checkPosition") renderPositionBoard();
       else if (type === "prodDashboard") showPage('pageProdDashboard');
       else if (type === "myDueHistory") renderDueHistory();
-      else if (type === "groupChat") showPage('pageGroupChat');
-      else showPage('pageDashboard');
+      else if (type === "monthlyReport") openMonthlyReportScreen();
+      else if (type === "leaveEntry") openLeaveEntry();
+      else if (type === "holidayList") renderHolidayList();
+      else if (type === "shiftSchedule") openShiftSchedule();
+      else if (type === "localFestival") renderLocalFestival();
+      else if (type === "groupChat") openGroupChat();
     }
 
-    // POSITION BOARD & LIVE SUBMISSION
+    function openGroupChat() { showPage('pageGroupChat'); loadChatMessages(); }
+    function startChatPolling() { if (chatInterval) clearInterval(chatInterval); chatInterval = setInterval(loadChatMessages, 2500); }
+    function stopChatPolling() { if (chatInterval) { clearInterval(chatInterval); chatInterval = null; } }
+    function loadChatMessages() {
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=getChat&callback=handleChatMessagesResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+    window.handleChatMessagesResponse = function(res) {
+      if (!res || res.status !== "success") return;
+      const container = document.getElementById('chatMessagesContainer');
+      const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
+      let html = '';
+      (res.messages || []).forEach(m => {
+        const isMe = (m.name || "").toLowerCase() === myName;
+        html += `<div class="chat-bubble ${isMe ? 'my-msg' : ''}"><div class="chat-meta"><span>${m.name}</span><span>${m.timestamp}</span></div><div class="chat-text">${m.message}</div></div>`;
+      });
+      container.innerHTML = html || '<div style="color:#94a3b8; text-align:center;">No messages.</div>';
+    };
+    function sendChatMessage() {
+      const input = document.getElementById('chatMessageInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=sendChat&name=${encodeURIComponent(localStorage.getItem(STORAGE_KEY))}&message=${encodeURIComponent(text)}&callback=loadChatMessages&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    // POSITION BOARD
     function renderPositionBoard() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
@@ -655,10 +810,11 @@
       document.head.appendChild(s);
     }
     window.handleDutySubmitResult = function(res) {
-      if (res && res.status === "success") { showToast("Duty submitted successfully!"); fetchDutySubmissionStatus(); }
+      if (res && res.status === "success") { showToast("Duty submitted!"); fetchDutySubmissionStatus(); }
       else { alert("Submission failed."); }
     };
 
+    // DUE HISTORY
     function renderDueHistory() {
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
@@ -677,32 +833,129 @@
       showPage('pageDueHistory');
     }
 
-    function startChatPolling() { if (chatInterval) clearInterval(chatInterval); chatInterval = setInterval(loadChatMessages, 2500); }
-    function stopChatPolling() { if (chatInterval) { clearInterval(chatInterval); chatInterval = null; } }
-    function loadChatMessages() {
+    // MONTHLY REPORT
+    function openMonthlyReportScreen() {
+      const op = localStorage.getItem(STORAGE_KEY) || "Operator";
+      document.getElementById('uiMonthlyRepHeading').innerText = op + " - Monthly Performance Summary";
+      showPage('pageMonthlyReport');
+      syncDateInputsFromDropdown();
+    }
+    function toggleReportLayout() {
+      isScrollableReportMode = !isScrollableReportMode;
+      const btn = document.getElementById('uiToggleLayoutBtn');
+      btn.innerText = isScrollableReportMode ? "Standard View ⇄" : "Day-wise Scroll ⇄";
+      if (currentReportResult) renderMonthlyReportHTML(currentReportResult);
+    }
+    function syncDateInputsFromDropdown() {
+      const m = parseInt(document.getElementById('uiRepMonthSelect').value);
+      const y = parseInt(document.getElementById('uiRepYearSelect').value);
+      const lastDay = new Date(y, m, 0).getDate();
+      const pad = (n) => n < 10 ? '0' + n : n;
+      document.getElementById('uiRepFromDate').value = `${y}-${pad(m)}-01`;
+      document.getElementById('uiRepToDate').value = `${y}-${pad(m)}-${pad(lastDay)}`;
+      loadDynamicMonthlyReport();
+    }
+    function loadDynamicMonthlyReport() {
+      const op = localStorage.getItem(STORAGE_KEY) || "";
+      const fDate = document.getElementById('uiRepFromDate').value;
+      const tDate = document.getElementById('uiRepToDate').value;
+      document.getElementById('uiMonthlyResultArea').innerHTML = '<div style="color:#00ffff; text-align:center;">Calculating report...</div>';
+
       const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=getChat&callback=handleChatMessagesResponse&t=${Date.now()}`;
+      s.src = `${SCRIPT_URL}?action=getMonthlyReport&name=${encodeURIComponent(op)}&fromDate=${fDate}&toDate=${tDate}&callback=handleMonthlyReport&t=${Date.now()}`;
       document.head.appendChild(s);
     }
-    window.handleChatMessagesResponse = function(res) {
-      if (!res || res.status !== "success") return;
-      const container = document.getElementById('chatMessagesContainer');
-      const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
-      let html = '';
-      (res.messages || []).forEach(m => {
-        const isMe = (m.name || "").toLowerCase() === myName;
-        html += `<div class="chat-bubble ${isMe ? 'my-msg' : ''}"><div class="chat-meta"><span>${m.name}</span><span>${m.timestamp}</span></div><div class="chat-text">${m.message}</div></div>`;
-      });
-      container.innerHTML = html || '<div style="color:#94a3b8; text-align:center;">No messages.</div>';
+    window.handleMonthlyReport = function(res) {
+      if (!res || res.status !== "success") {
+        document.getElementById('uiMonthlyResultArea').innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
+        return;
+      }
+      currentReportResult = res;
+      renderMonthlyReportHTML(res);
     };
-    function sendChatMessage() {
-      const input = document.getElementById('chatMessageInput');
-      const text = input.value.trim();
-      if (!text) return;
-      input.value = '';
+    function renderMonthlyReportHTML(res) {
+      const area = document.getElementById('uiMonthlyResultArea');
+      let html = '<div class="date-banner">ATTENDANCE SUMMARY</div>';
+      html += '<table class="standard-table"><thead><tr><th style="width:65%;">Category</th><th style="width:35%;">Count</th></tr></thead><tbody>';
+      (res.attendance || []).forEach(item => {
+        html += `<tr><td class="cyan-cell align-left">${item.label}</td><td style="color:#ffff00; font-size:13px;">${item.val}</td></tr>`;
+      });
+      html += '</tbody></table>';
+
+      if (res.performance && res.performance.length > 0) {
+        html += '<div class="date-banner" style="margin-top:14px;">POSITION ALLOCATION SUMMARY</div>';
+        html += '<table class="standard-table"><thead><tr><th>Position</th><th>Times</th><th>Alloc %</th></tr></thead><tbody>';
+        res.performance.forEach(p => {
+          html += `<tr><td class="cyan-cell align-left">${p.position}</td><td>${p.timesWorked}</td><td style="color:#00ff00;">${p.allocation}</td></tr>`;
+        });
+        html += '</tbody></table>';
+      }
+      area.innerHTML = html;
+    }
+
+    // LEAVE ENTRY
+    function openLeaveEntry() {
+      document.getElementById('uiLeaveName').value = localStorage.getItem(STORAGE_KEY) || "";
+      document.getElementById('uiLeaveSuccessBox').style.display = 'none';
+      showPage('pageLeaveEntry');
+    }
+    function submitLeave() {
+      const name = localStorage.getItem(STORAGE_KEY) || "";
+      const type = document.getElementById('uiLeaveType').value;
+      const fromDate = document.getElementById('uiLeaveFrom').value;
+      const toDate = document.getElementById('uiLeaveTo').value;
+      const reason = document.getElementById('uiLeaveReason').value;
+      if (!fromDate || !toDate) { alert("Select both From and To dates."); return; }
+      
       const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=sendChat&name=${encodeURIComponent(localStorage.getItem(STORAGE_KEY))}&message=${encodeURIComponent(text)}&callback=loadChatMessages&t=${Date.now()}`;
+      s.src = `${SCRIPT_URL}?action=submitLeave&name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&reason=${encodeURIComponent(reason)}&callback=handleLeaveResponse&t=${Date.now()}`;
       document.head.appendChild(s);
+    }
+    window.handleLeaveResponse = function(res) {
+      if (res && res.status === "success") {
+        document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
+        showToast("Leave recorded successfully!");
+      } else { alert("Failed to record leave."); }
+    };
+
+    // HOLIDAY & SCHEDULE
+    function renderHolidayList() {
+      const container = document.getElementById('uiHolidayContainer');
+      container.innerHTML = '';
+      (portalData && portalData.holidays ? portalData.holidays : []).forEach(h => {
+        const item = document.createElement('div');
+        item.className = 'holiday-card-item';
+        item.innerHTML = `<div class="hol-top"><h5>🎈 ${h.name}</h5><p>${h.rawDate} (${h.day})</p></div>`;
+        container.appendChild(item);
+      });
+      showPage('pageHolidayList');
+    }
+    function openShiftSchedule() { showPage('pageShiftSchedule'); }
+    function lookupShiftSchedule() {
+      const val = document.getElementById('uiScheduleDateInput').value;
+      if (!val) return;
+      const parts = val.split('-');
+      const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      const sched = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup[formatted] : null;
+      const resBox = document.getElementById('uiScheduleResult');
+      if (sched) {
+        document.getElementById('uiSchedDateTitle').innerText = `${formatted} (${sched.day})`;
+        document.getElementById('uiSchedR3').innerText = sched.r3;
+        document.getElementById('uiSchedR2').innerText = sched.r2;
+        document.getElementById('uiSchedR1').innerText = sched.r1;
+        resBox.style.display = 'block';
+      } else { resBox.style.display = 'none'; }
+    }
+    function renderLocalFestival() {
+      const container = document.getElementById('uiFestivalContainer');
+      container.innerHTML = '';
+      BASE_FESTIVALS.forEach(f => {
+        const item = document.createElement('div');
+        item.className = 'holiday-card-item';
+        item.innerHTML = `<div class="hol-top"><h5>🪔 ${f.name}</h5><p>${f.d}/${f.m}/2026</p></div>`;
+        container.appendChild(item);
+      });
+      showPage('pageLocalFestival');
     }
 
     // VISAKA PRODUCTION DASHBOARD LOGIC
