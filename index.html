@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>R3 Duty Portal & Production Dashboard</title>
+  <title>R3 Operator Portal</title>
   
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#07142b">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="R3 Portal">
+  <meta name="apple-mobile-web-app-title" content="R3 Duty">
   <link rel="apple-touch-icon" href="icon.png">
 
+  <!-- FontAwesome for Production Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <!-- jsPDF for Production PDF Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
@@ -36,6 +38,7 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
+    /* CUSTOM TOAST NOTIFICATION */
     #customToast {
       position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
       background: linear-gradient(135deg, #059669, #10b981); color: #ffffff;
@@ -45,6 +48,7 @@
     }
     #customToast.show { transform: translateX(-50%) translateY(0); }
 
+    /* LOGIN SCREEN */
     .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
     .login-card img { width: 85px; height: 85px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
     .login-card h2 { color: #ffff00; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
@@ -52,41 +56,129 @@
 
     .operator-select { width: 100%; background: #000000; color: #ffff00; border: 2px solid #00ffff; padding: 12px; font-size: 16px; font-weight: 900; border-radius: 8px; outline: none; margin-bottom: 16px; }
     .btn-action-main { width: 100%; background: linear-gradient(90deg, #10b981, #059669); color: #ffffff; font-size: 15px; font-weight: 900; padding: 12px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
+    .btn-action-main:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
+    /* BIG CENTER PROFILE HERO */
     .profile-hero-card {
-      background: linear-gradient(180deg, #0f2b5c, #07142b); border: 2px solid #38bdf8; border-radius: 14px;
-      padding: 16px 14px 14px 14px; display: flex; flex-direction: column; align-items: center; position: relative; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+      background: linear-gradient(180deg, #0f2b5c, #07142b);
+      border: 2px solid #38bdf8;
+      border-radius: 14px;
+      padding: 16px 14px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
-    .btn-logout-corner { position: absolute; top: 12px; right: 12px; background: #270606; color: #ef4444; border: 1.5px solid #ef4444; font-size: 11px; font-weight: 800; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
-    .profile-big-container { position: relative; width: 85px; height: 85px; margin-bottom: 8px; cursor: pointer; }
-    .profile-img-big { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid #facc15; background: #000; }
-    .photo-edit-badge-big { position: absolute; bottom: 2px; right: 2px; background: #0284c7; color: #fff; font-size: 12px; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+
+    .btn-logout-corner {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #270606;
+      color: #ef4444;
+      border: 1.5px solid #ef4444;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .profile-big-container {
+      position: relative;
+      width: 85px;
+      height: 85px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .profile-img-big {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #facc15;
+      background: #000;
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.45);
+    }
+
+    .photo-edit-badge-big {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: #0284c7;
+      color: #fff;
+      font-size: 12px;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      box-shadow: 0 0 8px rgba(0,0,0,0.6);
+    }
+
     .hero-welcome-text { font-size: 18px; font-weight: 900; color: #ffff00; text-align: center; margin-top: 2px; }
     .hero-date-text { font-size: 13px; font-weight: bold; color: #38bdf8; text-align: center; margin-top: 2px; }
 
+    /* DASHBOARD MENU */
     .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
-    .menu-item-btn { background: #0a192f; border: 2px solid #facc15; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .menu-item-btn {
+      background: #0a192f;
+      border: 2px solid #facc15;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
     .menu-item-btn.disabled { background: #1e293b; border-color: #475569; opacity: 0.55; cursor: not-allowed; }
     .menu-item-icon { font-size: 26px; }
     .menu-item-info h4 { font-size: 14.5px; color: #ffff00; font-weight: 900; }
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
     .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
+    /* TOP ACTION BAR */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
+    .tools-group { display: flex; gap: 8px; align-items: center; }
 
+    .whatsapp-btn {
+      background: #128C7E; color: #ffffff; border: 2px solid #25D366; border-radius: 7px;
+      font-size: 13px; font-weight: 900; padding: 6px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
+    .toggle-btn { background: #0284c7; color: #ffffff; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
+
+    /* TABLES */
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
     .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 14.5px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
+
     .standard-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .standard-table th { background-color: #ff8c00; color: #000000; font-weight: 900; font-size: 11px; padding: 6px 2px; border: 1px solid #8b0000; text-align: center; }
     .standard-table td { border: 1px solid #8b0000; padding: 5px 2px; font-size: 11px; font-weight: bold; text-align: center; }
     .cyan-cell { background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; }
     .name-cell { text-align: left !important; padding-left: 6px !important; color: #ffffff; }
+    .due-cell { color: #ffff00; }
+    .day-cell { color: #38bdf8; }
+    .shift-cell { color: #00ff00; font-weight: 900; }
+    .align-left { text-align: left !important; padding-left: 8px !important; }
+
+    .highlight-row td { background-color: #064e3b !important; border-top: 2px solid #00ff00 !important; border-bottom: 2px solid #00ff00 !important; }
+    .highlight-row .name-cell { color: #00ff00 !important; }
+    .tag-you { background-color: #facc15; color: #000000; font-size: 8.5px; padding: 1px 4px; border-radius: 3px; margin-left: 3px; }
 
     .form-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
     .form-group label { display: block; color: #00ffff; font-size: 11.5px; font-weight: 800; margin-bottom: 4px; }
     .form-input { width: 100%; background: #000000; color: #ffff00; border: 1.5px solid #38bdf8; padding: 10px; font-size: 14px; border-radius: 6px; outline: none; }
+    .form-input:disabled { opacity: 0.6; color: #94a3b8; }
 
+    .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    /* CHAT STYLES */
     .chat-container { background: #000; border: 2px solid #38bdf8; border-radius: 10px; height: 280px; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; }
     .chat-bubble { background: #1e293b; border-left: 4px solid #38bdf8; border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
     .chat-bubble.my-msg { border-left-color: #10b981; background: #064e3b; align-self: flex-end; width: 85%; }
@@ -150,29 +242,6 @@
     .report-btn { border:none; border-radius:7px; padding:12px 5px; color:#fff; font-size:12px; font-weight:900; cursor:pointer; }
     .whatsapp-report { background:#16a34a; }
     .pdf-report { background:#dc2626; }
-
-    .custom-modal-backdrop {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85); z-index: 999999;
-      display: none; align-items: center; justify-content: center; padding: 20px;
-    }
-    .custom-modal-box {
-      background: #07142b; border: 2.5px solid #ef4444; border-radius: 12px;
-      width: 100%; max-width: 310px; padding: 20px; text-align: center;
-      display: flex; flex-direction: column; gap: 14px;
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
-    }
-    .custom-modal-box.info-box { border-color: #38bdf8; box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); }
-    .custom-modal-box h4 { color: #ef4444; font-size: 15px; font-weight: 900; }
-    .custom-modal-box.info-box h4 { color: #facc15; }
-    .custom-modal-box p { color: #ffff00; font-size: 14px; font-weight: bold; }
-    .modal-btn-row { display: flex; gap: 10px; margin-top: 4px; }
-    .btn-modal-primary, .btn-modal-danger, .btn-modal-secondary {
-      flex: 1; padding: 10px; border-radius: 6px; font-size: 13px; font-weight: 900; cursor: pointer; border: none; text-transform: uppercase;
-    }
-    .btn-modal-primary { background: #10b981; color: #fff; }
-    .btn-modal-danger { background: #dc2626; color: #fff; }
-    .btn-modal-secondary { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; }
   </style>
 </head>
 <body>
@@ -180,7 +249,16 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <div id="customLogoutModal" class="custom-modal-backdrop">
+  <!-- CUSTOM MODALS -->
+  <div id="customAlertModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box">
+      <h4>🔒 LOCKED ACCESS</h4>
+      <p id="customAlertMsg">This section is currently disabled.</p>
+      <button class="btn-modal-primary" onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
+
+  <div id="customLogoutModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box">
       <h4>⚠️ CONFIRM LOGOUT</h4>
       <p>Are you sure you want to log out?</p>
@@ -191,7 +269,8 @@
     </div>
   </div>
 
-  <div class="custom-modal-backdrop" id="confirmModal">
+  <!-- VISAKA CONFIRM MODAL -->
+  <div class="custom-modal-backdrop" id="confirmModal" style="display:none;">
     <div class="custom-modal-box">
       <div style="color:#facc15; font-size:35px; margin-bottom:8px;"><i class="fa-solid fa-triangle-exclamation"></i></div>
       <h4 id="confirmTitle" style="color:#ffff00; font-size:19px;">Are you sure?</h4>
@@ -208,7 +287,7 @@
       <div class="splash-pulse-ring"></div>
       <img src="icon.png" alt="Logo" class="splash-app-icon">
     </div>
-    <div class="splash-load-text">⚡ Connecting Duty & Production Portal...</div>
+    <div class="splash-load-text">⚡ Connecting Duty Portal...</div>
   </div>
 
   <div class="app-viewport">
@@ -238,62 +317,126 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
+      <!-- ONLINE STATUS WIDGET CARD -->
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
         <h4 style="color:#10b981; font-size:13px; font-weight:900; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-          <span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block;"></span> 
+          <span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 8px #10b981;"></span> 
           ONLINE OPERATORS (<span id="onlineCountBadge">0</span>)
         </h4>
-        <div id="onlineOperatorsList" style="font-size:12px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:6px;">Checking...</div>
+        <div id="onlineOperatorsList" style="font-size:12px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:6px;">
+          Checking online status...
+        </div>
       </div>
 
       <div class="dashboard-menu">
         <div id="btnCheckPosition" class="menu-item-btn" onclick="openMenuAction('checkPosition')">
           <div class="menu-item-icon">📋</div>
-          <div class="menu-item-info"><h4>Check Position & Confirm Duty</h4><p>Today's duty lineup & live submission status</p></div>
+          <div class="menu-item-info">
+            <h4>Check Position & Confirm Duty</h4>
+            <p>Today's duty lineup & live submission status</p>
+          </div>
         </div>
+
+        <!-- NEW VISAKA PRODUCTION DASHBOARD BUTTON -->
         <div id="btnProdDashboard" class="menu-item-btn" onclick="openMenuAction('prodDashboard')">
           <div class="menu-item-icon">🏭</div>
-          <div class="menu-item-info"><h4>Production Dashboard</h4><p>Hourly production, ME%, ROP & shift reports</p></div>
+          <div class="menu-item-info">
+            <h4>Production Dashboard</h4>
+            <p>Hourly production, ME%, ROP & shift reports</p>
+          </div>
         </div>
+
         <div id="btnMyDueHistory" class="menu-item-btn" onclick="openMenuAction('myDueHistory')">
           <div class="menu-item-icon">⏳</div>
-          <div class="menu-item-info"><h4>My Due History</h4><p>Due counts, last operated dates, days & shifts</p></div>
+          <div class="menu-item-info">
+            <h4>My Due History</h4>
+            <p>Due counts, last operated dates, days & shifts</p>
+          </div>
         </div>
+
         <div id="btnMonthlyReport" class="menu-item-btn" onclick="openMenuAction('monthlyReport')">
           <div class="menu-item-icon">📊</div>
-          <div class="menu-item-info"><h4>My Monthly Report</h4><p>Attendance summary & worked dates</p></div>
+          <div class="menu-item-info">
+            <h4>My Monthly Report</h4>
+            <p>Attendance summary & worked dates</p>
+          </div>
         </div>
+
         <div id="btnLeaveEntry" class="menu-item-btn" onclick="openMenuAction('leaveEntry')">
           <div class="menu-item-icon">📝</div>
-          <div class="menu-item-info"><h4>Leave Entry</h4><p>Apply for PL, SL, CL, or C/Off</p></div>
+          <div class="menu-item-info">
+            <h4>Leave Entry</h4>
+            <p>Apply for PL, SL, CL, or C/Off</p>
+          </div>
         </div>
+
         <div id="btnHolidayList" class="menu-item-btn" onclick="openMenuAction('holidayList')">
           <div class="menu-item-icon">🏢</div>
-          <div class="menu-item-info"><h4>Company Holiday</h4><p>Upcoming holidays countdown & shifts</p></div>
+          <div class="menu-item-info">
+            <h4>Company Holiday</h4>
+            <p>Upcoming holidays countdown & shifts</p>
+          </div>
         </div>
+
         <div id="btnShiftSchedule" class="menu-item-btn" onclick="openMenuAction('shiftSchedule')">
           <div class="menu-item-icon">📅</div>
-          <div class="menu-item-info"><h4>Check Shift Schedule</h4><p>Look up any date for shifts</p></div>
+          <div class="menu-item-info">
+            <h4>Check Shift Schedule</h4>
+            <p>Look up any date (2026-2050+) for R1, R2, R3 shifts</p>
+          </div>
         </div>
+
         <div id="btnLocalFestival" class="menu-item-btn" onclick="openMenuAction('localFestival')">
           <div class="menu-item-icon">🪔</div>
-          <div class="menu-item-info"><h4>Local Festival</h4><p>All running festivals with auto relay shifts</p></div>
+          <div class="menu-item-info">
+            <h4>Local Festival</h4>
+            <p>All running festivals with auto relay shifts</p>
+          </div>
         </div>
+
         <div id="btnGroupChat" class="menu-item-btn" onclick="openMenuAction('groupChat')">
           <div class="menu-item-icon">💬</div>
-          <div class="menu-item-info"><h4>Live Group Chat</h4><p>Chat with operators & supervisor in real-time</p></div>
+          <div class="menu-item-info">
+            <h4>Live Group Chat</h4>
+            <p>Chat with operators & supervisor in real-time</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- PAGE 3: CHECK POSITION -->
+    <!-- PAGE 3: CHECK POSITION & CONFIRM DUTY -->
     <div id="pagePosition" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <div class="tools-group">
+          <button class="whatsapp-btn" onclick="sharePositionWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
+          <button class="pdf-btn" onclick="window.print()">PDF</button>
+        </div>
+      </div>
+
       <div id="myDutyActionCard" class="form-card" style="background: linear-gradient(135deg, #064e3b, #0f172a); border: 2px solid #10b981; display:none;">
         <h3 style="color:#10b981; font-size:15px; font-weight:900;">🎯 My Assigned Duty Confirmation</h3>
         <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
         <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
       </div>
+
+      <div class="form-card" style="background:#07142b; border:2px solid #38bdf8;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="color:#ffff00; font-size:15px;">📊 Live Duty Submission Status</h3>
+          <span id="uiSubmissionCounter" style="background:#10b981; color:#000; font-weight:900; font-size:12px; padding:3px 8px; border-radius:6px;">0 / 0 Submitted</span>
+        </div>
+        <div id="uiRemainingNotice" style="font-size:12px; color:#f87171; font-weight:bold;">Loading remaining list...</div>
+        <div style="overflow-x:auto; margin-top:6px;">
+          <table class="standard-table">
+            <thead><tr><th>Position</th><th>Operator</th><th>Status / Time</th></tr></thead>
+            <tbody id="uiLiveSubmissionTbody"><tr><td colspan="3" style="padding:12px; color:#94a3b8;">Loading status...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="board-container" style="margin-top:10px;">
         <div class="date-banner" id="uiBoardDate">-</div>
         <table class="standard-table">
@@ -302,12 +445,16 @@
           <tbody id="uiBoardTbody"></tbody>
         </table>
       </div>
+      <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
     <!-- PAGE 4: VISAKA PRODUCTION DASHBOARD -->
     <div id="pageProdDashboard" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+      </div>
 
+      <!-- TARGET PANEL -->
       <div class="target-panel">
         <div class="top-bar"><span id="bannerShift">Shift A</span><span id="bannerDate">-</span></div>
         <div class="req-box">
@@ -386,7 +533,7 @@
         <button class="btn btn-cancel" id="cancelBtn" onclick="resetProdForm()" style="width:100%; border:none; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-xmark"></i> CANCEL EDIT</button>
       </div>
 
-      <!-- PRODUCTION LOG -->
+      <!-- PRODUCTION LOG & METRICS -->
       <div class="prod-card">
         <div class="prod-section-title"><i class="fa-solid fa-chart-line"></i> Production Log & Metrics</div>
         <button class="btn btn-refresh" id="refreshBtn" onclick="loadProdDashboardData()" style="width:100%; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-rotate" id="refreshIcon"></i> REFRESH DATA</button>
@@ -426,19 +573,123 @@
       </div>
     </div>
 
-    <!-- OTHER PAGES -->
-    <div id="pageDueHistory" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div><div class="board-container"><div class="date-banner">My Position Due Matrix</div><table class="standard-table"><tbody id="uiDueTbody"></tbody></table></div></div>
-    <div id="pageMonthlyReport" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
-    <div id="pageLeaveEntry" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
-    <div id="pageHolidayList" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
-    <div id="pageShiftSchedule" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
-    <div id="pageLocalFestival" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
+    <!-- PAGE 5: MY DUE HISTORY -->
+    <div id="pageDueHistory" class="screen-page">
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareDueWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
+          <button class="pdf-btn" onclick="window.print()">PDF</button>
+        </div>
+      </div>
+      <div class="board-container">
+        <div class="date-banner" id="uiDueOperatorTitle">My Position Due Matrix</div>
+        <table class="standard-table">
+          <colgroup><col style="width:28%"><col style="width:14%"><col style="width:30%"><col style="width:14%"><col style="width:14%"></colgroup>
+          <thead><tr><th>Position</th><th>Due</th><th>Last Date</th><th>Day</th><th>Shift</th></tr></thead>
+          <tbody id="uiDueTbody"></tbody>
+        </table>
+      </div>
+    </div>
 
+    <!-- PAGE 6: MONTHLY REPORT -->
+    <div id="pageMonthlyReport" class="screen-page">
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareMonthlyWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
+          <button class="toggle-btn" onclick="toggleReportLayout()" id="uiToggleLayoutBtn">Day-wise Scroll View ⇄</button>
+          <button class="pdf-btn" onclick="window.print()">PDF</button>
+        </div>
+      </div>
+      <div class="form-card">
+        <h4 id="uiMonthlyRepHeading" style="color:#ffff00; font-size:15.5px; font-weight:900;">Monthly Performance Summary</h4>
+        <div class="filter-grid">
+          <div class="form-group"><label>Select Month</label>
+            <select id="uiRepMonthSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
+              <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9" selected>Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Select Year</label>
+            <select id="uiRepYearSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
+              <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-grid">
+          <div class="form-group"><label>Start Date</label><input type="date" id="uiRepFromDate" class="form-input" value="2026-09-01"></div>
+          <div class="form-group"><label>End Date</label><input type="date" id="uiRepToDate" class="form-input" value="2026-09-30"></div>
+        </div>
+        <button class="btn-action-main" onclick="loadDynamicMonthlyReport()">Generate Report ➔</button>
+        <div id="reportProgressBarContainer"><div id="reportProgressBarFill"></div></div>
+        <div id="uiMonthlyResultArea" style="margin-top:10px; display:flex; flex-direction:column; gap:12px;"></div>
+      </div>
+    </div>
+
+    <!-- PAGE 7: LEAVE ENTRY -->
+    <div id="pageLeaveEntry" class="screen-page">
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="form-card">
+        <h3 style="color:#ffff00; font-size:16px;">📝 Apply Leave</h3>
+        <div class="form-group"><label>Operator Name</label><input type="text" id="uiLeaveName" class="form-input" disabled></div>
+        <div class="form-group"><label>Leave Type</label>
+          <select id="uiLeaveType" class="form-input">
+            <option value="PL">PL</option><option value="SL">SL</option><option value="CL">CL</option><option value="C/Off">C/Off</option>
+          </select>
+        </div>
+        <div class="form-group"><label>From Date</label><input type="date" id="uiLeaveFrom" class="form-input"></div>
+        <div class="form-group"><label>To Date</label><input type="date" id="uiLeaveTo" class="form-input"></div>
+        <div class="form-group"><label>Reason / Remarks</label><input type="text" id="uiLeaveReason" class="form-input" placeholder="Enter reason..."></div>
+        <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
+        <div id="leaveProgressBarContainer"><div id="leaveProgressBarFill"></div></div>
+        <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
+          <p style="color:#4ade80; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
+          <button class="whatsapp-btn-large" onclick="forwardLeaveWhatsApp()">Forward to supervisor on WhatsApp</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 8: HOLIDAY -->
+    <div id="pageHolidayList" class="screen-page">
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="form-card"><h3 style="color:#ffff00; font-size:16px;">🏢 Official Company Holidays</h3><div id="uiHolidayContainer" style="display:flex; flex-direction:column; gap:9px;"></div></div>
+    </div>
+
+    <!-- PAGE 9: SHIFT SCHEDULE -->
+    <div id="pageShiftSchedule" class="screen-page">
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="form-card">
+        <h3 style="color:#ffff00; font-size:16px;">📅 Check Shift Schedule</h3>
+        <input type="date" id="uiScheduleDateInput" class="form-input" onchange="lookupShiftSchedule()">
+        <div id="uiScheduleResult" style="display:none; background:#000; border:2px solid #00ff00; border-radius:8px; padding:12px; margin-top:6px;">
+          <div id="uiSchedDateTitle" style="color:#facc15; font-weight:bold; font-size:14px; text-align:center; margin-bottom:10px;">-</div>
+          <div class="relay-badge-row">
+            <div class="relay-chip"><span>RELAY-3</span><strong id="uiSchedR3">-</strong></div>
+            <div class="relay-chip"><span>RELAY-2</span><strong id="uiSchedR2">-</strong></div>
+            <div class="relay-chip"><span>RELAY-1</span><strong id="uiSchedR1">-</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 10: LOCAL FESTIVAL -->
+    <div id="pageLocalFestival" class="screen-page">
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="form-card"><h3 style="color:#ffff00; font-size:16px;">🪔 Local Festivals & Relay Shifts</h3><div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:9px;"></div></div>
+    </div>
+
+    <!-- PAGE 11: GROUP CHAT -->
     <div id="pageGroupChat" class="screen-page">
       <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">💬 Live Group Chat</h3>
-        <div id="chatMessagesContainer" class="chat-container"></div>
+        <div id="chatMessagesContainer" class="chat-container"><div style="color:#94a3b8; text-align:center; margin-top:20px;">Loading messages...</div></div>
         <div class="chat-input-row">
           <input type="text" id="chatMessageInput" class="form-input" placeholder="Type message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
           <button class="btn-action-main" style="width:100px;" onclick="sendChatMessage()">Send</button>
@@ -478,6 +729,8 @@
         document.getElementById("opName").value = loggedUser;
         loadProdDashboardData();
       }
+      if (pageId === 'pagePosition') renderPositionBoard();
+      if (pageId === 'pageDueHistory') renderDueHistory();
     }
 
     function initUser() {
@@ -574,7 +827,52 @@
       else if (type === "prodDashboard") showPage('pageProdDashboard');
       else if (type === "myDueHistory") showPage('pageDueHistory');
       else if (type === "groupChat") showPage('pageGroupChat');
+      else if (type === "monthlyReport") openMonthlyReportScreen();
+      else if (type === "leaveEntry") openLeaveEntry();
+      else if (type === "holidayList") renderHolidayList();
+      else if (type === "shiftSchedule") openShiftSchedule();
+      else if (type === "localFestival") renderLocalFestival();
       else showPage('pageDashboard');
+    }
+
+    function renderPositionBoard() {
+      if (!portalData || !portalData.board) return;
+      const b = portalData.board;
+      document.getElementById('uiBoardDate').innerText = b.dateBanner || 'Daily Lineup';
+      const myName = (localStorage.getItem(STORAGE_KEY) || "").toLowerCase().trim();
+
+      let html = '';
+      (b.rows || []).forEach(r => {
+        const parts = (r.duty || "").split('-').map(s => s.trim());
+        const opName = parts[0] || '-';
+        const isMe = opName.toLowerCase() === myName;
+        html += `<tr class="${isMe ? 'highlight-row' : ''}">
+          <td class="cyan-cell">${r.pos || ''}</td>
+          <td class="name-cell">${opName} ${isMe ? '<span class="tag-you">YOU</span>' : ''}</td>
+          <td class="due-cell">${parts[1] || '-'}</td>
+          <td>${parts[2] || '-'}</td>
+          <td class="day-cell">${parts[3] || '-'}</td>
+          <td class="shift-cell">${parts[4] || '-'}</td>
+        </tr>`;
+      });
+      document.getElementById('uiBoardTbody').innerHTML = html;
+    }
+
+    function renderDueHistory() {
+      const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
+      document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
+      let records = portalData && portalData.dueMatrix ? (portalData.dueMatrix[myName.toLowerCase()] || portalData.dueMatrix[myName] || []) : [];
+      let html = '';
+      records.forEach(rec => {
+        html += `<tr>
+          <td class="cyan-cell">${rec.pos}</td>
+          <td class="due-cell">${rec.due}</td>
+          <td>${rec.lastDate}</td>
+          <td class="day-cell">${rec.lastDay || '-'}</td>
+          <td class="shift-cell">${rec.lastShift}</td>
+        </tr>`;
+      });
+      document.getElementById('uiDueTbody').innerHTML = html || `<tr><td colspan="5" style="padding:15px; color:#94a3b8;">No records found.</td></tr>`;
     }
 
     function startChatPolling() { if (chatInterval) clearInterval(chatInterval); chatInterval = setInterval(loadChatMessages, 2500); }
@@ -605,6 +903,7 @@
       document.head.appendChild(s);
     }
 
+    // VISAKA PRODUCTION DASHBOARD LOGIC
     function jsonp(url, callbackName) {
       const script = document.createElement("script");
       script.src = url + "&callback=" + callbackName + "&t=" + Date.now();
@@ -893,27 +1192,105 @@
       window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
     }
 
+    // HORIZONTAL LANDSCAPE SHIFT PDF REPORT
     function generateShiftPDF() {
+      const shift = getSelectedShift();
       const rows = getCurrentShiftRows();
-      if (!rows.length) { showToast("ℹ️ No data."); return; }
+      if (!rows.length) { showToast("ℹ️ No production data to export."); return; }
+
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: "landscape" });
-      doc.setFontSize(16); doc.text("VISAKA PRODUCTION REPORT - Shift " + getSelectedShift(), 15, 18);
-      doc.save(`Visaka_Report_${getSelectedShift()}.pdf`);
+
+      doc.setFontSize(16);
+      doc.text("VISAKA PRODUCTION REPORT", 15, 15);
+      doc.setFontSize(10);
+      doc.text(`Date: ${todayDateString()}   Shift: ${shift}`, 15, 22);
+
+      let y = 32;
+      const headers = ["Hour", "Size", "Sheets", "Beater", "B/D", "GSR", "Output MT", "Input", "ME%", "ROP", "Moulding", "Moulding MT"];
+      
+      doc.setFillColor(169, 95, 0);
+      doc.setTextColor(0, 0, 0);
+      doc.rect(15, y - 5, 267, 7, "F");
+
+      headers.forEach((h, i) => {
+        doc.text(h, 17 + i * 22, y);
+      });
+
+      y += 8;
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(9);
+
+      let totalOutput = 0, totalMoulding = 0, totalGSR = 0;
+      rows.sort((a,b) => hourNumber(a.hour) - hourNumber(b.hour));
+
+      rows.forEach(r => {
+        const p = getRowProduction(r);
+        totalOutput += p.output;
+        totalMoulding += p.mouldingOutput;
+        totalGSR += Number(r.gsr) || 0;
+
+        let input = (masterSettings.batchWeight !== "" && r.beater !== "") ? (Number(r.beater) * Number(masterSettings.batchWeight)) / 1000 : 0;
+        let me = (p.sheetOutput > 0 && input > 0) ? ((1 - p.sheetOutput / input) * 100).toFixed(1) + "%" : "";
+        let rop = (p.output > 0 && (Number(r.bd) || 0) < 60) ? (p.output * 60 / Math.max(1, 60 - Number(r.bd))).toFixed(2) : "";
+
+        const vals = [
+          r.hour, String(p.size || ""), String(p.sheets || ""), String(r.beater || ""),
+          String(r.bd || ""), String(r.gsr || ""), p.output > 0 ? p.output.toFixed(2) : "",
+          input > 0 ? input.toFixed(2) : "", me, rop, String(r.moulding || ""), p.mouldingOutput > 0 ? p.mouldingOutput.toFixed(2) : ""
+        ];
+
+        doc.setTextColor(0, 0, 0);
+        vals.forEach((v, i) => {
+          doc.text(v, 17 + i * 22, y);
+        });
+
+        y += 7;
+        if (y > 185) { doc.addPage(); y = 20; }
+      });
+
+      y += 5;
+      doc.setFontSize(11);
+      doc.setTextColor(0, 0, 150);
+      doc.text(`TOTAL MOULDING PRODUCTION: ${totalMoulding.toFixed(2)} MT`, 15, y);
+      y += 7;
+      doc.text(`TOTAL PRODUCTION: ${totalOutput.toFixed(2)} MT`, 15, y);
+      y += 7;
+      doc.text(`TOTAL GSR SHEETS: ${totalGSR} SHEETS`, 15, y);
+
+      doc.save(`Visaka_Shift_${shift}_Report.pdf`);
     }
 
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
-      document.getElementById('uiDashboardDate').innerText = data.board ? data.board.dateBanner : "Ready";
+      document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
+
       const sel = document.getElementById('loginSelect');
-      sel.innerHTML = '<option value="">-- Choose Name --</option><option value="Guest">Guest</option>';
+      sel.innerHTML = '<option value="">-- Choose Name --</option>';
+      
+      const guestOpt = document.createElement('option');
+      guestOpt.value = "Guest";
+      guestOpt.innerText = "Guest";
+      sel.appendChild(guestOpt);
+
       (data.operators || []).forEach(op => {
-        const opt = document.createElement('option'); opt.value = op.name; opt.innerText = op.name; sel.appendChild(opt);
+        const opt = document.createElement('option');
+        opt.value = op.name;
+        opt.innerText = op.name;
+        sel.appendChild(opt);
       });
-      if (localStorage.getItem(STORAGE_KEY)) applySecurity(data.security, data.guestSecurity);
+
+      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
+      if (currentUser) {
+        applySecurity(data.security, data.guestSecurity);
+      }
+
       const splash = document.getElementById('splashScreen');
-      if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 300); }
+      if (splash) {
+        splash.style.opacity = '0';
+        setTimeout(() => { splash.style.display = 'none'; }, 300);
+      }
     };
 
     window.onload = function() {
