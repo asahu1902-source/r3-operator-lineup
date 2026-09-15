@@ -80,6 +80,7 @@
     .tools-group { display: flex; gap: 8px; align-items: center; }
 
     .whatsapp-btn { background: #128C7E; color: #ffffff; border: 2px solid #25D366; border-radius: 7px; font-size: 13px; font-weight: 900; padding: 6px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+    .whatsapp-btn-large { background: #128C7E; color: #ffffff; border: 2px solid #25D366; border-radius: 8px; font-size: 13px; font-weight: 900; padding: 10px 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 6px; }
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
     .toggle-btn { background: #0284c7; color: #ffffff; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
@@ -113,8 +114,16 @@
     .hol-top { display: flex; justify-content: space-between; align-items: center; }
     .hol-top h5 { font-size: 14px; color: #ffff00; font-weight: 900; }
     .hol-top p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
+    .relay-badge-row { display: flex; gap: 6px; margin-top: 4px; }
+    .relay-chip { flex: 1; background: #000000; border: 1.5px solid #38bdf8; border-radius: 4px; padding: 4px; text-align: center; }
+    .relay-chip span { display: block; font-size: 9.5px; color: #94a3b8; font-weight: 800; }
+    .relay-chip strong { font-size: 15px; color: #00ff00; font-weight: 900; }
     .date-pill-container { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; }
     .date-pill { background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; font-size: 9.5px; font-weight: 800; border-radius: 3px; padding: 2px 5px; }
+
+    /* PROGRESS BARS */
+    #reportProgressBarContainer, #leaveProgressBarContainer { width: 100%; height: 7px; background: #020617; border-radius: 10px; overflow: hidden; margin: 6px 0; display: none; }
+    #reportProgressBarFill, #leaveProgressBarFill { height: 100%; width: 0%; background: #00ffff; transition: width 0.3s ease; }
 
     /* VISAKA PRODUCTION STYLES */
     .prod-card { background:#07142b; border:2px solid #00bfff; border-radius:10px; padding:12px; margin-bottom:10px; }
@@ -477,7 +486,10 @@
 
     <!-- PAGE 5: DUE HISTORY -->
     <div id="pageDueHistory" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <button class="whatsapp-btn" onclick="shareDueWhatsApp()">WhatsApp</button>
+      </div>
       <div class="board-container">
         <div class="date-banner" id="uiDueOperatorTitle">My Position Due Matrix</div>
         <table class="standard-table">
@@ -513,6 +525,7 @@
           <div class="form-group"><label>End Date</label><input type="date" id="uiRepToDate" class="form-input" value="2026-09-30"></div>
         </div>
         <button class="btn-action-main" onclick="loadDynamicMonthlyReport()">Generate Report ➔</button>
+        <div id="reportProgressBarContainer"><div id="reportProgressBarFill"></div></div>
         <div id="uiMonthlyResultArea" style="margin-top:10px; display:flex; flex-direction:column; gap:12px;"></div>
       </div>
     </div>
@@ -532,8 +545,10 @@
         <div class="form-group"><label>To Date</label><input type="date" id="uiLeaveTo" class="form-input"></div>
         <div class="form-group"><label>Reason / Remarks</label><input type="text" id="uiLeaveReason" class="form-input" placeholder="Enter reason..."></div>
         <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
+        <div id="leaveProgressBarContainer"><div id="leaveProgressBarFill"></div></div>
         <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
           <p style="color:#4ade80; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
+          <button class="whatsapp-btn-large" onclick="forwardLeaveWhatsApp()">Forward to supervisor on WhatsApp</button>
         </div>
       </div>
     </div>
@@ -600,6 +615,7 @@
     let portalData = null;
     let globalProdData = [];
     let masterSettings = { targetProd: "", targetSize: "", batchWeight: "" };
+    let lastSubmittedLeave = null;
     let currentReportResult = null;
     let chatInterval = null;
     let presenceInterval = null;
@@ -884,18 +900,35 @@
       const area = document.getElementById('uiMonthlyResultArea');
       if(area) area.innerHTML = '<div style="color:#00ffff; text-align:center;">Calculating report...</div>';
 
+      const barContainer = document.getElementById('reportProgressBarContainer');
+      const barFill = document.getElementById('reportProgressBarFill');
+      if(barContainer && barFill) {
+        barContainer.style.display = 'block';
+        barFill.style.width = '40%';
+        setTimeout(() => barFill.style.width = '80%', 200);
+      }
+
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getMonthlyReport&name=${encodeURIComponent(op)}&fromDate=${fDate}&toDate=${tDate}&callback=handleMonthlyReport&t=${Date.now()}`;
       document.head.appendChild(s);
     }
     window.handleMonthlyReport = function(res) {
-      if (!res || res.status !== "success") {
-        const area = document.getElementById('uiMonthlyResultArea');
-        if(area) area.innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
-        return;
-      }
-      currentReportResult = res;
-      renderMonthlyReportHTML(res);
+      const barContainer = document.getElementById('reportProgressBarContainer');
+      const barFill = document.getElementById('reportProgressBarFill');
+      if(barFill) barFill.style.width = '100%';
+
+      setTimeout(() => {
+        if(barContainer) barContainer.style.display = 'none';
+        if(barFill) barFill.style.width = '0%';
+
+        if (!res || res.status !== "success") {
+          const area = document.getElementById('uiMonthlyResultArea');
+          if(area) area.innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
+          return;
+        }
+        currentReportResult = res;
+        renderMonthlyReportHTML(res);
+      }, 300);
     };
     function renderMonthlyReportHTML(res) {
       const area = document.getElementById('uiMonthlyResultArea');
@@ -906,36 +939,116 @@
         html += `<tr><td class="cyan-cell align-left">${item.label}</td><td style="color:#ffff00; font-size:13px;">${item.val}</td></tr>`;
       });
       html += '</tbody></table>';
+
+      if (res.performance && res.performance.length > 0) {
+        if (!isScrollableReportMode) {
+          html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & WORKED DATES</div>';
+          html += '<table class="standard-table"><thead><tr><th style="width:28%;">Position</th><th style="width:12%;">Times</th><th style="width:14%;">Alloc %</th><th style="width:46%;">Dates Worked</th></tr></thead><tbody>';
+          let grandTotal = 0;
+          res.performance.forEach(p => {
+            grandTotal += p.timesWorked;
+            let datePillsHtml = '-';
+            if (p.dates && p.dates.length > 0) {
+              datePillsHtml = '<div class="date-pill-container">';
+              p.dates.forEach(d => { datePillsHtml += `<span class="date-pill">${d}</span>`; });
+              datePillsHtml += '</div>';
+            }
+            html += `<tr><td class="cyan-cell align-left">${p.position}</td><td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td><td style="color:#00ff00; font-weight:bold;">${p.allocation}</td><td style="text-align:left;">${datePillsHtml}</td></tr>`;
+          });
+          html += `<tr style="background:#1e3a8a;"><td class="cyan-cell align-left">Total</td><td style="color:#ffff00; font-weight:900;">${grandTotal}</td><td style="color:#ffff00; font-weight:900;">100%</td><td style="color:#94a3b8; font-size:10px;">-</td></tr></tbody></table>`;
+        } else {
+          html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE (DAY-WISE SCROLL VIEW)</div>';
+          html += '<div style="width:100%; overflow-x:auto;"><table class="standard-table" style="min-width:900px;"><thead><tr><th style="width:120px;">Position</th><th style="width:60px;">Times</th><th style="width:70px;">Alloc %</th>';
+          let maxDays = 1;
+          res.performance.forEach(p => { if (p.dates && p.dates.length > maxDays) maxDays = p.dates.length; });
+          for (let d = 1; d <= maxDays; d++) { html += `<th style="width:85px;">Day${d}</th>`; }
+          html += '</tr></thead><tbody>';
+          let grandTotal = 0;
+          res.performance.forEach(p => {
+            grandTotal += p.timesWorked;
+            html += `<tr><td class="cyan-cell align-left">${p.position}</td><td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td><td style="color:#00ff00; font-weight:bold;">${p.allocation}</td>`;
+            for (let d = 0; d < maxDays; d++) {
+              const dtVal = (p.dates && p.dates[d]) ? p.dates[d] : '-';
+              html += `<td style="font-size:9.5px; color:#facc15;">${dtVal}</td>`;
+            }
+            html += `</tr>`;
+          });
+          html += `<tr style="background:#1e3a8a;"><td class="cyan-cell align-left">Total</td><td style="color:#ffff00; font-weight:900;">${grandTotal}</td><td style="color:#ffff00; font-weight:900;">100%</td>`;
+          for (let d = 0; d < maxDays; d++) { html += `<td>-</td>`; }
+          html += `</tr></tbody></table></div>`;
+        }
+      }
+
+      if (res.leaveDates && res.leaveDates.length > 0) {
+        html += '<div class="date-banner" style="margin-top:12px;">LEAVE RECORDED DATES</div>';
+        html += '<div style="background:#000; border:2px solid #ef4444; border-radius:6px; padding:8px;"><div class="date-pill-container">';
+        res.leaveDates.forEach(ld => { html += `<span class="date-pill" style="border-color:#f87171; color:#f87171;">${ld}</span>`; });
+        html += '</div></div>';
+      }
+
       area.innerHTML = html;
     }
 
     // LEAVE ENTRY
     function openLeaveEntry() {
-      const leaveName = document.getElementById('uiLeaveName');
-      if(leaveName) leaveName.value = localStorage.getItem(STORAGE_KEY) || "";
-      const box = document.getElementById('uiLeaveSuccessBox');
-      if(box) box.style.display = 'none';
+      document.getElementById('uiLeaveName').value = localStorage.getItem(STORAGE_KEY) || "";
+      document.getElementById('uiLeaveSuccessBox').style.display = 'none';
+      const btn = document.getElementById('btnSubmitLeave');
+      if(btn) { btn.innerText = "Submit Leave Request"; btn.disabled = false; }
       showPage('pageLeaveEntry');
     }
     function submitLeave() {
       const name = localStorage.getItem(STORAGE_KEY) || "";
       const type = document.getElementById('uiLeaveType').value;
-      const fromDate = document.getElementById('uiLeaveFrom').value;
-      const toDate = document.getElementById('uiLeaveTo').value;
+      const fromDateVal = document.getElementById('uiLeaveFrom').value;
+      const toDateVal = document.getElementById('uiLeaveTo').value;
       const reason = document.getElementById('uiLeaveReason').value;
-      if (!fromDate || !toDate) { alert("Select both From and To dates."); return; }
-      
+      if (!fromDateVal || !toDateVal) { alert("Select both From and To dates."); return; }
+
+      const parts1 = fromDateVal.split('-');
+      const parts2 = toDateVal.split('-');
+      const fromDate = `${parts1[2]}/${parts1[1]}/${parts1[0]}`;
+      const toDate = `${parts2[2]}/${parts2[1]}/${parts2[0]}`;
+
+      const btn = document.getElementById('btnSubmitLeave');
+      if(btn) { btn.innerText = "Submitting Leave..."; btn.disabled = true; }
+
+      const barContainer = document.getElementById('leaveProgressBarContainer');
+      const barFill = document.getElementById('leaveProgressBarFill');
+      if(barContainer && barFill) {
+        barContainer.style.display = 'block';
+        barFill.style.width = '40%';
+        setTimeout(() => barFill.style.width = '85%', 200);
+      }
+
+      lastSubmittedLeave = { name, type, fromDate, toDate, reason };
+
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=submitLeave&name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&reason=${encodeURIComponent(reason)}&callback=handleLeaveResponse&t=${Date.now()}`;
       document.head.appendChild(s);
     }
     window.handleLeaveResponse = function(res) {
-      if (res && res.status === "success") {
-        const box = document.getElementById('uiLeaveSuccessBox');
-        if(box) box.style.display = 'flex';
-        showToast("Leave recorded!");
-      } else { alert("Failed to record leave."); }
+      const btn = document.getElementById('btnSubmitLeave');
+      const barContainer = document.getElementById('leaveProgressBarContainer');
+      const barFill = document.getElementById('leaveProgressBarFill');
+      if(barFill) barFill.style.width = '100%';
+
+      setTimeout(() => {
+        if(barContainer) barContainer.style.display = 'none';
+        if(barFill) barFill.style.width = '0%';
+        if(btn) { btn.innerText = "Submit Leave Request"; btn.disabled = false; }
+
+        if (res && res.status === "success") {
+          document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
+          showToast("Leave recorded!");
+        } else { alert("Failed to record leave."); }
+      }, 300);
     };
+    function forwardLeaveWhatsApp() {
+      if (!lastSubmittedLeave) return;
+      const msg = `*LEAVE APPLICATION*\n• Operator: ${lastSubmittedLeave.name}\n• Type: ${lastSubmittedLeave.type}\n• Period: ${lastSubmittedLeave.fromDate} to ${lastSubmittedLeave.toDate}\n• Reason: ${lastSubmittedLeave.reason || 'Personal'}`;
+      window.open("whatsapp://send?text=" + encodeURIComponent(msg), "_blank");
+    }
 
     // HOLIDAY & SCHEDULE & FESTIVAL
     function renderHolidayList() {
@@ -945,7 +1058,14 @@
       (portalData && portalData.holidays ? portalData.holidays : []).forEach(h => {
         const item = document.createElement('div');
         item.className = 'holiday-card-item';
-        item.innerHTML = `<div class="hol-top"><h5>🎈 ${h.name}</h5><p>${h.rawDate} (${h.day})</p></div>`;
+        item.innerHTML = `
+          <div class="hol-top"><h5>🎈 ${h.name}</h5><p>${h.rawDate} (${h.day})</p></div>
+          <div class="relay-badge-row">
+            <div class="relay-chip"><span>R3</span><strong>${h.r3}</strong></div>
+            <div class="relay-chip"><span>R2</span><strong>${h.r2}</strong></div>
+            <div class="relay-chip"><span>R1</span><strong>${h.r1}</strong></div>
+          </div>
+        `;
         container.appendChild(item);
       });
       showPage('pageHolidayList');
@@ -970,10 +1090,20 @@
       const container = document.getElementById('uiFestivalContainer');
       if(!container) return;
       container.innerHTML = '';
+      const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
       BASE_FESTIVALS.forEach(f => {
+        const fullDate = `${f.d}/${f.m}/2026`;
+        const match = schedMap[fullDate] || { day: "-", r3: "-", r2: "-", r1: "-" };
         const item = document.createElement('div');
         item.className = 'holiday-card-item';
-        item.innerHTML = `<div class="hol-top"><h5>🪔 ${f.name}</h5><p>${f.d}/${f.m}/2026</p></div>`;
+        item.innerHTML = `
+          <div class="hol-top"><h5>🪔 ${f.name}</h5><p>${fullDate} (${match.day})</p></div>
+          <div class="relay-badge-row">
+            <div class="relay-chip"><span>R3</span><strong>${match.r3}</strong></div>
+            <div class="relay-chip"><span>R2</span><strong>${match.r2}</strong></div>
+            <div class="relay-chip"><span>R1</span><strong>${match.r1}</strong></div>
+          </div>
+        `;
         container.appendChild(item);
       });
       showPage('pageLocalFestival');
@@ -1374,7 +1504,6 @@
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
       document.head.appendChild(s);
 
-      // SAFETY FALLBACK: Hide splash screen automatically after 3.5 seconds if script loading hangs
       setTimeout(() => {
         hideSplashForcefully();
       }, 3500);
