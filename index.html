@@ -13,9 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="R3 Portal">
   <link rel="apple-touch-icon" href="icon.png">
 
-  <!-- FontAwesome for Production Dashboard Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <!-- jsPDF for Production PDF Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
@@ -38,7 +36,6 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
-    /* CUSTOM TOAST NOTIFICATION */
     #customToast {
       position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
       background: linear-gradient(135deg, #059669, #10b981); color: #ffffff;
@@ -48,7 +45,6 @@
     }
     #customToast.show { transform: translateX(-50%) translateY(0); }
 
-    /* LOGIN SCREEN */
     .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
     .login-card img { width: 85px; height: 85px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
     .login-card h2 { color: #ffff00; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
@@ -56,104 +52,29 @@
 
     .operator-select { width: 100%; background: #000000; color: #ffff00; border: 2px solid #00ffff; padding: 12px; font-size: 16px; font-weight: 900; border-radius: 8px; outline: none; margin-bottom: 16px; }
     .btn-action-main { width: 100%; background: linear-gradient(90deg, #10b981, #059669); color: #ffffff; font-size: 15px; font-weight: 900; padding: 12px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
-    .btn-action-main:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
-    /* BIG CENTER PROFILE HERO */
     .profile-hero-card {
-      background: linear-gradient(180deg, #0f2b5c, #07142b);
-      border: 2px solid #38bdf8;
-      border-radius: 14px;
-      padding: 16px 14px 14px 14px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+      background: linear-gradient(180deg, #0f2b5c, #07142b); border: 2px solid #38bdf8; border-radius: 14px;
+      padding: 16px 14px 14px 14px; display: flex; flex-direction: column; align-items: center; position: relative; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
-
-    .btn-logout-corner {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: #270606;
-      color: #ef4444;
-      border: 1.5px solid #ef4444;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .profile-big-container {
-      position: relative;
-      width: 85px;
-      height: 85px;
-      margin-bottom: 8px;
-      cursor: pointer;
-    }
-
-    .profile-img-big {
-      width: 85px;
-      height: 85px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #facc15;
-      background: #000;
-      box-shadow: 0 0 14px rgba(250, 204, 21, 0.45);
-    }
-
-    .photo-edit-badge-big {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      background: #0284c7;
-      color: #fff;
-      font-size: 12px;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #fff;
-      box-shadow: 0 0 8px rgba(0,0,0,0.6);
-    }
-
+    .btn-logout-corner { position: absolute; top: 12px; right: 12px; background: #270606; color: #ef4444; border: 1.5px solid #ef4444; font-size: 11px; font-weight: 800; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
+    .profile-big-container { position: relative; width: 85px; height: 85px; margin-bottom: 8px; cursor: pointer; }
+    .profile-img-big { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid #facc15; background: #000; }
+    .photo-edit-badge-big { position: absolute; bottom: 2px; right: 2px; background: #0284c7; color: #fff; font-size: 12px; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
     .hero-welcome-text { font-size: 18px; font-weight: 900; color: #ffff00; text-align: center; margin-top: 2px; }
     .hero-date-text { font-size: 13px; font-weight: bold; color: #38bdf8; text-align: center; margin-top: 2px; }
 
-    /* DASHBOARD MENU */
     .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
-    .menu-item-btn {
-      background: #0a192f;
-      border: 2px solid #facc15;
-      border-radius: 10px;
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-    }
+    .menu-item-btn { background: #0a192f; border: 2px solid #facc15; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
     .menu-item-btn.disabled { background: #1e293b; border-color: #475569; opacity: 0.55; cursor: not-allowed; }
     .menu-item-icon { font-size: 26px; }
     .menu-item-info h4 { font-size: 14.5px; color: #ffff00; font-weight: 900; }
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
     .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
-    /* TOP ACTION BAR */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
-    .tools-group { display: flex; gap: 8px; align-items: center; }
 
-    .whatsapp-btn {
-      background: #128C7E; color: #ffffff; border: 2px solid #25D366; border-radius: 7px;
-      font-size: 13px; font-weight: 900; padding: 6px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-    }
-    .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
-    .toggle-btn { background: #0284c7; color: #ffffff; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
-
-    /* R3 TABLES & CARDS */
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
     .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 14.5px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
     .standard-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -161,20 +82,11 @@
     .standard-table td { border: 1px solid #8b0000; padding: 5px 2px; font-size: 11px; font-weight: bold; text-align: center; }
     .cyan-cell { background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; }
     .name-cell { text-align: left !important; padding-left: 6px !important; color: #ffffff; }
-    .due-cell { color: #ffff00; }
-    .day-cell { color: #38bdf8; }
-    .shift-cell { color: #00ff00; font-weight: 900; }
-    .align-left { text-align: left !important; padding-left: 8px !important; }
-    .highlight-row td { background-color: #064e3b !important; border-top: 2px solid #00ff00 !important; border-bottom: 2px solid #00ff00 !important; }
-    .highlight-row .name-cell { color: #00ff00 !important; }
-    .tag-you { background-color: #facc15; color: #000000; font-size: 8.5px; padding: 1px 4px; border-radius: 3px; margin-left: 3px; }
 
     .form-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
     .form-group label { display: block; color: #00ffff; font-size: 11.5px; font-weight: 800; margin-bottom: 4px; }
     .form-input { width: 100%; background: #000000; color: #ffff00; border: 1.5px solid #38bdf8; padding: 10px; font-size: 14px; border-radius: 6px; outline: none; }
-    .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    /* CHAT STYLES */
     .chat-container { background: #000; border: 2px solid #38bdf8; border-radius: 10px; height: 280px; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; }
     .chat-bubble { background: #1e293b; border-left: 4px solid #38bdf8; border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
     .chat-bubble.my-msg { border-left-color: #10b981; background: #064e3b; align-self: flex-end; width: 85%; }
@@ -200,7 +112,6 @@
     
     .prod-form-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
     .prod-input, .prod-select { width:100%; height:43px; background:#000; color:#ffff00; border:1.5px solid #00bfff; border-radius:6px; padding:8px 10px; font-size:15px; font-weight:800; outline:none; }
-    .prod-input[type="number"] { appearance:none; -webkit-appearance:none; }
     
     .btn-settings { background:#0284c7; }
     .btn-save { background:#10b981; }
@@ -216,10 +127,15 @@
     .production-table .cyan { color:#00ffff; }
     
     .action-buttons { display:flex; justify-content:center; gap:4px; }
-    .action-btn { width:32px; height:31px; border:none; border-radius:5px; color:#fff; font-size:14px; }
+    .action-btn { width:32px; height:31px; border:none; border-radius:5px; color:#fff; font-size:14px; cursor:pointer; }
     .edit-btn { background:#0284c7; }
     .delete-btn { background:#dc2626; }
-    
+    .whatsapp-btn-table { background:#16a34a; }
+    .pdf-btn-table { background:#dc2626; }
+
+    #refreshIcon.spinning { animation: refreshSpin .8s linear infinite; display: inline-block; }
+    @keyframes refreshSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
     .metrics-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:8px; }
     .metric-box { background:#020617; border:1.5px solid #00bfff; border-radius:6px; padding:9px; text-align:center; }
     .metric-label { display:block; color:#00ffff; font-size:10px; font-weight:900; }
@@ -229,13 +145,12 @@
     .gsr-title { color:#00ffff; font-size:12px; font-weight:900; }
     .gsr-value { color:#ffff00; font-size:21px; font-weight:900; margin-top:3px; }
     
-    .delete-all { width:100%; background:#dc2626; color:#fff; border:none; border-radius:7px; padding:13px; margin-top:8px; font-size:15px; font-weight:900; }
+    .delete-all { width:100%; background:#dc2626; color:#fff; border:none; border-radius:7px; padding:13px; margin-top:8px; font-size:15px; font-weight:900; cursor:pointer; }
     .report-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:8px; }
-    .report-btn { border:none; border-radius:7px; padding:12px 5px; color:#fff; font-size:12px; font-weight:900; }
+    .report-btn { border:none; border-radius:7px; padding:12px 5px; color:#fff; font-size:12px; font-weight:900; cursor:pointer; }
     .whatsapp-report { background:#16a34a; }
     .pdf-report { background:#dc2626; }
 
-    /* MODALS */
     .custom-modal-backdrop {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.85); z-index: 999999;
@@ -265,15 +180,6 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <!-- MODALS -->
-  <div id="customAlertModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box">
-      <h4>🔒 LOCKED ACCESS</h4>
-      <p id="customAlertMsg">This section is currently disabled.</p>
-      <button class="btn-modal-primary" onclick="closeCustomAlert()">OK</button>
-    </div>
-  </div>
-
   <div id="customLogoutModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box">
       <h4>⚠️ CONFIRM LOGOUT</h4>
@@ -285,19 +191,7 @@
     </div>
   </div>
 
-  <div id="customClearChatModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box info-box">
-      <h4>🗑️ CLEAR CHAT</h4>
-      <p>Clear your chat history on this device?</p>
-      <div class="modal-btn-row">
-        <button class="btn-modal-secondary" onclick="closeClearChatModal()">Cancel</button>
-        <button class="btn-modal-danger" onclick="confirmClearChat()">Yes, Clear</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- VISAKA CONFIRM MODAL OVERLAY -->
-  <div class="custom-modal-backdrop" id="confirmModal" style="display:none;">
+  <div class="custom-modal-backdrop" id="confirmModal">
     <div class="custom-modal-box">
       <div style="color:#facc15; font-size:35px; margin-bottom:8px;"><i class="fa-solid fa-triangle-exclamation"></i></div>
       <h4 id="confirmTitle" style="color:#ffff00; font-size:19px;">Are you sure?</h4>
@@ -344,114 +238,61 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
-      <!-- ONLINE STATUS WIDGET CARD -->
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
         <h4 style="color:#10b981; font-size:13px; font-weight:900; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-          <span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 8px #10b981;"></span> 
+          <span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block;"></span> 
           ONLINE OPERATORS (<span id="onlineCountBadge">0</span>)
         </h4>
-        <div id="onlineOperatorsList" style="font-size:12px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:6px;">
-          Checking online status...
-        </div>
+        <div id="onlineOperatorsList" style="font-size:12px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:6px;">Checking...</div>
       </div>
 
       <div class="dashboard-menu">
         <div id="btnCheckPosition" class="menu-item-btn" onclick="openMenuAction('checkPosition')">
           <div class="menu-item-icon">📋</div>
-          <div class="menu-item-info">
-            <h4>Check Position & Confirm Duty</h4>
-            <p>Today's duty lineup & live submission status</p>
-          </div>
+          <div class="menu-item-info"><h4>Check Position & Confirm Duty</h4><p>Today's duty lineup & live submission status</p></div>
         </div>
-
         <div id="btnProdDashboard" class="menu-item-btn" onclick="openMenuAction('prodDashboard')">
           <div class="menu-item-icon">🏭</div>
-          <div class="menu-item-info">
-            <h4>Production Dashboard</h4>
-            <p>Hourly production, ME%, ROP & shift reports</p>
-          </div>
+          <div class="menu-item-info"><h4>Production Dashboard</h4><p>Hourly production, ME%, ROP & shift reports</p></div>
         </div>
-
         <div id="btnMyDueHistory" class="menu-item-btn" onclick="openMenuAction('myDueHistory')">
           <div class="menu-item-icon">⏳</div>
-          <div class="menu-item-info">
-            <h4>My Due History</h4>
-            <p>Due counts, last operated dates, days & shifts</p>
-          </div>
+          <div class="menu-item-info"><h4>My Due History</h4><p>Due counts, last operated dates, days & shifts</p></div>
         </div>
-
         <div id="btnMonthlyReport" class="menu-item-btn" onclick="openMenuAction('monthlyReport')">
           <div class="menu-item-icon">📊</div>
-          <div class="menu-item-info">
-            <h4>My Monthly Report</h4>
-            <p>Attendance summary & worked dates</p>
-          </div>
+          <div class="menu-item-info"><h4>My Monthly Report</h4><p>Attendance summary & worked dates</p></div>
         </div>
-
         <div id="btnLeaveEntry" class="menu-item-btn" onclick="openMenuAction('leaveEntry')">
           <div class="menu-item-icon">📝</div>
-          <div class="menu-item-info">
-            <h4>Leave Entry</h4>
-            <p>Apply for PL, SL, CL, or C/Off</p>
-          </div>
+          <div class="menu-item-info"><h4>Leave Entry</h4><p>Apply for PL, SL, CL, or C/Off</p></div>
         </div>
-
         <div id="btnHolidayList" class="menu-item-btn" onclick="openMenuAction('holidayList')">
           <div class="menu-item-icon">🏢</div>
-          <div class="menu-item-info">
-            <h4>Company Holiday</h4>
-            <p>Upcoming holidays countdown & shifts</p>
-          </div>
+          <div class="menu-item-info"><h4>Company Holiday</h4><p>Upcoming holidays countdown & shifts</p></div>
         </div>
-
         <div id="btnShiftSchedule" class="menu-item-btn" onclick="openMenuAction('shiftSchedule')">
           <div class="menu-item-icon">📅</div>
-          <div class="menu-item-info">
-            <h4>Check Shift Schedule</h4>
-            <p>Look up any date (2026-2050+) for R1, R2, R3 shifts</p>
-          </div>
+          <div class="menu-item-info"><h4>Check Shift Schedule</h4><p>Look up any date for shifts</p></div>
         </div>
-
         <div id="btnLocalFestival" class="menu-item-btn" onclick="openMenuAction('localFestival')">
           <div class="menu-item-icon">🪔</div>
-          <div class="menu-item-info">
-            <h4>Local Festival</h4>
-            <p>All running festivals with auto relay shifts</p>
-          </div>
+          <div class="menu-item-info"><h4>Local Festival</h4><p>All running festivals with auto relay shifts</p></div>
         </div>
-
         <div id="btnGroupChat" class="menu-item-btn" onclick="openMenuAction('groupChat')">
           <div class="menu-item-icon">💬</div>
-          <div class="menu-item-info">
-            <h4>Live Group Chat</h4>
-            <p>Chat with operators & supervisor in real-time</p>
-          </div>
+          <div class="menu-item-info"><h4>Live Group Chat</h4><p>Chat with operators & supervisor in real-time</p></div>
         </div>
       </div>
     </div>
 
-    <!-- PAGE 3: CHECK POSITION & CONFIRM DUTY -->
+    <!-- PAGE 3: CHECK POSITION -->
     <div id="pagePosition" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-      </div>
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
       <div id="myDutyActionCard" class="form-card" style="background: linear-gradient(135deg, #064e3b, #0f172a); border: 2px solid #10b981; display:none;">
         <h3 style="color:#10b981; font-size:15px; font-weight:900;">🎯 My Assigned Duty Confirmation</h3>
         <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
         <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
-      </div>
-      <div class="form-card" style="background:#07142b; border:2px solid #38bdf8;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h3 style="color:#ffff00; font-size:15px;">📊 Live Duty Submission Status</h3>
-          <span id="uiSubmissionCounter" style="background:#10b981; color:#000; font-weight:900; font-size:12px; padding:3px 8px; border-radius:6px;">0 / 0 Submitted</span>
-        </div>
-        <div id="uiRemainingNotice" style="font-size:12px; color:#f87171; font-weight:bold;">Loading remaining list...</div>
-        <div style="overflow-x:auto; margin-top:6px;">
-          <table class="standard-table">
-            <thead><tr><th>Position</th><th>Operator</th><th>Status / Time</th></tr></thead>
-            <tbody id="uiLiveSubmissionTbody"><tr><td colspan="3" style="padding:12px; color:#94a3b8;">Loading status...</td></tr></tbody>
-          </table>
-        </div>
       </div>
       <div class="board-container" style="margin-top:10px;">
         <div class="date-banner" id="uiBoardDate">-</div>
@@ -461,21 +302,14 @@
           <tbody id="uiBoardTbody"></tbody>
         </table>
       </div>
-      <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
     <!-- PAGE 4: VISAKA PRODUCTION DASHBOARD -->
     <div id="pageProdDashboard" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-      </div>
+      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
 
-      <!-- TARGET PANEL -->
       <div class="target-panel">
-        <div class="top-bar">
-          <span id="bannerShift">Shift A</span>
-          <span id="bannerDate">-</span>
-        </div>
+        <div class="top-bar"><span id="bannerShift">Shift A</span><span id="bannerDate">-</span></div>
         <div class="req-box">
           <div class="req-value" id="topReqSheetsVal">SETUP REQUIRED</div>
           <span class="req-label">TOTAL REQUIRED SHEETS</span>
@@ -496,20 +330,11 @@
       <div class="prod-card">
         <div class="prod-section-title"><i class="fa-solid fa-gears"></i> Master Settings</div>
         <div class="prod-form-row">
-          <div class="form-group">
-            <label>Target Production (MT)</label>
-            <input type="text" id="setConfigTarget" class="prod-input" inputmode="decimal" placeholder="Enter Target MT" autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label>Target Size (m)</label>
-            <input type="text" id="setConfigTargetSize" class="prod-input" inputmode="decimal" placeholder="Enter Target Size" autocomplete="off">
-          </div>
+          <div class="form-group"><label>Target Production (MT)</label><input type="text" id="setConfigTarget" class="prod-input" inputmode="decimal" placeholder="Target MT"></div>
+          <div class="form-group"><label>Target Size (m)</label><input type="text" id="setConfigTargetSize" class="prod-input" inputmode="decimal" placeholder="Target Size"></div>
         </div>
-        <div class="form-group">
-          <label>Batch Weight (kg)</label>
-          <input type="text" id="setConfigBatch" class="prod-input" inputmode="decimal" placeholder="Enter Batch Weight" autocomplete="off">
-        </div>
-        <div class="progress-wrap" id="settingsProgressWrap" style="display:none; height:7px; background:#020617; border-radius:10px; overflow:hidden; margin:6px 0;"><div class="progress-bar" id="settingsProgress" style="height:100%; width:0%; background:#00ffff;"></div></div>
+        <div class="form-group"><label>Batch Weight (kg)</label><input type="text" id="setConfigBatch" class="prod-input" inputmode="decimal" placeholder="Batch Weight"></div>
+        <div class="progress-wrap" id="settingsProgressWrap" style="display:none; height:7px; background:#020617; border-radius:10px; overflow:hidden; margin:6px 0;"><div class="progress-bar" id="settingsProgress" style="height:100%; width:0%; background:#00ffff; transition:.3s;"></div></div>
         <button class="btn btn-settings" id="settingsBtn" onclick="saveSettingsData()" style="width:100%; border:none; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-floppy-disk"></i> SAVE SETTINGS</button>
       </div>
 
@@ -520,79 +345,48 @@
         
         <div class="form-group">
           <label>Operator Name</label>
-          <input type="text" id="opName" class="prod-input" placeholder="Enter operator name" autocomplete="off">
+          <input type="text" id="opName" class="prod-input" placeholder="Operator name" autocomplete="off" readonly style="background:#111; color:#00ff00;">
         </div>
 
         <div class="prod-form-row">
-          <div class="form-group">
-            <label>Shift</label>
-            <input type="text" id="opShift" class="prod-input" value="A" maxlength="1" style="text-align:center; text-transform:uppercase;" oninput="this.value=this.value.toUpperCase(); renderProdDashboard();">
-          </div>
+          <div class="form-group"><label>Shift</label><input type="text" id="opShift" class="prod-input" value="A" maxlength="1" style="text-align:center; text-transform:uppercase;" oninput="this.value=this.value.toUpperCase(); renderProdDashboard();"></div>
           <div class="form-group">
             <label>Production Hour</label>
             <select id="opHour" class="prod-select">
-              <option value="1st Hour">1st Hour</option>
-              <option value="2nd Hour">2nd Hour</option>
-              <option value="3rd Hour">3rd Hour</option>
-              <option value="4th Hour">4th Hour</option>
-              <option value="5th Hour">5th Hour</option>
-              <option value="6th Hour">6th Hour</option>
-              <option value="7th Hour">7th Hour</option>
-              <option value="8th Hour">8th Hour</option>
+              <option value="1st Hour">1st Hour</option><option value="2nd Hour">2nd Hour</option>
+              <option value="3rd Hour">3rd Hour</option><option value="4th Hour">4th Hour</option>
+              <option value="5th Hour">5th Hour</option><option value="6th Hour">6th Hour</option>
+              <option value="7th Hour">7th Hour</option><option value="8th Hour">8th Hour</option>
             </select>
           </div>
         </div>
 
         <div class="prod-form-row">
-          <div class="form-group">
-            <label>1st Size (m)</label>
-            <input type="text" id="opSize1" class="prod-input" inputmode="decimal" value="6" autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label>2nd Size (m)</label>
-            <input type="text" id="opSize2" class="prod-input" inputmode="decimal" autocomplete="off">
-          </div>
+          <div class="form-group"><label>1st Size (m)</label><input type="text" id="opSize1" class="prod-input" inputmode="decimal" value="6"></div>
+          <div class="form-group"><label>2nd Size (m)</label><input type="text" id="opSize2" class="prod-input" inputmode="decimal"></div>
         </div>
 
         <div class="prod-form-row">
-          <div class="form-group">
-            <label>1st Size Sheets</label>
-            <input type="text" id="opS1" class="prod-input" inputmode="numeric" placeholder="Enter sheets" autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label>2nd Size Sheets</label>
-            <input type="text" id="opS2" class="prod-input" inputmode="numeric" placeholder="Enter sheets" autocomplete="off">
-          </div>
+          <div class="form-group"><label>1st Size Sheets</label><input type="text" id="opS1" class="prod-input" inputmode="numeric" placeholder="Sheets"></div>
+          <div class="form-group"><label>2nd Size Sheets</label><input type="text" id="opS2" class="prod-input" inputmode="numeric" placeholder="Sheets"></div>
         </div>
 
         <div class="prod-form-row">
-          <div class="form-group">
-            <label>Beater</label>
-            <input type="text" id="opBeater" class="prod-input" inputmode="decimal" placeholder="Enter Beater" autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label>Moulding</label>
-            <input type="text" id="opMoulding" class="prod-input" inputmode="decimal" placeholder="Enter Moulding" autocomplete="off">
-          </div>
+          <div class="form-group"><label>Beater</label><input type="text" id="opBeater" class="prod-input" inputmode="decimal" placeholder="Beater"></div>
+          <div class="form-group"><label>Moulding</label><input type="text" id="opMoulding" class="prod-input" inputmode="decimal" placeholder="Moulding"></div>
         </div>
 
         <div class="prod-form-row">
-          <div class="form-group">
-            <label>B/D</label>
-            <input type="text" id="opBD" class="prod-input" inputmode="decimal" placeholder="Minutes" autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label>GSR</label>
-            <input type="text" id="opGSR" class="prod-input" inputmode="numeric" placeholder="GSR sheets" autocomplete="off">
-          </div>
+          <div class="form-group"><label>B/D</label><input type="text" id="opBD" class="prod-input" inputmode="decimal" placeholder="Minutes"></div>
+          <div class="form-group"><label>GSR</label><input type="text" id="opGSR" class="prod-input" inputmode="numeric" placeholder="GSR sheets"></div>
         </div>
 
-        <div class="progress-wrap" id="submitProgressWrap" style="display:none; height:7px; background:#020617; border-radius:10px; overflow:hidden; margin:6px 0;"><div class="progress-bar" id="submitProgress" style="height:100%; width:0%; background:#00ffff;"></div></div>
+        <div class="progress-wrap" id="submitProgressWrap" style="display:none; height:7px; background:#020617; border-radius:10px; overflow:hidden; margin:6px 0;"><div class="progress-bar" id="submitProgress" style="height:100%; width:0%; background:#00ffff; transition:.3s;"></div></div>
         <button class="btn btn-save" id="submitBtn" onclick="submitProductionEntry()" style="width:100%; border:none; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT HOURLY DATA</button>
         <button class="btn btn-cancel" id="cancelBtn" onclick="resetProdForm()" style="width:100%; border:none; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-xmark"></i> CANCEL EDIT</button>
       </div>
 
-      <!-- PRODUCTION LOG & METRICS -->
+      <!-- PRODUCTION LOG -->
       <div class="prod-card">
         <div class="prod-section-title"><i class="fa-solid fa-chart-line"></i> Production Log & Metrics</div>
         <button class="btn btn-refresh" id="refreshBtn" onclick="loadProdDashboardData()" style="width:100%; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-rotate" id="refreshIcon"></i> REFRESH DATA</button>
@@ -623,92 +417,31 @@
           <div class="gsr-value" id="totalGSR">0 SHEETS</div>
         </div>
 
-        <button class="delete-all" id="deleteAllBtn" onclick="openDeleteAllModal()" style="cursor:pointer;"><i class="fa-solid fa-trash-can"></i> DELETE ALL HOURS</button>
+        <button class="delete-all" id="deleteAllBtn" onclick="openDeleteAllModal()"><i class="fa-solid fa-trash-can"></i> DELETE ALL HOURS</button>
 
         <div class="report-grid">
-          <button class="report-btn whatsapp-report" onclick="sendShiftWhatsApp()" style="cursor:pointer;"><i class="fa-brands fa-whatsapp"></i> WHATSAPP SHIFT REPORT</button>
-          <button class="report-btn pdf-report" onclick="generateShiftPDF()" style="cursor:pointer;"><i class="fa-solid fa-file-pdf"></i> PDF SHIFT REPORT</button>
+          <button class="report-btn whatsapp-report" onclick="sendShiftWhatsApp()"><i class="fa-brands fa-whatsapp"></i> WHATSAPP SHIFT REPORT</button>
+          <button class="report-btn pdf-report" onclick="generateShiftPDF()"><i class="fa-solid fa-file-pdf"></i> PDF SHIFT REPORT</button>
         </div>
       </div>
     </div>
 
-    <!-- PAGE 5: MY DUE HISTORY -->
-    <div id="pageDueHistory" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
-      <div class="board-container">
-        <div class="date-banner" id="uiDueOperatorTitle">My Position Due Matrix</div>
-        <table class="standard-table">
-          <colgroup><col style="width:28%"><col style="width:14%"><col style="width:30%"><col style="width:14%"><col style="width:14%"></colgroup>
-          <thead><tr><th>Position</th><th>Due</th><th>Last Date</th><th>Day</th><th>Shift</th></tr></thead>
-          <tbody id="uiDueTbody"></tbody>
-        </table>
-      </div>
-    </div>
+    <!-- OTHER PAGES -->
+    <div id="pageDueHistory" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div><div class="board-container"><div class="date-banner">My Position Due Matrix</div><table class="standard-table"><tbody id="uiDueTbody"></tbody></table></div></div>
+    <div id="pageMonthlyReport" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
+    <div id="pageLeaveEntry" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
+    <div id="pageHolidayList" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
+    <div id="pageShiftSchedule" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
+    <div id="pageLocalFestival" class="screen-page"><div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div></div>
 
-    <!-- PAGE 6: MONTHLY REPORT -->
-    <div id="pageMonthlyReport" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
-      <div class="form-card">
-        <h4 id="uiMonthlyRepHeading" style="color:#ffff00; font-size:15.5px; font-weight:900;">Monthly Performance Summary</h4>
-        <div class="filter-grid">
-          <div class="form-group"><label>Select Month</label><select id="uiRepMonthSelect" class="form-input" onchange="syncDateInputsFromDropdown()"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9" selected>Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select></div>
-          <div class="form-group"><label>Select Year</label><select id="uiRepYearSelect" class="form-input" onchange="syncDateInputsFromDropdown()"><option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option></select></div>
-        </div>
-        <div class="filter-grid">
-          <div class="form-group"><label>Start Date</label><input type="date" id="uiRepFromDate" class="form-input" value="2026-09-01"></div>
-          <div class="form-group"><label>End Date</label><input type="date" id="uiRepToDate" class="form-input" value="2026-09-30"></div>
-        </div>
-        <button class="btn-action-main" onclick="loadDynamicMonthlyReport()">Generate Report ➔</button>
-        <div id="uiMonthlyResultArea" style="margin-top:10px; display:flex; flex-direction:column; gap:12px;"></div>
-      </div>
-    </div>
-
-    <!-- PAGE 7: LEAVE ENTRY -->
-    <div id="pageLeaveEntry" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
-      <div class="form-card">
-        <h3 style="color:#ffff00; font-size:16px;">📝 Apply Leave</h3>
-        <div class="form-group"><label>Operator Name</label><input type="text" id="uiLeaveName" class="form-input" disabled></div>
-        <div class="form-group"><label>Leave Type</label><select id="uiLeaveType" class="form-input"><option value="PL">PL</option><option value="SL">SL</option><option value="CL">CL</option><option value="C/Off">C/Off</option></select></div>
-        <div class="form-group"><label>From Date</label><input type="date" id="uiLeaveFrom" class="form-input"></div>
-        <div class="form-group"><label>To Date</label><input type="date" id="uiLeaveTo" class="form-input"></div>
-        <div class="form-group"><label>Reason</label><input type="text" id="uiLeaveReason" class="form-input" placeholder="Enter reason..."></div>
-        <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
-      </div>
-    </div>
-
-    <!-- PAGE 8: COMPANY HOLIDAY -->
-    <div id="pageHolidayList" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
-      <div class="form-card"><h3 style="color:#ffff00; font-size:16px;">🏢 Official Company Holidays</h3><div id="uiHolidayContainer" style="display:flex; flex-direction:column; gap:9px;"></div></div>
-    </div>
-
-    <!-- PAGE 9: SHIFT SCHEDULE -->
-    <div id="pageShiftSchedule" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
-      <div class="form-card"><h3 style="color:#ffff00; font-size:16px;">📅 Check Shift Schedule</h3><input type="date" id="uiScheduleDateInput" class="form-input" onchange="lookupShiftSchedule()"></div>
-    </div>
-
-    <!-- PAGE 10: LOCAL FESTIVAL -->
-    <div id="pageLocalFestival" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
-      <div class="form-card"><h3 style="color:#ffff00; font-size:16px;">🪔 Local Festivals</h3><div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:9px;"></div></div>
-    </div>
-
-    <!-- PAGE 11: LIVE GROUP CHAT -->
     <div id="pageGroupChat" class="screen-page">
       <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">💬 Live Group Chat</h3>
-        <div id="chatMessagesContainer" class="chat-container"><div style="color:#94a3b8; text-align:center; margin-top:20px;">Loading messages...</div></div>
+        <div id="chatMessagesContainer" class="chat-container"></div>
         <div class="chat-input-row">
           <input type="text" id="chatMessageInput" class="form-input" placeholder="Type message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
           <button class="btn-action-main" style="width:100px;" onclick="sendChatMessage()">Send</button>
-        </div>
-        <div style="background:#000; border:1px solid #10b981; border-radius:6px; padding:8px 10px; display:flex; align-items:center; gap:8px; margin-top:4px;">
-          <span style="width:8px; height:8px; background:#10b981; border-radius:50%;"></span>
-          <span style="font-size:11px; color:#10b981; font-weight:900;">Online (<span id="chatOnlineCount">0</span>):</span>
-          <div id="chatOnlineFooterList" style="font-size:11.5px; color:#ffff00; font-weight:bold; display:flex; gap:4px;">Checking...</div>
         </div>
       </div>
     </div>
@@ -740,7 +473,11 @@
 
       if (pageId === 'pageGroupChat') startChatPolling(); else stopChatPolling();
       if (pageId === 'pageDashboard') startPresenceHeartbeat(); else stopPresenceHeartbeat();
-      if (pageId === 'pageProdDashboard') loadProdDashboardData();
+      if (pageId === 'pageProdDashboard') {
+        const loggedUser = localStorage.getItem(STORAGE_KEY) || "";
+        document.getElementById("opName").value = loggedUser;
+        loadProdDashboardData();
+      }
     }
 
     function initUser() {
@@ -775,17 +512,12 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        const base64 = e.target.result;
-        const currentOp = localStorage.getItem(STORAGE_KEY);
-        if (currentOp) { localStorage.setItem('photo_' + currentOp, base64); document.getElementById('uiProfileImg').src = base64; }
+        localStorage.setItem('photo_' + localStorage.getItem(STORAGE_KEY), e.target.result);
+        document.getElementById('uiProfileImg').src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
-
-    function loadProfilePhoto(opName) {
-      const savedPhoto = localStorage.getItem('photo_' + opName);
-      document.getElementById('uiProfileImg').src = savedPhoto || 'icon.png';
-    }
+    function loadProfilePhoto(opName) { document.getElementById('uiProfileImg').src = localStorage.getItem('photo_' + opName) || 'icon.png'; }
 
     function startPresenceHeartbeat() {
       sendPresencePing();
@@ -793,7 +525,6 @@
       presenceInterval = setInterval(sendPresencePing, 30000);
     }
     function stopPresenceHeartbeat() { if (presenceInterval) { clearInterval(presenceInterval); presenceInterval = null; } }
-
     function sendPresencePing() {
       const currentOp = localStorage.getItem(STORAGE_KEY);
       if (!currentOp || currentOp.toLowerCase() === "guest") return;
@@ -801,19 +532,15 @@
       s.src = `${SCRIPT_URL}?action=updatePresence&name=${encodeURIComponent(currentOp)}&callback=handlePresenceResponse&t=${Date.now()}`;
       document.head.appendChild(s);
     }
-
     window.handlePresenceResponse = function(res) {
       if (!res || res.status !== "success") return;
       const onlineUsers = res.onlineUsers || [];
       document.getElementById('onlineCountBadge').innerText = onlineUsers.length;
-      document.getElementById('chatOnlineCount').innerText = onlineUsers.length;
       let html = '';
       onlineUsers.forEach(user => {
-        const isMe = (user.toLowerCase() === (localStorage.getItem(STORAGE_KEY) || "").toLowerCase());
-        html += `<span style="background:#064e3b; border:1px solid #10b981; padding:2px 6px; border-radius:4px; font-size:11px;">🟢 ${user} ${isMe ? '(You)' : ''}</span>`;
+        html += `<span style="background:#064e3b; border:1px solid #10b981; padding:2px 6px; border-radius:4px; font-size:11px;">🟢 ${user}</span>`;
       });
       document.getElementById('onlineOperatorsList').innerHTML = html || '<span style="color:#94a3b8;">No one online</span>';
-      document.getElementById('chatOnlineFooterList').innerHTML = html || '<span style="color:#94a3b8;">No one online</span>';
     };
 
     function applySecurity(sec, guestSec) {
@@ -835,17 +562,7 @@
 
       map.forEach(item => {
         const el = document.getElementById(item.id);
-        if (el) {
-          if (!item.allowed) {
-            el.classList.add('disabled');
-            if (!el.querySelector('.menu-lock-tag')) {
-              const tag = document.createElement('span'); tag.className = 'menu-lock-tag'; tag.innerText = '🔒 Locked'; el.appendChild(tag);
-            }
-          } else {
-            el.classList.remove('disabled');
-            const tag = el.querySelector('.menu-lock-tag'); if (tag) tag.remove();
-          }
-        }
+        if (el && !item.allowed) el.classList.add('disabled');
       });
     }
 
@@ -853,19 +570,13 @@
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       const activeSec = (currentUser.toLowerCase() === "guest") ? portalData.guestSecurity : portalData.security;
       if (activeSec && activeSec[type] === false) { alert("This section is currently disabled."); return; }
-
-      if (type === "checkPosition") renderPositionBoard();
+      if (type === "checkPosition") showPage('pagePosition');
       else if (type === "prodDashboard") showPage('pageProdDashboard');
-      else if (type === "myDueHistory") renderDueHistory();
-      else if (type === "monthlyReport") showPage('pageMonthlyReport');
-      else if (type === "leaveEntry") openLeaveEntry();
-      else if (type === "holidayList") renderHolidayList();
-      else if (type === "shiftSchedule") showPage('pageShiftSchedule');
-      else if (type === "localFestival") renderLocalFestival();
+      else if (type === "myDueHistory") showPage('pageDueHistory');
       else if (type === "groupChat") showPage('pageGroupChat');
+      else showPage('pageDashboard');
     }
 
-    // CHAT POLLING
     function startChatPolling() { if (chatInterval) clearInterval(chatInterval); chatInterval = setInterval(loadChatMessages, 2500); }
     function stopChatPolling() { if (chatInterval) { clearInterval(chatInterval); chatInterval = null; } }
     function loadChatMessages() {
@@ -882,22 +593,18 @@
         const isMe = (m.name || "").toLowerCase() === myName;
         html += `<div class="chat-bubble ${isMe ? 'my-msg' : ''}"><div class="chat-meta"><span>${m.name}</span><span>${m.timestamp}</span></div><div class="chat-text">${m.message}</div></div>`;
       });
-      container.innerHTML = html || '<div style="color:#94a3b8; text-align:center;">No messages yet.</div>';
+      container.innerHTML = html || '<div style="color:#94a3b8; text-align:center;">No messages.</div>';
     };
     function sendChatMessage() {
       const input = document.getElementById('chatMessageInput');
       const text = input.value.trim();
-      const name = localStorage.getItem(STORAGE_KEY) || "Guest";
       if (!text) return;
       input.value = '';
       const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=sendChat&name=${encodeURIComponent(name)}&message=${encodeURIComponent(text)}&callback=loadChatMessages&t=${Date.now()}`;
+      s.src = `${SCRIPT_URL}?action=sendChat&name=${encodeURIComponent(localStorage.getItem(STORAGE_KEY))}&message=${encodeURIComponent(text)}&callback=loadChatMessages&t=${Date.now()}`;
       document.head.appendChild(s);
     }
 
-    // ==========================================
-    // VISAKA PRODUCTION DASHBOARD FRONTEND LOGIC
-    // ==========================================
     function jsonp(url, callbackName) {
       const script = document.createElement("script");
       script.src = url + "&callback=" + callbackName + "&t=" + Date.now();
@@ -906,21 +613,24 @@
     }
 
     function loadProdDashboardData() {
-      showToast("⏳ Loading Production Data...");
+      const refreshBtn = document.getElementById("refreshBtn");
+      const refreshIcon = document.getElementById("refreshIcon");
+      if (refreshBtn) refreshBtn.disabled = true;
+      if (refreshIcon) refreshIcon.classList.add("spinning");
+
+      window.handleProdDashboardResponse = function(res) {
+        if (refreshBtn) refreshBtn.disabled = false;
+        if (refreshIcon) refreshIcon.classList.remove("spinning");
+        if (!res || res.status !== "success") { showToast("❌ Failed to load data."); return; }
+        globalProdData = res.data.rows || [];
+        masterSettings = res.data.masterSettings || masterSettings;
+        document.getElementById("setConfigTarget").value = masterSettings.targetProd !== "" ? masterSettings.targetProd : "";
+        document.getElementById("setConfigTargetSize").value = masterSettings.targetSize !== "" ? masterSettings.targetSize : "";
+        document.getElementById("setConfigBatch").value = masterSettings.batchWeight !== "" ? masterSettings.batchWeight : "";
+        renderProdDashboard();
+      };
       jsonp(SCRIPT_URL + "?action=getProdDashboardData", "handleProdDashboardResponse");
     }
-
-    window.handleProdDashboardResponse = function(res) {
-      if (!res || res.status !== "success") { showToast("❌ Failed to load production data."); return; }
-      globalProdData = res.data.rows || [];
-      masterSettings = res.data.masterSettings || masterSettings;
-
-      document.getElementById("setConfigTarget").value = masterSettings.targetProd !== "" ? masterSettings.targetProd : "";
-      document.getElementById("setConfigTargetSize").value = masterSettings.targetSize !== "" ? masterSettings.targetSize : "";
-      document.getElementById("setConfigBatch").value = masterSettings.batchWeight !== "" ? masterSettings.batchWeight : "";
-
-      renderProdDashboard();
-    };
 
     function getSelectedShift() { return document.getElementById("opShift").value.trim().toUpperCase(); }
     function todayDateString() {
@@ -929,8 +639,7 @@
       return String(d.getDate()).padStart(2,"0") + "-" + months[d.getMonth()] + "-" + d.getFullYear();
     }
     function getCurrentShiftRows() {
-      const shift = getSelectedShift();
-      const today = todayDateString();
+      const shift = getSelectedShift(), today = todayDateString();
       return globalProdData.filter(r => String(r.shift).trim().toUpperCase() === shift && String(r.date).trim() === today);
     }
     function hourNumber(hour) { const n = parseInt(String(hour || "")); return isNaN(n) ? 0 : n; }
@@ -981,8 +690,10 @@
           <td class="yellow">${p.mouldingOutput > 0 ? p.mouldingOutput.toFixed(2) : ""}</td>
           <td>
             <div class="action-buttons">
-              <button class="action-btn edit-btn" onclick="editProdRow(${r.rowIndex})"><i class="fa-solid fa-pen"></i></button>
-              <button class="action-btn delete-btn" onclick="deleteProdRow(${r.rowIndex})"><i class="fa-solid fa-trash-can"></i></button>
+              <button class="action-btn edit-btn" title="Edit" onclick="editProdRow(${r.rowIndex})"><i class="fa-solid fa-pen"></i></button>
+              <button class="action-btn delete-btn" title="Delete" onclick="deleteProdRow(${r.rowIndex})"><i class="fa-solid fa-trash-can"></i></button>
+              <button class="action-btn whatsapp-btn-table" title="WhatsApp" onclick="sendRowWhatsApp(${r.rowIndex})"><i class="fa-brands fa-whatsapp"></i></button>
+              <button class="action-btn pdf-btn-table" title="PDF" onclick="generateRowPDF(${r.rowIndex})"><i class="fa-solid fa-file-pdf"></i></button>
             </div>
           </td>
         </tr>`;
@@ -1003,7 +714,6 @@
       });
       let overallME = totalMEInput > 0 ? ((1 - totalMESheetOutput / totalMEInput) * 100).toFixed(1) : 0;
       let overallROP = totalOutput > 0 ? (totalOutput * 60 / Math.max(1, rows.length * 60 - totalBD)).toFixed(2) : 0;
-
       document.getElementById("totalProduction").innerText = totalOutput.toFixed(2) + " MT";
       document.getElementById("totalInput").innerText = totalInput.toFixed(2) + " MT";
       document.getElementById("overallME").innerText = overallME + "%";
@@ -1017,10 +727,7 @@
 
     function updateProdBanner(rows) {
       const targetProd = Number(masterSettings.targetProd), targetSize = Number(masterSettings.targetSize);
-      if (!targetProd || !targetSize || targetSize <= 0) {
-        document.getElementById("topReqSheetsVal").innerText = "SETUP REQUIRED";
-        return;
-      }
+      if (!targetProd || !targetSize || targetSize <= 0) { document.getElementById("topReqSheetsVal").innerText = "SETUP REQUIRED"; return; }
       const totalReqSheets = (targetProd * 1000) / (targetSize * 12.8);
       let totalOutput = 0; rows.forEach(r => totalOutput += getRowProduction(r).output);
       const producedSheets = (totalOutput * 1000) / (targetSize * 12.8);
@@ -1028,7 +735,6 @@
       let latestHour = 0; rows.forEach(r => { const n = hourNumber(r.hour); if (n > latestHour) latestHour = n; });
       const remHours = Math.max(0, 8 - latestHour);
       const reqHr = remHours > 0 ? remSheets / remHours : 0;
-
       document.getElementById("topReqSheetsVal").innerText = totalReqSheets.toFixed(2);
       document.getElementById("bannerProduced").innerText = producedSheets.toFixed(2);
       document.getElementById("bannerReqSheet").innerText = remSheets.toFixed(2);
@@ -1043,8 +749,17 @@
       const targetSize = document.getElementById("setConfigTargetSize").value.trim();
       const batchWeight = document.getElementById("setConfigBatch").value.trim();
       if (!targetProd || !targetSize || !batchWeight) { showToast("⚠️ Fill all settings."); return; }
-      
+
+      const btn = document.getElementById("settingsBtn");
+      const wrap = document.getElementById("settingsProgressWrap");
+      const progress = document.getElementById("settingsProgress");
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SAVING...';
+      wrap.style.display = "block"; progress.style.width = "40%";
+
       window.handleSettingsRes = function(res) {
+        progress.style.width = "100%";
+        setTimeout(() => { wrap.style.display = "none"; progress.style.width = "0%"; }, 400);
+        btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> SAVE SETTINGS';
         if (res && res.status === "success") { showToast("✅ Settings saved."); loadProdDashboardData(); }
         else { showToast("❌ Save failed."); }
       };
@@ -1054,19 +769,23 @@
     function submitProductionEntry() {
       const name = document.getElementById("opName").value.trim();
       if (!name) { showToast("⚠️ Enter operator name."); return; }
-      const shift = getSelectedShift();
-      const hour = document.getElementById("opHour").value;
-      const size1 = document.getElementById("opSize1").value;
-      const size2 = document.getElementById("opSize2").value;
-      const s1 = document.getElementById("opS1").value;
-      const s2 = document.getElementById("opS2").value;
-      const moulding = document.getElementById("opMoulding").value;
-      const beater = document.getElementById("opBeater").value;
-      const bd = document.getElementById("opBD").value;
-      const gsr = document.getElementById("opGSR").value;
+      const shift = getSelectedShift(), hour = document.getElementById("opHour").value;
+      const size1 = document.getElementById("opSize1").value, size2 = document.getElementById("opSize2").value;
+      const s1 = document.getElementById("opS1").value, s2 = document.getElementById("opS2").value;
+      const moulding = document.getElementById("opMoulding").value, beater = document.getElementById("opBeater").value;
+      const bd = document.getElementById("opBD").value, gsr = document.getElementById("opGSR").value;
       const rowIndex = document.getElementById("editRowIndex").value;
 
+      const btn = document.getElementById("submitBtn");
+      const wrap = document.getElementById("submitProgressWrap");
+      const progress = document.getElementById("submitProgress");
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING...';
+      wrap.style.display = "block"; progress.style.width = "30%";
+
       window.handleSubmitRes = function(res) {
+        progress.style.width = "100%";
+        setTimeout(() => { wrap.style.display = "none"; progress.style.width = "0%"; }, 400);
+        btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT HOURLY DATA';
         if (res && res.status === "success") { showToast("✅ Saved."); resetProdForm(); loadProdDashboardData(); }
         else { showToast("❌ " + (res.message || "Failed")); }
       };
@@ -1080,7 +799,7 @@
       const row = globalProdData.find(r => Number(r.rowIndex) === Number(idx));
       if (!row) return;
       document.getElementById("editRowIndex").value = row.rowIndex;
-      document.getElementById("opName").value = row.name || "";
+      document.getElementById("opName").value = row.name || localStorage.getItem(STORAGE_KEY) || "";
       document.getElementById("opShift").value = row.shift || "A";
       document.getElementById("opHour").value = row.hour || "1st Hour";
       document.getElementById("opSize1").value = row.size1 || "";
@@ -1102,13 +821,13 @@
       document.getElementById("formTitle").innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Hourly Production Entry';
       document.getElementById("submitBtn").innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT HOURLY DATA';
       document.getElementById("cancelBtn").style.display = "none";
+      document.getElementById("opName").value = localStorage.getItem(STORAGE_KEY) || "";
       document.getElementById("opS1").value = ""; document.getElementById("opS2").value = "";
       document.getElementById("opBeater").value = ""; document.getElementById("opMoulding").value = "";
       document.getElementById("opBD").value = ""; document.getElementById("opGSR").value = "";
     }
 
     function deleteProdRow(idx) {
-      pendingDeleteRow = idx;
       document.getElementById("confirmTitle").innerText = "DELETE HOURLY ENTRY?";
       document.getElementById("confirmMessage").innerText = "This entry will be permanently deleted.";
       document.getElementById("confirmActionBtn").onclick = function() {
@@ -1123,8 +842,7 @@
     }
 
     function openDeleteAllModal() {
-      const shift = getSelectedShift();
-      const rows = getCurrentShiftRows();
+      const shift = getSelectedShift(), rows = getCurrentShiftRows();
       if (!rows.length) { showToast("ℹ️ No hours found."); return; }
       document.getElementById("confirmTitle").innerText = "DELETE ALL HOURS?";
       document.getElementById("confirmMessage").innerText = `All ${rows.length} entries of Shift ${shift} will be deleted.`;
@@ -1139,19 +857,38 @@
       document.getElementById("confirmModal").style.display = "flex";
     }
 
-    function closeConfirmModal() { document.getElementById("confirmModal").style.display = "none"; pendingDeleteRow = null; }
+    function closeConfirmModal() { document.getElementById("confirmModal").style.display = "none"; }
+
+    function sendRowWhatsApp(idx) {
+      const row = globalProdData.find(r => Number(r.rowIndex) === Number(idx));
+      if (!row) return;
+      const p = getRowProduction(row);
+      const msg = `VISAKA PRODUCTION\nDate: ${row.date}\nShift: ${row.shift}\nHour: ${row.hour}\nSize: ${p.size}m\nSheets: ${p.sheets}\nTotal: ${p.output.toFixed(2)}MT\nOperator: ${row.name || "-"}`;
+      window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+    }
+
+    function generateRowPDF(idx) {
+      const row = globalProdData.find(r => Number(r.rowIndex) === Number(idx));
+      if (!row) return;
+      const p = getRowProduction(row);
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.setFontSize(18); doc.text("VISAKA PRODUCTION ENTRY", 20, 20);
+      doc.setFontSize(11);
+      let y = 35;
+      [
+        `Date: ${row.date}`, `Shift: ${row.shift}`, `Hour: ${row.hour}`,
+        `Size: ${p.size} m`, `Sheets: ${p.sheets}`, `Total Production: ${p.output.toFixed(2)} MT`,
+        `Beater: ${row.beater || 0}`, `B/D: ${row.bd || 0} min`, `GSR: ${row.gsr || 0}`, `Operator: ${row.name || "-"}`
+      ].forEach(line => { doc.text(line, 20, y); y += 9; });
+      doc.save(`Visaka_${row.shift}_${row.hour}.pdf`);
+    }
 
     function sendShiftWhatsApp() {
-      const shift = getSelectedShift();
-      const rows = getCurrentShiftRows();
-      if (!rows.length) { showToast("ℹ️ No production data."); return; }
-      let totalOutput = 0;
-      let msg = `VISAKA PRODUCTION REPORT\nDate: ${todayDateString()}\nShift: ${shift}\n\n`;
-      rows.forEach(r => {
-        const p = getRowProduction(r);
-        totalOutput += p.output;
-        msg += `${r.hour} | Size: ${p.size}m | Sheets: ${p.sheets} | Total: ${p.output.toFixed(2)}MT\n`;
-      });
+      const shift = getSelectedShift(), rows = getCurrentShiftRows();
+      if (!rows.length) { showToast("ℹ️ No data."); return; }
+      let totalOutput = 0, msg = `VISAKA REPORT - Shift ${shift} (${todayDateString()})\n\n`;
+      rows.forEach(r => { const p = getRowProduction(r); totalOutput += p.output; msg += `${r.hour}: ${p.output.toFixed(2)}MT\n`; });
       msg += `\nTOTAL PRODUCTION: ${totalOutput.toFixed(2)} MT`;
       window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
     }
@@ -1161,11 +898,10 @@
       if (!rows.length) { showToast("ℹ️ No data."); return; }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: "landscape" });
-      doc.setFontSize(16); doc.text("VISAKA PRODUCTION REPORT", 15, 18);
-      doc.save(`Visaka_Shift_${getSelectedShift()}.pdf`);
+      doc.setFontSize(16); doc.text("VISAKA PRODUCTION REPORT - Shift " + getSelectedShift(), 15, 18);
+      doc.save(`Visaka_Report_${getSelectedShift()}.pdf`);
     }
 
-    // INITIAL LOAD
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
