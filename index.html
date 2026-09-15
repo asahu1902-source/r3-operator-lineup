@@ -186,7 +186,7 @@
     .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     /* CHAT STYLES */
-    .chat-container { background: #000; border: 2px solid #38bdf8; border-radius: 10px; height: 350px; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; }
+    .chat-container { background: #000; border: 2px solid #38bdf8; border-radius: 10px; height: 280px; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; }
     .chat-bubble { background: #1e293b; border-left: 4px solid #38bdf8; border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
     .chat-bubble.my-msg { border-left-color: #10b981; background: #064e3b; align-self: flex-end; width: 85%; }
     .chat-meta { display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; font-weight: bold; }
@@ -474,7 +474,7 @@
         </div>
       </div>
 
-      <!-- MY PERSONAL SUBMISSION HERO CARD (PLACED AT THE VERY TOP) -->
+      <!-- MY PERSONAL SUBMISSION HERO CARD -->
       <div id="myDutyActionCard" class="form-card" style="background: linear-gradient(135deg, #064e3b, #0f172a); border: 2px solid #10b981; display:none;">
         <h3 style="color:#10b981; font-size:15px; font-weight:900;">🎯 My Assigned Duty Confirmation</h3>
         <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
@@ -733,7 +733,7 @@
       </div>
     </div>
 
-    <!-- PAGE 10: LIVE GROUP CHAT -->
+    <!-- PAGE 10: LIVE GROUP CHAT WITH ONLINE FOOTER -->
     <div id="pageGroupChat" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -753,6 +753,16 @@
           <input type="text" id="chatMessageInput" class="form-input" placeholder="Type message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
           <button class="btn-action-main" style="width:100px;" onclick="sendChatMessage()">Send</button>
         </div>
+
+        <!-- 🟢 ONLINE OPERATORS FOOTER BAR IN CHAT -->
+        <div style="background:#000000; border:1px solid #10b981; border-radius:6px; padding:8px 10px; display:flex; align-items:center; gap:8px; margin-top:4px;">
+          <span style="width:8px; height:8px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 6px #10b981; flex-shrink:0;"></span>
+          <span style="font-size:11px; color:#10b981; font-weight:900; white-space:nowrap;">Online (<span id="chatOnlineCount">0</span>):</span>
+          <div id="chatOnlineFooterList" style="font-size:11.5px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:4px; overflow-x:auto;">
+            Checking...
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -928,20 +938,30 @@
       if (!res || res.status !== "success") return;
       const listContainer = document.getElementById('onlineOperatorsList');
       const countBadge = document.getElementById('onlineCountBadge');
+      
+      const chatFooterList = document.getElementById('chatOnlineFooterList');
+      const chatCountBadge = document.getElementById('chatOnlineCount');
+      
       const onlineUsers = res.onlineUsers || [];
 
       countBadge.innerText = onlineUsers.length;
+      if (chatCountBadge) chatCountBadge.innerText = onlineUsers.length;
+
       if (onlineUsers.length === 0) {
-        listContainer.innerHTML = '<span style="color:#94a3b8; font-weight:normal;">No one else is online right now.</span>';
+        const emptyHtml = '<span style="color:#94a3b8; font-weight:normal; font-size:11px;">No one online</span>';
+        if (listContainer) listContainer.innerHTML = emptyHtml;
+        if (chatFooterList) chatFooterList.innerHTML = emptyHtml;
         return;
       }
 
       let html = '';
       onlineUsers.forEach(user => {
         const isMe = (user.toLowerCase() === (localStorage.getItem(STORAGE_KEY) || "").toLowerCase());
-        html += `<span style="background:#064e3b; border:1px solid #10b981; padding:3px 8px; border-radius:4px; font-size:11.5px;">🟢 ${user} ${isMe ? '(You)' : ''}</span>`;
+        html += `<span style="background:#064e3b; border:1px solid #10b981; padding:2px 6px; border-radius:4px; font-size:11px;">🟢 ${user} ${isMe ? '(You)' : ''}</span>`;
       });
-      listContainer.innerHTML = html;
+      
+      if (listContainer) listContainer.innerHTML = html;
+      if (chatFooterList) chatFooterList.innerHTML = html;
     };
 
     function applySecurity(sec, guestSec) {
@@ -1718,7 +1738,7 @@
     function shareHolidayWhatsApp() {
       const list = (portalData && portalData.holidays) ? portalData.holidays : [];
       let text = `*COMPANY HOLIDAYS*\n\n`;
-      list.forEach(h => { text += `• ${h.name} (${h.rawDate})\n`; });
+      list.hl.forEach(h => { text += `• ${h.name} (${h.rawDate})\n`; });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
