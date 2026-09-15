@@ -13,11 +13,6 @@
   <meta name="apple-mobile-web-app-title" content="R3 Duty">
   <link rel="apple-touch-icon" href="icon.png">
 
-  <!-- FontAwesome for Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <!-- jsPDF for PDF Export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
     body { background-color: #000000; color: #ffffff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 8px 6px 30px 6px; }
@@ -34,10 +29,11 @@
     .splash-load-text { color: #00ffff; font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
     @keyframes spinRing { 100% { transform: rotate(360deg); } }
 
-    .app-viewport { width: 100%; max-width: 850px; display: flex; flex-direction: column; gap: 12px; }
+    .app-viewport { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
+    /* CUSTOM TOAST NOTIFICATION */
     #customToast {
       position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
       background: linear-gradient(135deg, #059669, #10b981); color: #ffffff;
@@ -47,6 +43,7 @@
     }
     #customToast.show { transform: translateX(-50%) translateY(0); }
 
+    /* LOGIN SCREEN */
     .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
     .login-card img { width: 85px; height: 85px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
     .login-card h2 { color: #ffff00; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
@@ -54,36 +51,116 @@
 
     .operator-select { width: 100%; background: #000000; color: #ffff00; border: 2px solid #00ffff; padding: 12px; font-size: 16px; font-weight: 900; border-radius: 8px; outline: none; margin-bottom: 16px; }
     .btn-action-main { width: 100%; background: linear-gradient(90deg, #10b981, #059669); color: #ffffff; font-size: 15px; font-weight: 900; padding: 12px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
+    .btn-action-main:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
 
+    /* BIG CENTER PROFILE HERO */
     .profile-hero-card {
       background: linear-gradient(180deg, #0f2b5c, #07142b);
-      border: 2px solid #38bdf8; border-radius: 14px; padding: 16px 14px 14px 14px;
-      display: flex; flex-direction: column; align-items: center; position: relative; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+      border: 2px solid #38bdf8;
+      border-radius: 14px;
+      padding: 16px 14px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
-    .btn-logout-corner { position: absolute; top: 12px; right: 12px; background: #270606; color: #ef4444; border: 1.5px solid #ef4444; font-size: 11px; font-weight: 800; padding: 5px 10px; border-radius: 6px; cursor: pointer; }
-    .profile-big-container { position: relative; width: 85px; height: 85px; margin-bottom: 8px; cursor: pointer; }
-    .profile-img-big { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid #facc15; background: #000; }
-    .photo-edit-badge-big { position: absolute; bottom: 2px; right: 2px; background: #0284c7; color: #fff; font-size: 12px; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+
+    .btn-logout-corner {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #270606;
+      color: #ef4444;
+      border: 1.5px solid #ef4444;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .profile-big-container {
+      position: relative;
+      width: 85px;
+      height: 85px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .profile-img-big {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #facc15;
+      background: #000;
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.45);
+    }
+
+    .photo-edit-badge-big {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: #0284c7;
+      color: #fff;
+      font-size: 12px;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      box-shadow: 0 0 8px rgba(0,0,0,0.6);
+    }
+
     .hero-welcome-text { font-size: 18px; font-weight: 900; color: #ffff00; text-align: center; margin-top: 2px; }
     .hero-date-text { font-size: 13px; font-weight: bold; color: #38bdf8; text-align: center; margin-top: 2px; }
 
+    /* DASHBOARD MENU */
     .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
-    .menu-item-btn { background: #0a192f; border: 2px solid #facc15; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .menu-item-btn {
+      background: #0a192f;
+      border: 2px solid #facc15;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
     .menu-item-btn.disabled { background: #1e293b; border-color: #475569; opacity: 0.55; cursor: not-allowed; }
     .menu-item-icon { font-size: 26px; }
     .menu-item-info h4 { font-size: 14.5px; color: #ffff00; font-weight: 900; }
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
     .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
+    /* TOP ACTION BAR */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
     .btn-back { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 800; padding: 6px 10px; cursor: pointer; }
     .tools-group { display: flex; gap: 8px; align-items: center; }
 
-    .whatsapp-btn { background: #128C7E; color: #ffffff; border: 2px solid #25D366; border-radius: 7px; font-size: 13px; font-weight: 900; padding: 6px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
-    .whatsapp-btn-large { background: #128C7E; color: #ffffff; border: 2px solid #25D366; border-radius: 8px; font-size: 13px; font-weight: 900; padding: 10px 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 6px; }
+    .whatsapp-btn {
+      background: #128C7E;
+      color: #ffffff;
+      border: 2px solid #25D366;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 10px rgba(37, 211, 102, 0.4);
+    }
+    .whatsapp-btn svg { width: 24px; height: 24px; fill: #ffffff; flex-shrink: 0; }
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
     .toggle-btn { background: #0284c7; color: #ffffff; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
+    /* TABLES */
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
     .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 14.5px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
 
@@ -95,14 +172,20 @@
     .due-cell { color: #ffff00; }
     .day-cell { color: #38bdf8; }
     .shift-cell { color: #00ff00; font-weight: 900; }
+    .align-left { text-align: left !important; padding-left: 8px !important; }
+
     .highlight-row td { background-color: #064e3b !important; border-top: 2px solid #00ff00 !important; border-bottom: 2px solid #00ff00 !important; }
+    .highlight-row .name-cell { color: #00ff00 !important; }
     .tag-you { background-color: #facc15; color: #000000; font-size: 8.5px; padding: 1px 4px; border-radius: 3px; margin-left: 3px; }
 
     .form-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
     .form-group label { display: block; color: #00ffff; font-size: 11.5px; font-weight: 800; margin-bottom: 4px; }
     .form-input { width: 100%; background: #000000; color: #ffff00; border: 1.5px solid #38bdf8; padding: 10px; font-size: 14px; border-radius: 6px; outline: none; }
+    .form-input:disabled { opacity: 0.6; color: #94a3b8; }
+
     .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
+    /* CHAT STYLES */
     .chat-container { background: #000; border: 2px solid #38bdf8; border-radius: 10px; height: 280px; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; }
     .chat-bubble { background: #1e293b; border-left: 4px solid #38bdf8; border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
     .chat-bubble.my-msg { border-left-color: #10b981; background: #064e3b; align-self: flex-end; width: 85%; }
@@ -110,78 +193,82 @@
     .chat-text { font-size: 13px; color: #ffffff; word-break: break-word; }
     .chat-input-row { display: flex; gap: 8px; margin-top: 6px; }
 
-    .holiday-card-item { background: #111827; border-left: 5px solid #ef4444; border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    /* SUPERVISOR NOTICE BOX STYLING */
+    .supervisor-notice-card {
+      background: linear-gradient(135deg, #07142b, #0f2b5c);
+      border: 2px dashed #facc15;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.25);
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    .notice-title { color: #facc15; font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
+    .notice-body { color: #ffffff; font-size: 13px; font-weight: bold; line-height: 1.5; word-break: break-word; }
+
+    /* PROGRESS BARS */
+    #leaveProgressBarContainer, #reportProgressBarContainer {
+      width: 100%; height: 8px; background: #1e293b; border-radius: 4px;
+      overflow: hidden; margin-top: 8px; display: none; border: 1px solid #38bdf8;
+    }
+    #leaveProgressBarFill, #reportProgressBarFill {
+      width: 0%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
+      transition: width 0.4s ease-in-out;
+    }
+
+    @keyframes zoomPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .holiday-card-item {
+      background: #111827;
+      border-left: 5px solid #ef4444;
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .holiday-upcoming {
+      border: 2px solid #facc15 !important;
+      border-left: 6px solid #10b981 !important;
+      background: #06281c !important;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+    }
+
     .hol-top { display: flex; justify-content: space-between; align-items: center; }
     .hol-top h5 { font-size: 14px; color: #ffff00; font-weight: 900; }
     .hol-top p { font-size: 11.5px; color: #38bdf8; font-weight: bold; }
+
+    .badge-zoom-animated {
+      background: linear-gradient(90deg, #10b981, #059669);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 5px;
+      margin-left: 8px;
+      display: inline-block;
+      animation: zoomPulse 1.8s infinite ease-in-out;
+      border: 1px solid #facc15;
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.6);
+    }
+
     .relay-badge-row { display: flex; gap: 6px; margin-top: 4px; }
-    .relay-chip { flex: 1; background: #000000; border: 1.5px solid #38bdf8; border-radius: 4px; padding: 4px; text-align: center; }
+    .relay-chip { flex: 1; background: #000000; border: 1.5px solid #38bdf8; border-radius: 4px; padding: 4px 4px; text-align: center; }
     .relay-chip span { display: block; font-size: 9.5px; color: #94a3b8; font-weight: 800; }
     .relay-chip strong { font-size: 15px; color: #00ff00; font-weight: 900; }
+
     .date-pill-container { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; }
     .date-pill { background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; font-size: 9.5px; font-weight: 800; border-radius: 3px; padding: 2px 5px; }
 
-    /* PROGRESS BARS */
-    #reportProgressBarContainer, #leaveProgressBarContainer { width: 100%; height: 7px; background: #020617; border-radius: 10px; overflow: hidden; margin: 6px 0; display: none; }
-    #reportProgressBarFill, #leaveProgressBarFill { height: 100%; width: 0%; background: #00ffff; transition: width 0.3s ease; }
-
-    /* VISAKA PRODUCTION STYLES */
-    .prod-card { background:#07142b; border:2px solid #00bfff; border-radius:10px; padding:12px; margin-bottom:10px; }
-    .prod-section-title { color:#00ffff; font-size:17px; font-weight:900; margin-bottom:10px; }
-    .target-panel { background:#07142b; border:2px solid #00bfff; border-radius:10px; overflow:hidden; margin-bottom:10px; }
-    .top-bar { background:#0284c7; color:#000; display:flex; justify-content:space-between; padding:8px 10px; font-size:13px; font-weight:900; }
-    .req-box { text-align:center; padding:12px; border-bottom:1px solid #facc15; }
-    .req-value { color:#ffff00; font-size:25px; font-weight:900; }
-    .req-label { color:#00ffff; font-size:11px; font-weight:900; }
-    .kpi-grid { display:grid; grid-template-columns:repeat(3,1fr); }
-    .kpi { text-align:center; padding:9px 3px; border-right:1px solid #facc15; color:#00ffff; font-size:10px; font-weight:900; }
-    .kpi:last-child { border-right:none; }
-    .kpi-value { display:block; color:#ffff00; font-size:16px; margin-top:3px; }
-    .meta-row { display:grid; grid-template-columns:1fr 1fr; text-align:center; padding:8px; color:#facc15; font-size:12px; border-top:1px solid #facc15; }
-    .meta-row strong { color:#fff; }
-    .hours-banner { background:#db2777; color:#fff; text-align:center; padding:9px; font-size:14px; font-weight:900; }
-    
-    .prod-form-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
-    .prod-input, .prod-select { width:100%; height:43px; background:#000; color:#ffff00; border:1.5px solid #00bfff; border-radius:6px; padding:8px 10px; font-size:15px; font-weight:800; outline:none; }
-    
-    .btn-settings { background:#0284c7; }
-    .btn-save { background:#10b981; }
-    .btn-refresh { background:#334155; border:1px solid #00bfff; }
-    .btn-cancel { display:none; background:#dc2626; }
-    
-    .table-wrap { width:100%; overflow-x:auto; }
-    .production-table { width:100%; min-width:1200px; border-collapse:collapse; }
-    .production-table th { background:#a95f00; color:#000; padding:8px 5px; border:1px solid #401900; font-size:11px; font-weight:900; white-space:nowrap; }
-    .production-table td { background:#000; color:#fff; border:1px solid #541010; padding:8px 5px; text-align:center; font-size:11px; font-weight:800; white-space:nowrap; }
-    .production-table .hour { background:#00bfff; color:#000; }
-    .production-table .yellow { color:#ffff00; }
-    .production-table .cyan { color:#00ffff; }
-    
-    .action-buttons { display:flex; justify-content:center; gap:4px; }
-    .action-btn { width:32px; height:31px; border:none; border-radius:5px; color:#fff; font-size:14px; cursor:pointer; }
-    .edit-btn { background:#0284c7; }
-    .delete-btn { background:#dc2626; }
-    .whatsapp-btn-table { background:#16a34a; }
-    .pdf-btn-table { background:#dc2626; }
-
-    #refreshIcon.spinning { animation: refreshSpin .8s linear infinite; display: inline-block; }
-    @keyframes refreshSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-    .metrics-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:8px; }
-    .metric-box { background:#020617; border:1.5px solid #00bfff; border-radius:6px; padding:9px; text-align:center; }
-    .metric-label { display:block; color:#00ffff; font-size:10px; font-weight:900; }
-    .metric-value { display:block; color:#ffff00; font-size:17px; font-weight:900; margin-top:3px; }
-    
-    .gsr-card { background:#020617; border:2px solid #facc15; border-radius:7px; padding:10px; text-align:center; margin-top:8px; }
-    .gsr-title { color:#00ffff; font-size:12px; font-weight:900; }
-    .gsr-value { color:#ffff00; font-size:21px; font-weight:900; margin-top:3px; }
-    
-    .delete-all { width:100%; background:#dc2626; color:#fff; border:none; border-radius:7px; padding:13px; margin-top:8px; font-size:15px; font-weight:900; cursor:pointer; }
-    .report-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:8px; }
-    .report-btn { border:none; border-radius:7px; padding:12px 5px; color:#fff; font-size:12px; font-weight:900; cursor:pointer; }
-    .whatsapp-report { background:#16a34a; }
-    .pdf-report { background:#dc2626; }
-
+    /* CUSTOM MODAL POPUPS */
     .custom-modal-backdrop {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.85); z-index: 999999;
@@ -197,21 +284,41 @@
     .custom-modal-box h4 { color: #ef4444; font-size: 15px; font-weight: 900; }
     .custom-modal-box.info-box h4 { color: #facc15; }
     .custom-modal-box p { color: #ffff00; font-size: 14px; font-weight: bold; }
+    
     .modal-btn-row { display: flex; gap: 10px; margin-top: 4px; }
-    .btn-modal-primary, .btn-modal-danger, .btn-modal-secondary {
-      flex: 1; padding: 10px; border-radius: 6px; font-size: 13px; font-weight: 900; cursor: pointer; border: none; text-transform: uppercase;
+    .btn-modal-primary {
+      flex: 1; background: #10b981; color: #ffffff; border: none; font-size: 13px; font-weight: 900;
+      padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
     }
-    .btn-modal-primary { background: #10b981; color: #fff; }
-    .btn-modal-danger { background: #dc2626; color: #fff; }
-    .btn-modal-secondary { background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; }
+    .btn-modal-danger {
+      flex: 1; background: #dc2626; color: #ffffff; border: none; font-size: 13px; font-weight: 900;
+      padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
+    }
+    .btn-modal-secondary {
+      flex: 1; background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; font-size: 13px; font-weight: 900;
+      padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
+    }
+
+    @media print {
+      body { background: #ffffff !important; color: #000 !important; font-size: 8px !important; zoom: 60%; }
+      .top-actions-bar, #splashScreen, .filter-grid, .btn-action-main, #reportProgressBarContainer, .toggle-btn { display: none !important; }
+      .app-viewport { max-width: 100% !important; width: 100% !important; gap: 4px !important; }
+      .form-card { border: none !important; padding: 0 !important; background: #fff !important; box-shadow: none !important; }
+      .standard-table th, .standard-table td { border: 1px solid #000 !important; color: #000 !important; padding: 2px 1px !important; font-size: 7px !important; white-space: nowrap !important; }
+      .cyan-cell { background-color: #e0e0e0 !important; color: #000 !important; }
+      @page { size: landscape; margin: 3mm; }
+    }
   </style>
 </head>
 <body>
 
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
+
+  <!-- CUSTOM TOAST NOTIFICATION -->
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <div id="customAlertModal" class="custom-modal-backdrop" style="display:none;">
+  <!-- CUSTOM MODALS -->
+  <div id="customAlertModal" class="custom-modal-backdrop">
     <div class="custom-modal-box">
       <h4>🔒 LOCKED ACCESS</h4>
       <p id="customAlertMsg">This section is currently disabled.</p>
@@ -219,7 +326,7 @@
     </div>
   </div>
 
-  <div id="customLogoutModal" class="custom-modal-backdrop" style="display:none;">
+  <div id="customLogoutModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box">
       <h4>⚠️ CONFIRM LOGOUT</h4>
       <p>Are you sure you want to log out?</p>
@@ -230,14 +337,13 @@
     </div>
   </div>
 
-  <div class="custom-modal-backdrop" id="confirmModal" style="display:none;">
-    <div class="custom-modal-box">
-      <div style="color:#facc15; font-size:35px; margin-bottom:8px;"><i class="fa-solid fa-triangle-exclamation"></i></div>
-      <h4 id="confirmTitle" style="color:#ffff00; font-size:19px;">Are you sure?</h4>
-      <p id="confirmMessage" style="color:#fff; font-size:14px; margin:10px 0 18px;">Please confirm.</p>
+  <div id="customClearChatModal" class="custom-modal-backdrop">
+    <div class="custom-modal-box info-box">
+      <h4>🗑️ CLEAR CHAT</h4>
+      <p>Clear your chat history on this device?</p>
       <div class="modal-btn-row">
-        <button class="btn-modal-secondary" onclick="closeConfirmModal()">CANCEL</button>
-        <button class="btn-modal-danger" id="confirmActionBtn">DELETE</button>
+        <button class="btn-modal-secondary" onclick="closeClearChatModal()">Cancel</button>
+        <button class="btn-modal-danger" onclick="confirmClearChat()">Yes, Clear</button>
       </div>
     </div>
   </div>
@@ -277,294 +383,327 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
+      <!-- ONLINE STATUS WIDGET CARD -->
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
         <h4 style="color:#10b981; font-size:13px; font-weight:900; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-          <span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block;"></span> 
+          <span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 8px #10b981;"></span> 
           ONLINE OPERATORS (<span id="onlineCountBadge">0</span>)
         </h4>
-        <div id="onlineOperatorsList" style="font-size:12px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:6px;">Checking...</div>
+        <div id="onlineOperatorsList" style="font-size:12px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:6px;">
+          Checking online status...
+        </div>
       </div>
 
       <div class="dashboard-menu">
         <div id="btnCheckPosition" class="menu-item-btn" onclick="openMenuAction('checkPosition')">
           <div class="menu-item-icon">📋</div>
-          <div class="menu-item-info"><h4>Check Position & Confirm Duty</h4><p>Today's duty lineup & live submission status</p></div>
+          <div class="menu-item-info">
+            <h4>Check Position & Confirm Duty</h4>
+            <p>Today's duty lineup & live submission status</p>
+          </div>
         </div>
-        <div id="btnProdDashboard" class="menu-item-btn" onclick="openMenuAction('prodDashboard')">
-          <div class="menu-item-icon">🏭</div>
-          <div class="menu-item-info"><h4>Production Dashboard</h4><p>Hourly production, ME%, ROP & shift reports</p></div>
-        </div>
+
         <div id="btnMyDueHistory" class="menu-item-btn" onclick="openMenuAction('myDueHistory')">
           <div class="menu-item-icon">⏳</div>
-          <div class="menu-item-info"><h4>My Due History</h4><p>Due counts, last operated dates, days & shifts</p></div>
+          <div class="menu-item-info">
+            <h4>My Due History</h4>
+            <p>Due counts, last operated dates, days & shifts</p>
+          </div>
         </div>
+
         <div id="btnMonthlyReport" class="menu-item-btn" onclick="openMenuAction('monthlyReport')">
           <div class="menu-item-icon">📊</div>
-          <div class="menu-item-info"><h4>My Monthly Report</h4><p>Attendance summary & worked dates</p></div>
+          <div class="menu-item-info">
+            <h4>My Monthly Report</h4>
+            <p>Attendance summary & worked dates</p>
+          </div>
         </div>
+
         <div id="btnLeaveEntry" class="menu-item-btn" onclick="openMenuAction('leaveEntry')">
           <div class="menu-item-icon">📝</div>
-          <div class="menu-item-info"><h4>Leave Entry</h4><p>Apply for PL, SL, CL, or C/Off</p></div>
+          <div class="menu-item-info">
+            <h4>Leave Entry</h4>
+            <p>Apply for PL, SL, CL, or C/Off</p>
+          </div>
         </div>
+
         <div id="btnHolidayList" class="menu-item-btn" onclick="openMenuAction('holidayList')">
           <div class="menu-item-icon">🏢</div>
-          <div class="menu-item-info"><h4>Company Holiday</h4><p>Upcoming holidays countdown & shifts</p></div>
+          <div class="menu-item-info">
+            <h4>Company Holiday</h4>
+            <p>Upcoming holidays countdown & shifts</p>
+          </div>
         </div>
+
         <div id="btnShiftSchedule" class="menu-item-btn" onclick="openMenuAction('shiftSchedule')">
           <div class="menu-item-icon">📅</div>
-          <div class="menu-item-info"><h4>Check Shift Schedule</h4><p>Look up any date for shifts</p></div>
+          <div class="menu-item-info">
+            <h4>Check Shift Schedule</h4>
+            <p>Look up any date (2026-2050+) for R1, R2, R3 shifts</p>
+          </div>
         </div>
+
         <div id="btnLocalFestival" class="menu-item-btn" onclick="openMenuAction('localFestival')">
           <div class="menu-item-icon">🪔</div>
-          <div class="menu-item-info"><h4>Local Festival</h4><p>All running festivals with auto relay shifts</p></div>
+          <div class="menu-item-info">
+            <h4>Local Festival</h4>
+            <p>All running festivals with auto relay shifts</p>
+          </div>
         </div>
+
         <div id="btnGroupChat" class="menu-item-btn" onclick="openMenuAction('groupChat')">
           <div class="menu-item-icon">💬</div>
-          <div class="menu-item-info"><h4>Live Group Chat</h4><p>Chat with operators & supervisor in real-time</p></div>
+          <div class="menu-item-info">
+            <h4>Live Group Chat</h4>
+            <p>Chat with operators & supervisor in real-time</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- PAGE 3: CHECK POSITION -->
+    <!-- PAGE 3: CHECK POSITION & CONFIRM DUTY -->
     <div id="pagePosition" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div class="tools-group">
-          <button class="whatsapp-btn" onclick="sharePositionWhatsApp()">WhatsApp</button>
+          <button class="whatsapp-btn" onclick="sharePositionWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
           <button class="pdf-btn" onclick="window.print()">PDF</button>
         </div>
       </div>
+
+      <!-- MY PERSONAL SUBMISSION HERO CARD -->
       <div id="myDutyActionCard" class="form-card" style="background: linear-gradient(135deg, #064e3b, #0f172a); border: 2px solid #10b981; display:none;">
         <h3 style="color:#10b981; font-size:15px; font-weight:900;">🎯 My Assigned Duty Confirmation</h3>
         <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
         <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
       </div>
+
+      <!-- LIVE STATUS COUNTER & LIST -->
       <div class="form-card" style="background:#07142b; border:2px solid #38bdf8;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 style="color:#ffff00; font-size:15px;">📊 Live Duty Submission Status</h3>
           <span id="uiSubmissionCounter" style="background:#10b981; color:#000; font-weight:900; font-size:12px; padding:3px 8px; border-radius:6px;">0 / 0 Submitted</span>
         </div>
         <div id="uiRemainingNotice" style="font-size:12px; color:#f87171; font-weight:bold;">Loading remaining list...</div>
+        
         <div style="overflow-x:auto; margin-top:6px;">
           <table class="standard-table">
-            <thead><tr><th>Position</th><th>Operator</th><th>Status / Time</th></tr></thead>
-            <tbody id="uiLiveSubmissionTbody"><tr><td colspan="3" style="padding:12px; color:#94a3b8;">Loading status...</td></tr></tbody>
+            <thead>
+              <tr>
+                <th>Position</th>
+                <th>Operator</th>
+                <th>Status / Time</th>
+              </tr>
+            </thead>
+            <tbody id="uiLiveSubmissionTbody">
+              <tr><td colspan="3" style="padding:12px; color:#94a3b8;">Loading status...</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
+
       <div class="board-container" style="margin-top:10px;">
         <div class="date-banner" id="uiBoardDate">-</div>
         <table class="standard-table">
-          <colgroup><col style="width:25%"><col style="width:27%"><col style="width:10%"><col style="width:22%"><col style="width:8%"><col style="width:8%"></colgroup>
+          <colgroup>
+            <col style="width:25%"><col style="width:27%"><col style="width:10%"><col style="width:22%"><col style="width:8%"><col style="width:8%">
+          </colgroup>
           <thead><tr><th>Position</th><th>Name</th><th>Due</th><th>Last Date</th><th>Day</th><th>Shf</th></tr></thead>
           <tbody id="uiBoardTbody"></tbody>
         </table>
       </div>
+
+      <!-- SUPERVISOR NOTICE CONTAINER -->
+      <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
-    <!-- PAGE 4: VISAKA PRODUCTION DASHBOARD -->
-    <div id="pageProdDashboard" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
-
-      <div class="target-panel">
-        <div class="top-bar"><span id="bannerShift">Shift A</span><span id="bannerDate">-</span></div>
-        <div class="req-box">
-          <div class="req-value" id="topReqSheetsVal">SETUP REQUIRED</div>
-          <span class="req-label">TOTAL REQUIRED SHEETS</span>
-        </div>
-        <div class="kpi-grid">
-          <div class="kpi">PRODUCED EQ. SHEETS<span class="kpi-value" id="bannerProduced">-</span></div>
-          <div class="kpi">REMAINING SHEETS<span class="kpi-value" id="bannerReqSheet">-</span></div>
-          <div class="kpi">REQUIRED / HR<span class="kpi-value" id="bannerReqHr">-</span></div>
-        </div>
-        <div class="meta-row">
-          <span>Target Size: <strong id="bannerTargetSize">-</strong> m</span>
-          <span>SFT: <strong id="bannerSft">-</strong></span>
-        </div>
-        <div class="hours-banner" id="bannerTimeLeft">8 HOURS AVAILABLE</div>
-      </div>
-
-      <!-- MASTER SETTINGS -->
-      <div class="prod-card">
-        <div class="prod-section-title"><i class="fa-solid fa-gears"></i> Master Settings</div>
-        <div class="prod-form-row">
-          <div class="form-group"><label>Target Production (MT)</label><input type="text" id="setConfigTarget" class="prod-input" inputmode="decimal" placeholder="Target MT"></div>
-          <div class="form-group"><label>Target Size (m)</label><input type="text" id="setConfigTargetSize" class="prod-input" inputmode="decimal" placeholder="Target Size"></div>
-        </div>
-        <div class="form-group"><label>Batch Weight (kg)</label><input type="text" id="setConfigBatch" class="prod-input" inputmode="decimal" placeholder="Batch Weight"></div>
-        <div class="progress-wrap" id="settingsProgressWrap" style="display:none; height:7px; background:#020617; border-radius:10px; overflow:hidden; margin:6px 0;"><div class="progress-bar" id="settingsProgress" style="height:100%; width:0%; background:#00ffff; transition:.3s;"></div></div>
-        <button class="btn btn-settings" id="settingsBtn" onclick="saveSettingsData()" style="width:100%; border:none; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-floppy-disk"></i> SAVE SETTINGS</button>
-      </div>
-
-      <!-- HOURLY PRODUCTION ENTRY -->
-      <div class="prod-card">
-        <div class="prod-section-title" id="formTitle"><i class="fa-solid fa-pen-to-square"></i> Hourly Production Entry</div>
-        <input type="hidden" id="editRowIndex">
-        
-        <div class="form-group">
-          <label>Operator Name</label>
-          <input type="text" id="opName" class="prod-input" placeholder="Operator name" autocomplete="off" readonly style="background:#111; color:#00ff00;">
-        </div>
-
-        <div class="prod-form-row">
-          <div class="form-group"><label>Shift</label><input type="text" id="opShift" class="prod-input" value="A" maxlength="1" style="text-align:center; text-transform:uppercase;" oninput="this.value=this.value.toUpperCase(); renderProdDashboard();"></div>
-          <div class="form-group">
-            <label>Production Hour</label>
-            <select id="opHour" class="prod-select">
-              <option value="1st Hour">1st Hour</option><option value="2nd Hour">2nd Hour</option>
-              <option value="3rd Hour">3rd Hour</option><option value="4th Hour">4th Hour</option>
-              <option value="5th Hour">5th Hour</option><option value="6th Hour">6th Hour</option>
-              <option value="7th Hour">7th Hour</option><option value="8th Hour">8th Hour</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="prod-form-row">
-          <div class="form-group"><label>1st Size (m)</label><input type="text" id="opSize1" class="prod-input" inputmode="decimal" value="6"></div>
-          <div class="form-group"><label>2nd Size (m)</label><input type="text" id="opSize2" class="prod-input" inputmode="decimal"></div>
-        </div>
-
-        <div class="prod-form-row">
-          <div class="form-group"><label>1st Size Sheets</label><input type="text" id="opS1" class="prod-input" inputmode="numeric" placeholder="Sheets"></div>
-          <div class="form-group"><label>2nd Size Sheets</label><input type="text" id="opS2" class="prod-input" inputmode="numeric" placeholder="Sheets"></div>
-        </div>
-
-        <div class="prod-form-row">
-          <div class="form-group"><label>Beater</label><input type="text" id="opBeater" class="prod-input" inputmode="decimal" placeholder="Beater"></div>
-          <div class="form-group"><label>Moulding</label><input type="text" id="opMoulding" class="prod-input" inputmode="decimal" placeholder="Moulding"></div>
-        </div>
-
-        <div class="prod-form-row">
-          <div class="form-group"><label>B/D</label><input type="text" id="opBD" class="prod-input" inputmode="decimal" placeholder="Minutes"></div>
-          <div class="form-group"><label>GSR</label><input type="text" id="opGSR" class="prod-input" inputmode="numeric" placeholder="GSR sheets"></div>
-        </div>
-
-        <div class="progress-wrap" id="submitProgressWrap" style="display:none; height:7px; background:#020617; border-radius:10px; overflow:hidden; margin:6px 0;"><div class="progress-bar" id="submitProgress" style="height:100%; width:0%; background:#00ffff; transition:.3s;"></div></div>
-        <button class="btn btn-save" id="submitBtn" onclick="submitProductionEntry()" style="width:100%; border:none; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT HOURLY DATA</button>
-        <button class="btn btn-cancel" id="cancelBtn" onclick="resetProdForm()" style="width:100%; border:none; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-xmark"></i> CANCEL EDIT</button>
-      </div>
-
-      <!-- PRODUCTION LOG -->
-      <div class="prod-card">
-        <div class="prod-section-title"><i class="fa-solid fa-chart-line"></i> Production Log & Metrics</div>
-        <button class="btn btn-refresh" id="refreshBtn" onclick="loadProdDashboardData()" style="width:100%; border-radius:7px; padding:12px; color:#fff; font-size:14px; font-weight:900; margin-top:5px; cursor:pointer;"><i class="fa-solid fa-rotate" id="refreshIcon"></i> REFRESH DATA</button>
-        
-        <div class="table-wrap" style="margin-top:10px;">
-          <table class="production-table">
-            <thead>
-              <tr>
-                <th>Hour</th><th>Size (m)</th><th>Sheets</th><th>Beater</th><th>B/D</th><th>GSR</th>
-                <th>Output</th><th>Input</th><th>ME%</th><th>ROP</th><th>Moulding</th><th>Moulding MT</th><th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="productionTableBody">
-              <tr><td colspan="13" style="padding:20px; color:#00ffff;">Loading data...</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="metrics-grid">
-          <div class="metric-box"><span class="metric-label">TOTAL PRODUCTION</span><span class="metric-value" id="totalProduction">0.00 MT</span></div>
-          <div class="metric-box"><span class="metric-label">TOTAL INPUT</span><span class="metric-value" id="totalInput">0.00 MT</span></div>
-          <div class="metric-box"><span class="metric-label">OVERALL ME%</span><span class="metric-value" id="overallME">0.0%</span></div>
-          <div class="metric-box"><span class="metric-label">OVERALL ROP</span><span class="metric-value" id="overallROP">0.00 MT/hr</span></div>
-        </div>
-
-        <div class="gsr-card">
-          <div class="gsr-title"><i class="fa-solid fa-triangle-exclamation"></i> TOTAL GSR SHEETS</div>
-          <div class="gsr-value" id="totalGSR">0 SHEETS</div>
-        </div>
-
-        <button class="delete-all" id="deleteAllBtn" onclick="openDeleteAllModal()"><i class="fa-solid fa-trash-can"></i> DELETE ALL HOURS</button>
-
-        <div class="report-grid">
-          <button class="report-btn whatsapp-report" onclick="sendShiftWhatsApp()"><i class="fa-brands fa-whatsapp"></i> WHATSAPP SHIFT REPORT</button>
-          <button class="report-btn pdf-report" onclick="generateShiftPDF()"><i class="fa-solid fa-file-pdf"></i> PDF SHIFT REPORT</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE 5: DUE HISTORY -->
+    <!-- PAGE 4: MY DUE HISTORY -->
     <div id="pageDueHistory" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <button class="whatsapp-btn" onclick="shareDueWhatsApp()">WhatsApp</button>
+        <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareDueWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
+          <button class="pdf-btn" onclick="window.print()">PDF</button>
+        </div>
       </div>
       <div class="board-container">
         <div class="date-banner" id="uiDueOperatorTitle">My Position Due Matrix</div>
         <table class="standard-table">
-          <colgroup><col style="width:28%"><col style="width:14%"><col style="width:30%"><col style="width:14%"><col style="width:14%"></colgroup>
+          <colgroup>
+            <col style="width:28%"><col style="width:14%"><col style="width:30%"><col style="width:14%"><col style="width:14%">
+          </colgroup>
           <thead><tr><th>Position</th><th>Due</th><th>Last Date</th><th>Day</th><th>Shift</th></tr></thead>
           <tbody id="uiDueTbody"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- PAGE 6: MONTHLY REPORT -->
+    <!-- PAGE 5: MONTHLY REPORT -->
     <div id="pageMonthlyReport" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <button class="toggle-btn" onclick="toggleReportLayout()" id="uiToggleLayoutBtn">Day-wise Scroll ⇄</button>
+        <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareMonthlyWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
+          <button class="toggle-btn" onclick="toggleReportLayout()" id="uiToggleLayoutBtn">Day-wise Scroll View ⇄</button>
+          <button class="pdf-btn" onclick="window.print()">PDF</button>
+        </div>
       </div>
       <div class="form-card">
         <h4 id="uiMonthlyRepHeading" style="color:#ffff00; font-size:15.5px; font-weight:900;">Monthly Performance Summary</h4>
+        
         <div class="filter-grid">
-          <div class="form-group"><label>Select Month</label>
+          <div class="form-group">
+            <label>Select Month</label>
             <select id="uiRepMonthSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
-              <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9" selected>Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+              <option value="1">Jan</option>
+              <option value="2">Feb</option>
+              <option value="3">Mar</option>
+              <option value="4">Apr</option>
+              <option value="5">May</option>
+              <option value="6">Jun</option>
+              <option value="7">Jul</option>
+              <option value="8">Aug</option>
+              <option value="9" selected>Sep</option>
+              <option value="10">Oct</option>
+              <option value="11">Nov</option>
+              <option value="12">Dec</option>
             </select>
           </div>
-          <div class="form-group"><label>Select Year</label>
+          <div class="form-group">
+            <label>Select Year</label>
             <select id="uiRepYearSelect" class="form-input" onchange="syncDateInputsFromDropdown()">
-              <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option><option value="2028">2028</option>
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+              <option value="2030">2030</option>
             </select>
           </div>
         </div>
+
         <div class="filter-grid">
-          <div class="form-group"><label>Start Date</label><input type="date" id="uiRepFromDate" class="form-input" value="2026-09-01"></div>
-          <div class="form-group"><label>End Date</label><input type="date" id="uiRepToDate" class="form-input" value="2026-09-30"></div>
+          <div class="form-group">
+            <label>Start Date</label>
+            <input type="date" id="uiRepFromDate" class="form-input" value="2026-09-01">
+          </div>
+          <div class="form-group">
+            <label>End Date</label>
+            <input type="date" id="uiRepToDate" class="form-input" value="2026-09-30">
+          </div>
         </div>
+
         <button class="btn-action-main" onclick="loadDynamicMonthlyReport()">Generate Report ➔</button>
-        <div id="reportProgressBarContainer"><div id="reportProgressBarFill"></div></div>
+
+        <!-- REPORT PROGRESS BAR -->
+        <div id="reportProgressBarContainer">
+          <div id="reportProgressBarFill"></div>
+        </div>
+
         <div id="uiMonthlyResultArea" style="margin-top:10px; display:flex; flex-direction:column; gap:12px;"></div>
       </div>
     </div>
 
-    <!-- PAGE 7: LEAVE ENTRY -->
+    <!-- PAGE 6: LEAVE ENTRY -->
     <div id="pageLeaveEntry" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+      </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">📝 Apply Leave</h3>
-        <div class="form-group"><label>Operator Name</label><input type="text" id="uiLeaveName" class="form-input" disabled></div>
-        <div class="form-group"><label>Leave Type</label>
+        
+        <div class="form-group">
+          <label>Operator Name</label>
+          <input type="text" id="uiLeaveName" class="form-input" disabled>
+        </div>
+
+        <div class="form-group">
+          <label>Leave Type</label>
           <select id="uiLeaveType" class="form-input">
-            <option value="PL">PL</option><option value="SL">SL</option><option value="CL">CL</option><option value="C/Off">C/Off</option>
+            <option value="PL">PL (Privilege Leave)</option>
+            <option value="SL">SL (Sick Leave)</option>
+            <option value="CL">CL (Casual Leave)</option>
+            <option value="C/Off">C/Off (Compensatory Off)</option>
           </select>
         </div>
-        <div class="form-group"><label>From Date</label><input type="date" id="uiLeaveFrom" class="form-input"></div>
-        <div class="form-group"><label>To Date</label><input type="date" id="uiLeaveTo" class="form-input"></div>
-        <div class="form-group"><label>Reason / Remarks</label><input type="text" id="uiLeaveReason" class="form-input" placeholder="Enter reason..."></div>
+
+        <div class="form-group">
+          <label>From Date</label>
+          <input type="date" id="uiLeaveFrom" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>To Date</label>
+          <input type="date" id="uiLeaveTo" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>Reason / Remarks</label>
+          <input type="text" id="uiLeaveReason" class="form-input" placeholder="Enter reason...">
+        </div>
+
         <button id="btnSubmitLeave" class="btn-action-main" onclick="submitLeave()">Submit Leave Request</button>
-        <div id="leaveProgressBarContainer"><div id="leaveProgressBarFill"></div></div>
+        
+        <div id="leaveProgressBarContainer">
+          <div id="leaveProgressBarFill"></div>
+        </div>
+
         <div id="uiLeaveSuccessBox" style="display:none; flex-direction:column; gap:8px; margin-top:10px;">
           <p style="color:#4ade80; font-weight:bold; text-align:center;">✅ Leave Recorded.</p>
-          <button class="whatsapp-btn-large" onclick="forwardLeaveWhatsApp()">Forward to supervisor on WhatsApp</button>
+          <button class="whatsapp-btn-large" onclick="forwardLeaveWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            Forward to supervisor on WhatsApp
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- PAGE 8: HOLIDAY -->
+    <!-- PAGE 7: COMPANY HOLIDAY -->
     <div id="pageHolidayList" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
-      <div class="form-card"><h3 style="color:#ffff00; font-size:16px;">🏢 Official Company Holidays</h3><div id="uiHolidayContainer" style="display:flex; flex-direction:column; gap:9px;"></div></div>
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareHolidayWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
+          <button class="pdf-btn" onclick="window.print()">PDF</button>
+        </div>
+      </div>
+      <div class="form-card">
+        <h3 style="color:#ffff00; font-size:16px;">🏢 Official Company Holidays</h3>
+        <p style="font-size:11.5px; color:#38bdf8; margin-top:-6px;">Upcoming holidays with animated countdown badge</p>
+        <div id="uiHolidayContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
+      </div>
     </div>
 
-    <!-- PAGE 9: SHIFT SCHEDULE -->
+    <!-- PAGE 8: CHECK SHIFT SCHEDULE -->
     <div id="pageShiftSchedule" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareScheduleWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
+          <button class="pdf-btn" onclick="window.print()">PDF</button>
+        </div>
+      </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">📅 Check Shift Schedule</h3>
-        <input type="date" id="uiScheduleDateInput" class="form-input" onchange="lookupShiftSchedule()">
+        <div class="form-group">
+          <label>Select Date</label>
+          <input type="date" id="uiScheduleDateInput" class="form-input" onchange="lookupShiftSchedule()">
+        </div>
         <div id="uiScheduleResult" style="display:none; background:#000; border:2px solid #00ff00; border-radius:8px; padding:12px; margin-top:6px;">
           <div id="uiSchedDateTitle" style="color:#facc15; font-weight:bold; font-size:14px; text-align:center; margin-bottom:10px;">-</div>
           <div class="relay-badge-row">
@@ -576,22 +715,54 @@
       </div>
     </div>
 
-    <!-- PAGE 10: LOCAL FESTIVAL -->
+    <!-- PAGE 9: LOCAL FESTIVAL -->
     <div id="pageLocalFestival" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
-      <div class="form-card"><h3 style="color:#ffff00; font-size:16px;">🪔 Local Festivals & Relay Shifts</h3><div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:9px;"></div></div>
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <div class="tools-group">
+          <button class="whatsapp-btn" onclick="shareFestivalWhatsApp()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
+          <button class="pdf-btn" onclick="window.print()">PDF</button>
+        </div>
+      </div>
+      <div class="form-card">
+        <h3 style="color:#ffff00; font-size:16px;">🪔 Local Festivals & Relay Shifts</h3>
+        <div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
+      </div>
     </div>
 
-    <!-- PAGE 11: GROUP CHAT -->
+    <!-- PAGE 10: LIVE GROUP CHAT WITH ONLINE FOOTER -->
     <div id="pageGroupChat" class="screen-page">
-      <div class="top-actions-bar"><button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button></div>
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <div style="position: relative;">
+          <button class="whatsapp-btn" style="padding: 6px 10px; font-size:16px;" onclick="toggleChatMenu(event)">⋮</button>
+          <div id="chatDropdownMenu" style="display:none; position:absolute; right:0; top:35px; background:#07142b; border:1.5px solid #38bdf8; border-radius:6px; z-index:99; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
+            <div onclick="openClearChatModal()" style="padding: 10px 14px; font-size:12px; font-weight:bold; color:#ef4444; cursor:pointer; white-space:nowrap;">🗑️ Clear Chat</div>
+          </div>
+        </div>
+      </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">💬 Live Group Chat</h3>
-        <div id="chatMessagesContainer" class="chat-container"></div>
+        <div id="chatMessagesContainer" class="chat-container">
+          <div style="color:#94a3b8; text-align:center; margin-top:20px;">Loading messages...</div>
+        </div>
         <div class="chat-input-row">
           <input type="text" id="chatMessageInput" class="form-input" placeholder="Type message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
           <button class="btn-action-main" style="width:100px;" onclick="sendChatMessage()">Send</button>
         </div>
+
+        <!-- 🟢 ONLINE OPERATORS FOOTER BAR IN CHAT -->
+        <div style="background:#000000; border:1px solid #10b981; border-radius:6px; padding:8px 10px; display:flex; align-items:center; gap:8px; margin-top:4px;">
+          <span style="width:8px; height:8px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 6px #10b981; flex-shrink:0;"></span>
+          <span style="font-size:11px; color:#10b981; font-weight:900; white-space:nowrap;">Online (<span id="chatOnlineCount">0</span>):</span>
+          <div id="chatOnlineFooterList" style="font-size:11.5px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:4px; overflow-x:auto;">
+            Checking...
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -602,19 +773,51 @@
     const STORAGE_KEY = "r3_operator_user";
 
     const BASE_FESTIVALS = [
-      { name: "Swami Vivekananda Jayanti", d: "12", m: "01" }, { name: "Makar Sankranti", d: "14", m: "01" },
-      { name: "Republic Day", d: "26", m: "01" }, { name: "Maha Shivratri", d: "15", m: "02" },
-      { name: "Holi", d: "03", m: "03" }, { name: "Utkal Divas", d: "01", m: "04" },
-      { name: "May Day", d: "01", m: "05" }, { name: "Raja Sankranti", d: "15", m: "06" },
-      { name: "Rath Yatra", d: "16", m: "07" }, { name: "Independence Day", d: "15", m: "08" },
-      { name: "Ganesh Chaturthi", d: "14", m: "09" }, { name: "Vishwakarma Puja", d: "17", m: "09" },
-      { name: "Gandhi Jayanti", d: "02", m: "10" }, { name: "Durga Puja (Dasara)", d: "21", m: "10" },
-      { name: "Diwali", d: "09", m: "11" }, { name: "Christmas", d: "25", m: "12" }
+      { name: "Swami Vivekananda Jayanti", d: "12", m: "01" },
+      { name: "Makar Sankranti / Poush Parbon", d: "14", m: "01" },
+      { name: "Netaji Jayanti", d: "23", m: "01" },
+      { name: "Saraswati Puja (Basant Panchami)", d: "23", m: "01" },
+      { name: "Republic Day", d: "26", m: "01" },
+      { name: "Maha Shivratri", d: "15", m: "02" },
+      { name: "Dol Jatra / Holi", d: "03", m: "03" },
+      { name: "Eid-ul-Fitr", d: "21", m: "03" },
+      { name: "Utkal Divas", d: "01", m: "04" },
+      { name: "Good Friday", d: "03", m: "04" },
+      { name: "Pohila Baishakh (Bengali New Year)", d: "15", m: "04" },
+      { name: "Akshaya Tritiya", d: "20", m: "04" },
+      { name: "May Day / Labour Day", d: "01", m: "05" },
+      { name: "Rabindra Jayanti", d: "08", m: "05" },
+      { name: "Sabitri Brata", d: "16", m: "05" },
+      { name: "Kazi Nazrul Islam Jayanti", d: "26", m: "05" },
+      { name: "Pahili Raja", d: "14", m: "06" },
+      { name: "Raja Sankranti", d: "15", m: "06" },
+      { name: "Snana Purnima", d: "29", m: "06" },
+      { name: "Rath Yatra", d: "16", m: "07" },
+      { name: "Bahuda Yatra", d: "24", m: "07" },
+      { name: "Independence Day", d: "15", m: "08" },
+      { name: "Raksha Bandhan / Gamha Purnima", d: "28", m: "08" },
+      { name: "Janmashtami", d: "04", m: "09" },
+      { name: "Ganesh Chaturthi", d: "14", m: "09" },
+      { name: "Nuakhai", d: "16", m: "09" },
+      { name: "Vishwakarma Puja", d: "17", m: "09" },
+      { name: "Gandhi Jayanti", d: "02", m: "10" },
+      { name: "Mahalaya", d: "10", m: "10" },
+      { name: "Durga Puja (Maha Sasthi)", d: "17", m: "10" },
+      { name: "Durga Puja (Maha Saptami)", d: "18", m: "10" },
+      { name: "Durga Puja (Maha Astami)", d: "19", m: "10" },
+      { name: "Durga Puja (Maha Navami)", d: "20", m: "10" },
+      { name: "Bijoya Dashami (Dussehra)", d: "21", m: "10" },
+      { name: "Kojagari Lakshmi Puja", d: "25", m: "10" },
+      { name: "Kali Puja / Diwali", d: "09", m: "11" },
+      { name: "Bhai Phonta", d: "11", m: "11" },
+      { name: "Chhath Puja", d: "15", m: "11" },
+      { name: "Kartika Purnima / Boita Bandana", d: "24", m: "11" },
+      { name: "Guru Nanak Jayanti", d: "24", m: "11" },
+      { name: "Prathamastami", d: "02", m: "12" },
+      { name: "Christmas Day (Bara Din)", d: "25", m: "12" }
     ];
 
     let portalData = null;
-    let globalProdData = [];
-    let masterSettings = { targetProd: "", targetSize: "", batchWeight: "" };
     let lastSubmittedLeave = null;
     let currentReportResult = null;
     let chatInterval = null;
@@ -624,7 +827,6 @@
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
-      if (!t) return;
       document.getElementById('toastMsg').innerText = msg;
       t.classList.add('show');
       setTimeout(() => { t.classList.remove('show'); }, 3000);
@@ -635,64 +837,79 @@
       const activeEl = document.getElementById(pageId);
       if (activeEl) activeEl.classList.add('active');
 
-      if (pageId === 'pageGroupChat') startChatPolling(); else stopChatPolling();
-      if (pageId === 'pageDashboard') startPresenceHeartbeat(); else stopPresenceHeartbeat();
-      if (pageId === 'pageProdDashboard') {
-        const opNameField = document.getElementById("opName");
-        if (opNameField) opNameField.value = localStorage.getItem(STORAGE_KEY) || "";
-        loadProdDashboardData();
-      }
-    }
+      if (pageId === 'pageGroupChat') startChatPolling();
+      else stopChatPolling();
 
-    function hideSplashForcefully() {
-      const splash = document.getElementById('splashScreen');
-      if (splash && splash.style.display !== 'none') {
-        splash.style.opacity = '0';
-        setTimeout(() => { splash.style.display = 'none'; }, 300);
-      }
+      if (pageId === 'pageDashboard') startPresenceHeartbeat();
+      else stopPresenceHeartbeat();
     }
 
     function initUser() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const wel = document.getElementById('uiWelcomeName');
-        if (wel) wel.innerText = "Welcome, " + saved + "!";
+        document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
         loadProfilePhoto(saved);
         showPage('pageDashboard');
         startPresenceHeartbeat();
-      } else { showPage('pageLogin'); }
+      } else {
+        showPage('pageLogin');
+      }
     }
 
     function proceedLogin() {
       const sel = document.getElementById('loginSelect').value;
-      if (!sel) { alert("Please select your name."); return; }
+      if (!sel) {
+        alert("Please select your name.");
+        return;
+      }
       localStorage.setItem(STORAGE_KEY, sel);
-      const wel = document.getElementById('uiWelcomeName');
-      if (wel) wel.innerText = "Welcome, " + sel + "!";
+      document.getElementById('uiWelcomeName').innerText = "Welcome, " + sel + "!";
       loadProfilePhoto(sel);
       showPage('pageDashboard');
       startPresenceHeartbeat();
     }
 
-    function performLogout() { const m = document.getElementById('customLogoutModal'); if(m) m.style.display = 'flex'; }
-    function closeCustomLogout() { const m = document.getElementById('customLogoutModal'); if(m) m.style.display = 'none'; }
-    function confirmLogout() { stopPresenceHeartbeat(); localStorage.removeItem(STORAGE_KEY); showPage('pageLogin'); closeCustomLogout(); }
-    function triggerPhotoUpload() { const p = document.getElementById('filePhotoInput'); if(p) p.click(); }
+    function performLogout() {
+      document.getElementById('customLogoutModal').style.display = 'flex';
+    }
+
+    function closeCustomLogout() {
+      document.getElementById('customLogoutModal').style.display = 'none';
+    }
+
+    function confirmLogout() {
+      stopPresenceHeartbeat();
+      localStorage.removeItem(STORAGE_KEY);
+      showPage('pageLogin');
+      closeCustomLogout();
+    }
+
+    function triggerPhotoUpload() {
+      document.getElementById('filePhotoInput').click();
+    }
 
     function handlePhotoUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        localStorage.setItem('photo_' + localStorage.getItem(STORAGE_KEY), e.target.result);
-        const img = document.getElementById('uiProfileImg');
-        if(img) img.src = e.target.result;
+        const base64 = e.target.result;
+        const currentOp = localStorage.getItem(STORAGE_KEY);
+        if (currentOp) {
+          localStorage.setItem('photo_' + currentOp, base64);
+          document.getElementById('uiProfileImg').src = base64;
+        }
       };
       reader.readAsDataURL(file);
     }
+
     function loadProfilePhoto(opName) {
-      const img = document.getElementById('uiProfileImg');
-      if(img) img.src = localStorage.getItem('photo_' + opName) || 'icon.png';
+      const savedPhoto = localStorage.getItem('photo_' + opName);
+      if (savedPhoto) {
+        document.getElementById('uiProfileImg').src = savedPhoto;
+      } else {
+        document.getElementById('uiProfileImg').src = 'icon.png';
+      }
     }
 
     function startPresenceHeartbeat() {
@@ -700,34 +917,113 @@
       if (presenceInterval) clearInterval(presenceInterval);
       presenceInterval = setInterval(sendPresencePing, 30000);
     }
-    function stopPresenceHeartbeat() { if (presenceInterval) { clearInterval(presenceInterval); presenceInterval = null; } }
+
+    function stopPresenceHeartbeat() {
+      if (presenceInterval) {
+        clearInterval(presenceInterval);
+        presenceInterval = null;
+      }
+    }
+
     function sendPresencePing() {
       const currentOp = localStorage.getItem(STORAGE_KEY);
       if (!currentOp || currentOp.toLowerCase() === "guest") return;
+
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=updatePresence&name=${encodeURIComponent(currentOp)}&callback=handlePresenceResponse&t=${Date.now()}`;
       document.head.appendChild(s);
     }
+
     window.handlePresenceResponse = function(res) {
       if (!res || res.status !== "success") return;
+      const listContainer = document.getElementById('onlineOperatorsList');
+      const countBadge = document.getElementById('onlineCountBadge');
+      
+      const chatFooterList = document.getElementById('chatOnlineFooterList');
+      const chatCountBadge = document.getElementById('chatOnlineCount');
+      
       const onlineUsers = res.onlineUsers || [];
-      const badge = document.getElementById('onlineCountBadge');
-      if(badge) badge.innerText = onlineUsers.length;
+
+      countBadge.innerText = onlineUsers.length;
+      if (chatCountBadge) chatCountBadge.innerText = onlineUsers.length;
+
+      if (onlineUsers.length === 0) {
+        const emptyHtml = '<span style="color:#94a3b8; font-weight:normal; font-size:11px;">No one online</span>';
+        if (listContainer) listContainer.innerHTML = emptyHtml;
+        if (chatFooterList) chatFooterList.innerHTML = emptyHtml;
+        return;
+      }
+
       let html = '';
       onlineUsers.forEach(user => {
-        html += `<span style="background:#064e3b; border:1px solid #10b981; padding:2px 6px; border-radius:4px; font-size:11px;">🟢 ${user}</span>`;
+        const isMe = (user.toLowerCase() === (localStorage.getItem(STORAGE_KEY) || "").toLowerCase());
+        html += `<span style="background:#064e3b; border:1px solid #10b981; padding:2px 6px; border-radius:4px; font-size:11px;">🟢 ${user} ${isMe ? '(You)' : ''}</span>`;
       });
-      const list = document.getElementById('onlineOperatorsList');
-      if(list) list.innerHTML = html || '<span style="color:#94a3b8;">No one online</span>';
+      
+      if (listContainer) listContainer.innerHTML = html;
+      if (chatFooterList) chatFooterList.innerHTML = html;
     };
+
+    function applySecurity(sec, guestSec) {
+      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
+      const activeSec = (currentUser.toLowerCase() === "guest") ? guestSec : sec;
+      if (!activeSec) return;
+
+      const map = [
+        { id: "btnCheckPosition", allowed: activeSec.checkPosition !== false },
+        { id: "btnMyDueHistory", allowed: activeSec.myDueHistory !== false },
+        { id: "btnMonthlyReport", allowed: activeSec.monthlyReport !== false },
+        { id: "btnLeaveEntry", allowed: activeSec.leaveEntry !== false },
+        { id: "btnHolidayList", allowed: activeSec.holidayList !== false },
+        { id: "btnShiftSchedule", allowed: activeSec.shiftSchedule !== false },
+        { id: "btnLocalFestival", allowed: activeSec.localFestival !== false },
+        { id: "btnGroupChat", allowed: activeSec.groupChat !== false }
+      ];
+
+      map.forEach(item => {
+        const el = document.getElementById(item.id);
+        if (el) {
+          if (!item.allowed) {
+            el.classList.add('disabled');
+            if (!el.querySelector('.menu-lock-tag')) {
+              const tag = document.createElement('span');
+              tag.className = 'menu-lock-tag';
+              tag.innerText = '🔒 Locked';
+              el.appendChild(tag);
+            }
+          } else {
+            el.classList.remove('disabled');
+            const tag = el.querySelector('.menu-lock-tag');
+            if (tag) tag.remove();
+          }
+        }
+      });
+    }
+
+    function showCustomAlert(msg) {
+      document.getElementById('customAlertMsg').innerText = msg;
+      document.getElementById('customAlertModal').style.display = 'flex';
+    }
+
+    function closeCustomAlert() {
+      document.getElementById('customAlertModal').style.display = 'none';
+    }
 
     function openMenuAction(type) {
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      const activeSec = (currentUser.toLowerCase() === "guest" && portalData && portalData.guestSecurity) ? portalData.guestSecurity : (portalData ? portalData.security : {});
-      if (activeSec && activeSec[type] === false) { alert("This section is currently disabled."); return; }
+      const activeSec = (currentUser.toLowerCase() === "guest") ? portalData.guestSecurity : portalData.security;
 
-      if (type === "checkPosition") renderPositionBoard();
-      else if (type === "prodDashboard") showPage('pageProdDashboard');
+      if (activeSec && activeSec[type] === false) {
+        showCustomAlert("This section is currently disabled.");
+        return;
+      }
+
+      if (type === "checkPosition") {
+        if (activeSec.dutySubmission === false) {
+          document.getElementById('myDutyActionCard').style.display = 'none';
+        }
+        renderPositionBoard();
+      }
       else if (type === "myDueHistory") renderDueHistory();
       else if (type === "monthlyReport") openMonthlyReportScreen();
       else if (type === "leaveEntry") openLeaveEntry();
@@ -737,55 +1033,174 @@
       else if (type === "groupChat") openGroupChat();
     }
 
-    function openGroupChat() { showPage('pageGroupChat'); loadChatMessages(); }
-    function startChatPolling() { if (chatInterval) clearInterval(chatInterval); chatInterval = setInterval(loadChatMessages, 2500); }
-    function stopChatPolling() { if (chatInterval) { clearInterval(chatInterval); chatInterval = null; } }
+    function toggleChatMenu(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('chatDropdownMenu');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onclick = function() {
+      const menu = document.getElementById('chatDropdownMenu');
+      if (menu) menu.style.display = 'none';
+    };
+
+    function openClearChatModal() {
+      document.getElementById('customClearChatModal').style.display = 'flex';
+      document.getElementById('chatDropdownMenu').style.display = 'none';
+    }
+
+    function closeClearChatModal() {
+      document.getElementById('customClearChatModal').style.display = 'none';
+    }
+
+    function confirmClearChat() {
+      const myName = (localStorage.getItem(STORAGE_KEY) || "guest").toLowerCase();
+      localStorage.setItem('clear_ch_time_' + myName, Date.now().toString());
+      loadChatMessages();
+      closeClearChatModal();
+    }
+
+    function openGroupChat() {
+      showPage('pageGroupChat');
+      loadChatMessages();
+    }
+
+    function startChatPolling() {
+      if (chatInterval) clearInterval(chatInterval);
+      chatInterval = setInterval(loadChatMessages, 2500);
+    }
+
+    function stopChatPolling() {
+      if (chatInterval) {
+        clearInterval(chatInterval);
+        chatInterval = null;
+      }
+    }
+
     function loadChatMessages() {
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getChat&callback=handleChatMessagesResponse&t=${Date.now()}`;
       document.head.appendChild(s);
     }
+
     window.handleChatMessagesResponse = function(res) {
-      if (!res || res.status !== "success") return;
       const container = document.getElementById('chatMessagesContainer');
-      if(!container) return;
+      if (!res || res.status !== "success") return;
+
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
+      const clearKey = 'clear_ch_time_' + myName;
+      const clearedEpoch = parseInt(localStorage.getItem(clearKey) || "0", 10);
+
       let html = '';
+      let displayedCount = 0;
+
       (res.messages || []).forEach(m => {
+        let msgEpoch = new Date().getTime();
+        const msgTime = m.timestamp || m.time || "";
+        const msgText = m.message || m.text || "";
+
+        try {
+          const parts = msgTime.split(' ');
+          const dParts = parts[0].split('/');
+          if (dParts.length === 3) {
+            const isoStr = `${dParts[2]}-${dParts[1]}-${dParts[0]}T${parts[1] || '00:00:00'}`;
+            msgEpoch = new Date(isoStr).getTime();
+          }
+        } catch (e) {}
+
+        if (clearedEpoch && msgEpoch && msgEpoch <= clearedEpoch) return;
+
+        displayedCount++;
         const isMe = (m.name || "").toLowerCase() === myName;
-        html += `<div class="chat-bubble ${isMe ? 'my-msg' : ''}"><div class="chat-meta"><span>${m.name}</span><span>${m.timestamp}</span></div><div class="chat-text">${m.message}</div></div>`;
+        const cls = isMe ? "chat-bubble my-msg" : "chat-bubble";
+        html += `<div class="${cls}">
+          <div class="chat-meta"><span>${m.name || 'Anonymous'}</span><span>${msgTime}</span></div>
+          <div class="chat-text">${msgText}</div>
+        </div>`;
       });
-      container.innerHTML = html || '<div style="color:#94a3b8; text-align:center;">No messages.</div>';
+
+      if (displayedCount === 0) {
+        container.innerHTML = '<div style="color:#94a3b8; text-align:center; margin-top:20px;">Chat is cleared. Type a new message!</div>';
+        return;
+      }
+
+      const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
+      container.innerHTML = html;
+      if (isAtBottom) container.scrollTop = container.scrollHeight;
     };
+
     function sendChatMessage() {
       const input = document.getElementById('chatMessageInput');
-      if(!input) return;
       const text = input.value.trim();
+      const name = localStorage.getItem(STORAGE_KEY) || "Guest";
+
       if (!text) return;
       input.value = '';
+
+      const container = document.getElementById('chatMessagesContainer');
+      const nowStr = new Date().toLocaleString('en-GB', { hour12: false });
+      
+      if (container.innerHTML.includes("Loading messages...") || container.innerHTML.includes("Chat is cleared")) {
+        container.innerHTML = '';
+      }
+
+      const bubble = document.createElement('div');
+      bubble.className = "chat-bubble my-msg";
+      bubble.innerHTML = `
+        <div class="chat-meta"><span>${name}</span><span>${nowStr}</span></div>
+        <div class="chat-text">${text}</div>
+      `;
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+
       const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=sendChat&name=${encodeURIComponent(localStorage.getItem(STORAGE_KEY))}&message=${encodeURIComponent(text)}&callback=loadChatMessages&t=${Date.now()}`;
+      s.src = `${SCRIPT_URL}?action=sendChat&name=${encodeURIComponent(name)}&message=${encodeURIComponent(text)}&callback=handleSendChatResponse&t=${Date.now()}`;
       document.head.appendChild(s);
     }
 
-    // POSITION BOARD
+    window.handleSendChatResponse = function(res) {
+      if (res && res.status === "success") loadChatMessages();
+    };
+
+    // 1. POSITION BOARD & LIVE SUBMISSION
     function renderPositionBoard() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
-      const dateBanner = document.getElementById('uiBoardDate');
-      if(dateBanner) dateBanner.innerText = b.dateBanner || 'Daily Lineup';
+      document.getElementById('uiBoardDate').innerText = b.dateBanner || 'Daily Lineup';
       const myName = (localStorage.getItem(STORAGE_KEY) || "").toLowerCase().trim();
 
       myAssignedPositionName = "";
+      (b.rows || []).forEach(r => {
+        const parts = (r.duty || "").split('-').map(s => s.trim());
+        const opName = parts[0] || '-';
+        if (opName.toLowerCase() === myName) {
+          myAssignedPositionName = r.pos;
+        }
+      });
+
+      const card = document.getElementById('myDutyActionCard');
+      const txt = document.getElementById('uiMyAssignedText');
+      const currentUser = currentUserType();
+      const activeSec = (currentUser === "guest") ? portalData.guestSecurity : portalData.security;
+
+      if (myAssignedPositionName && activeSec.dutySubmission !== false) {
+        card.style.display = 'block';
+        txt.innerText = `You are assigned to position: "${myAssignedPositionName}"`;
+      } else {
+        card.style.display = 'none';
+      }
+
       let html = '';
       (b.rows || []).forEach(r => {
         const parts = (r.duty || "").split('-').map(s => s.trim());
         const opName = parts[0] || '-';
-        if (opName.toLowerCase() === myName) { myAssignedPositionName = r.pos; }
         const isMe = opName.toLowerCase() === myName;
-        html += `<tr class="${isMe ? 'highlight-row' : ''}">
+        const cls = isMe ? "highlight-row" : "";
+        const tag = isMe ? '<span class="tag-you">YOU</span>' : '';
+
+        html += `<tr class="${cls}">
           <td class="cyan-cell">${r.pos || ''}</td>
-          <td class="name-cell">${opName} ${isMe ? '<span class="tag-you">YOU</span>' : ''}</td>
+          <td class="name-cell">${opName}${tag}</td>
           <td class="due-cell">${parts[1] || '-'}</td>
           <td>${parts[2] || '-'}</td>
           <td class="day-cell">${parts[3] || '-'}</td>
@@ -799,20 +1214,29 @@
         <tr><td class="cyan-cell">Leave</td><td colspan="5" class="align-left">${b.leave}</td></tr>
         <tr><td class="cyan-cell">Info</td><td colspan="5" class="align-left">${b.info}</td></tr>
       `;
-      const tbody = document.getElementById('uiBoardTbody');
-      if(tbody) tbody.innerHTML = html;
-
-      const card = document.getElementById('myDutyActionCard');
-      const txt = document.getElementById('uiMyAssignedText');
-      if (card && txt) {
-        if (myAssignedPositionName) {
-          card.style.display = 'block';
-          txt.innerText = `You are assigned to position: "${myAssignedPositionName}"`;
-        } else { card.style.display = 'none'; }
-      }
+      document.getElementById('uiBoardTbody').innerHTML = html;
 
       fetchDutySubmissionStatus();
+
+      const noticeBox = document.getElementById('uiSupervisorNoticeBox');
+      if (portalData.security && portalData.security.noticeMessage) {
+        noticeBox.style.display = 'block';
+        noticeBox.innerHTML = `
+          <div class="supervisor-notice-card" style="margin-top:12px;">
+            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
+            <div class="notice-body">${portalData.security.noticeMessage}</div>
+          </div>
+        `;
+      } else {
+        noticeBox.style.display = 'none';
+        noticeBox.innerHTML = '';
+      }
+
       showPage('pagePosition');
+    }
+
+    function currentUserType() {
+      return (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
     }
 
     function fetchDutySubmissionStatus() {
@@ -820,39 +1244,101 @@
       s.src = `${SCRIPT_URL}?action=getDutyStatus&callback=handleDutyStatusResponse&t=${Date.now()}`;
       document.head.appendChild(s);
     }
+
     window.handleDutyStatusResponse = function(res) {
       if (!res || res.status !== "success") return;
-      const counter = document.getElementById('uiSubmissionCounter');
-      if(counter) counter.innerText = `${res.submittedCount} / ${res.totalAssigned} Submitted`;
+      
+      document.getElementById('uiSubmissionCounter').innerText = `${res.submittedCount} / ${res.totalAssigned} Submitted`;
+      
       let tbodyHtml = '';
+      let unsubmittedArr = [];
+      let amIAlreadySubmitted = false;
+      const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
+
       (res.summary || []).forEach(item => {
-        tbodyHtml += `<tr>
-          <td class="cyan-cell">${item.pos}</td>
-          <td class="name-cell">${item.operator}</td>
-          <td style="color:${item.status === 'submitted' ? '#4ade80' : '#f87171'}; font-weight:bold;">${item.status === 'submitted' ? 'Submitted ✅' : 'Pending ❌'}</td>
-        </tr>`;
+        const cleanOp = (item.operator || "").split('-')[0].trim().toLowerCase();
+        const isMe = cleanOp === myName;
+
+        if (item.status === "submitted") {
+          if (isMe) amIAlreadySubmitted = true;
+          tbodyHtml += `<tr>
+            <td class="cyan-cell">${item.pos}</td>
+            <td class="name-cell" style="color:#00ff00;">${item.operator}</td>
+            <td style="color:#4ade80; font-weight:bold;">Submitted ✅<br><span style="font-size:9px; color:#94a3b8;">${item.info}</span></td>
+          </tr>`;
+        } else {
+          unsubmittedArr.push(item.operator);
+          tbodyHtml += `<tr>
+            <td class="cyan-cell">${item.pos}</td>
+            <td class="name-cell">${item.operator}</td>
+            <td style="color:#f87171; font-weight:bold;">Pending ❌</td>
+          </tr>`;
+        }
       });
-      const t = document.getElementById('uiLiveSubmissionTbody');
-      if(t) t.innerHTML = tbodyHtml;
+
+      document.getElementById('uiLiveSubmissionTbody').innerHTML = tbodyHtml;
+
+      const btn = document.getElementById('btnConfirmMyDuty');
+      if (amIAlreadySubmitted) {
+        btn.innerText = "✅ You Have Already Submitted Duty";
+        btn.disabled = true;
+      } else {
+        btn.innerText = "Confirm & Submit My Duty ✅";
+        btn.disabled = false;
+      }
+
+      const notice = document.getElementById('uiRemainingNotice');
+      if (unsubmittedArr.length > 0) {
+        notice.innerText = `Remaining (${unsubmittedArr.length}): ${unsubmittedArr.join(', ')} not submitted duty yet.`;
+      } else {
+        notice.style.color = '#4ade80';
+        notice.innerText = `🎉 All assigned operators have successfully submitted their duty!`;
+      }
     };
 
     function submitMyDutyConfirmation() {
       const name = localStorage.getItem(STORAGE_KEY) || "";
-      if (!myAssignedPositionName) { alert("No position assigned."); return; }
+      if (!myAssignedPositionName) {
+        alert("No position assigned to you in today's lineup.");
+        return;
+      }
+
+      const btn = document.getElementById('btnConfirmMyDuty');
+      btn.innerText = "Submitting...";
+      btn.disabled = true;
+
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=submitMyDuty&name=${encodeURIComponent(name)}&position=${encodeURIComponent(myAssignedPositionName)}&callback=handleDutySubmitResult&t=${Date.now()}`;
       document.head.appendChild(s);
     }
+
     window.handleDutySubmitResult = function(res) {
-      if (res && res.status === "success") { showToast("Duty submitted!"); fetchDutySubmissionStatus(); }
-      else { alert("Submission failed."); }
+      if (res && res.status === "success") {
+        showToast("Duty submitted successfully!");
+        fetchDutySubmissionStatus();
+      } else {
+        alert("Submission failed: " + (res ? res.message : "Unknown error"));
+        const btn = document.getElementById('btnConfirmMyDuty');
+        btn.innerText = "Confirm & Submit My Duty ✅";
+        btn.disabled = false;
+      }
     };
 
+    // 2. DUE HISTORY
     function renderDueHistory() {
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      const title = document.getElementById('uiDueOperatorTitle');
-      if(title) title.innerText = myName + " - Due History";
-      let records = portalData && portalData.dueMatrix ? (portalData.dueMatrix[myName.toLowerCase()] || portalData.dueMatrix[myName] || []) : [];
+      document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
+      
+      let records = [];
+      if (portalData && portalData.dueMatrix) {
+        const cleanKey = myName.toLowerCase();
+        records = portalData.dueMatrix[cleanKey] || portalData.dueMatrix[myName] || [];
+        if (records.length === 0) {
+          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.trim().toLowerCase() === cleanKey);
+          if (matchedKey) records = portalData.dueMatrix[matchedKey];
+        }
+      }
+
       let html = '';
       records.forEach(rec => {
         html += `<tr>
@@ -863,76 +1349,81 @@
           <td class="shift-cell">${rec.lastShift}</td>
         </tr>`;
       });
-      const t = document.getElementById('uiDueTbody');
-      if(t) t.innerHTML = html || `<tr><td colspan="5" style="padding:15px; color:#94a3b8;">No records found.</td></tr>`;
+
+      if (records.length === 0) {
+        html = `<tr><td colspan="5" style="padding:15px; color:#94a3b8;">No personal due records found for ${myName}.</td></tr>`;
+      }
+
+      document.getElementById('uiDueTbody').innerHTML = html;
       showPage('pageDueHistory');
     }
 
-    // MONTHLY REPORT
+    // 3. MONTHLY REPORT
     function openMonthlyReportScreen() {
       const op = localStorage.getItem(STORAGE_KEY) || "Operator";
-      const heading = document.getElementById('uiMonthlyRepHeading');
-      if(heading) heading.innerText = op + " - Monthly Performance Summary";
+      document.getElementById('uiMonthlyRepHeading').innerText = op + " - Monthly Performance Summary";
       showPage('pageMonthlyReport');
       syncDateInputsFromDropdown();
     }
+
     function toggleReportLayout() {
       isScrollableReportMode = !isScrollableReportMode;
       const btn = document.getElementById('uiToggleLayoutBtn');
-      if(btn) btn.innerText = isScrollableReportMode ? "Standard View ⇄" : "Day-wise Scroll ⇄";
+      btn.innerText = isScrollableReportMode ? "Standard View ⇄" : "Day-wise Scroll View ⇄";
       if (currentReportResult) renderMonthlyReportHTML(currentReportResult);
     }
+
     function syncDateInputsFromDropdown() {
       const m = parseInt(document.getElementById('uiRepMonthSelect').value);
       const y = parseInt(document.getElementById('uiRepYearSelect').value);
       const lastDay = new Date(y, m, 0).getDate();
       const pad = (n) => n < 10 ? '0' + n : n;
-      const fromInput = document.getElementById('uiRepFromDate');
-      const toInput = document.getElementById('uiRepToDate');
-      if(fromInput) fromInput.value = `${y}-${pad(m)}-01`;
-      if(toInput) toInput.value = `${y}-${pad(m)}-${pad(lastDay)}`;
+
+      document.getElementById('uiRepFromDate').value = `${y}-${pad(m)}-01`;
+      document.getElementById('uiRepToDate').value = `${y}-${pad(m)}-${pad(lastDay)}`;
       loadDynamicMonthlyReport();
     }
+
     function loadDynamicMonthlyReport() {
       const op = localStorage.getItem(STORAGE_KEY) || "";
       const fDate = document.getElementById('uiRepFromDate').value;
       const tDate = document.getElementById('uiRepToDate').value;
-      const area = document.getElementById('uiMonthlyResultArea');
-      if(area) area.innerHTML = '<div style="color:#00ffff; text-align:center;">Calculating report...</div>';
+
+      document.getElementById('uiMonthlyResultArea').innerHTML = '';
 
       const barContainer = document.getElementById('reportProgressBarContainer');
       const barFill = document.getElementById('reportProgressBarFill');
-      if(barContainer && barFill) {
-        barContainer.style.display = 'block';
-        barFill.style.width = '40%';
-        setTimeout(() => barFill.style.width = '80%', 200);
-      }
+      barContainer.style.display = 'block';
+      barFill.style.width = '35%';
+
+      setTimeout(() => { barFill.style.width = '75%'; }, 200);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getMonthlyReport&name=${encodeURIComponent(op)}&fromDate=${fDate}&toDate=${tDate}&callback=handleMonthlyReport&t=${Date.now()}`;
       document.head.appendChild(s);
     }
+
     window.handleMonthlyReport = function(res) {
-      const barContainer = document.getElementById('reportProgressBarContainer');
       const barFill = document.getElementById('reportProgressBarFill');
-      if(barFill) barFill.style.width = '100%';
+      barFill.style.width = '100%';
 
       setTimeout(() => {
-        if(barContainer) barContainer.style.display = 'none';
-        if(barFill) barFill.style.width = '0%';
-
         if (!res || res.status !== "success") {
-          const area = document.getElementById('uiMonthlyResultArea');
-          if(area) area.innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
+          document.getElementById('uiMonthlyResultArea').innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
+          document.getElementById('reportProgressBarContainer').style.display = 'none';
+          barFill.style.width = '0%';
           return;
         }
         currentReportResult = res;
         renderMonthlyReportHTML(res);
-      }, 300);
+
+        document.getElementById('reportProgressBarContainer').style.display = 'none';
+        barFill.style.width = '0%';
+      }, 350);
     };
+
     function renderMonthlyReportHTML(res) {
       const area = document.getElementById('uiMonthlyResultArea');
-      if(!area) return;
       let html = '<div class="date-banner">ATTENDANCE SUMMARY</div>';
       html += '<table class="standard-table"><thead><tr><th style="width:65%;">Category</th><th style="width:35%;">Count</th></tr></thead><tbody>';
       (res.attendance || []).forEach(item => {
@@ -943,123 +1434,217 @@
       if (res.performance && res.performance.length > 0) {
         if (!isScrollableReportMode) {
           html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE & WORKED DATES</div>';
-          html += '<table class="standard-table"><thead><tr><th style="width:28%;">Position</th><th style="width:12%;">Times</th><th style="width:14%;">Alloc %</th><th style="width:46%;">Dates Worked</th></tr></thead><tbody>';
+          html += '<table class="standard-table"><thead><tr>' +
+            '<th style="width:28%;">Position</th>' +
+            '<th style="width:12%;">Times</th>' +
+            '<th style="width:14%;">Alloc %</th>' +
+            '<th style="width:46%;">Dates Worked</th>' +
+            '</tr></thead><tbody>';
+
           let grandTotal = 0;
           res.performance.forEach(p => {
             grandTotal += p.timesWorked;
             let datePillsHtml = '-';
             if (p.dates && p.dates.length > 0) {
               datePillsHtml = '<div class="date-pill-container">';
-              p.dates.forEach(d => { datePillsHtml += `<span class="date-pill">${d}</span>`; });
+              p.dates.forEach(d => {
+                datePillsHtml += `<span class="date-pill">${d}</span>`;
+              });
               datePillsHtml += '</div>';
             }
-            html += `<tr><td class="cyan-cell align-left">${p.position}</td><td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td><td style="color:#00ff00; font-weight:bold;">${p.allocation}</td><td style="text-align:left;">${datePillsHtml}</td></tr>`;
+
+            html += `<tr>` +
+              `<td class="cyan-cell align-left">${p.position}</td>` +
+              `<td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td>` +
+              `<td style="color:#00ff00; font-weight:bold;">${p.allocation}</td>` +
+              `<td style="text-align:left;">${datePillsHtml}</td>` +
+              `</tr>`;
           });
-          html += `<tr style="background:#1e3a8a;"><td class="cyan-cell align-left">Total</td><td style="color:#ffff00; font-weight:900;">${grandTotal}</td><td style="color:#ffff00; font-weight:900;">100%</td><td style="color:#94a3b8; font-size:10px;">-</td></tr></tbody></table>`;
+
+          html += `<tr style="background:#1e3a8a;">` +
+            `<td class="cyan-cell align-left">Total</td>` +
+            `<td style="color:#ffff00; font-weight:900;">${grandTotal}</td>` +
+            `<td style="color:#ffff00; font-weight:900;">100%</td>` +
+            `<td style="color:#94a3b8; font-size:10px;">-</td>` +
+            `</tr>`;
+
+          html += '</tbody></table>';
         } else {
           html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE (DAY-WISE SCROLL VIEW)</div>';
-          html += '<div style="width:100%; overflow-x:auto;"><table class="standard-table" style="min-width:900px;"><thead><tr><th style="width:120px;">Position</th><th style="width:60px;">Times</th><th style="width:70px;">Alloc %</th>';
+          html += '<div style="width:100%; overflow-x:auto;"><table class="standard-table" style="min-width:900px;"><thead><tr>';
+          html += '<th style="width:120px;">Position</th><th style="width:60px;">Times</th><th style="width:70px;">Alloc %</th>';
+          
           let maxDays = 1;
-          res.performance.forEach(p => { if (p.dates && p.dates.length > maxDays) maxDays = p.dates.length; });
-          for (let d = 1; d <= maxDays; d++) { html += `<th style="width:85px;">Day${d}</th>`; }
+          res.performance.forEach(p => {
+            if (p.dates && p.dates.length > maxDays) maxDays = p.dates.length;
+          });
+
+          for (let d = 1; d <= maxDays; d++) {
+            html += `<th style="width:85px;">Day${d}</th>`;
+          }
           html += '</tr></thead><tbody>';
+
           let grandTotal = 0;
           res.performance.forEach(p => {
             grandTotal += p.timesWorked;
-            html += `<tr><td class="cyan-cell align-left">${p.position}</td><td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td><td style="color:#00ff00; font-weight:bold;">${p.allocation}</td>`;
+            html += `<tr>` +
+              `<td class="cyan-cell align-left">${p.position}</td>` +
+              `<td style="color:#ffffff; font-weight:bold;">${p.timesWorked}</td>` +
+              `<td style="color:#00ff00; font-weight:bold;">${p.allocation}</td>`;
+
             for (let d = 0; d < maxDays; d++) {
               const dtVal = (p.dates && p.dates[d]) ? p.dates[d] : '-';
               html += `<td style="font-size:9.5px; color:#facc15;">${dtVal}</td>`;
             }
             html += `</tr>`;
           });
+
           html += `<tr style="background:#1e3a8a;"><td class="cyan-cell align-left">Total</td><td style="color:#ffff00; font-weight:900;">${grandTotal}</td><td style="color:#ffff00; font-weight:900;">100%</td>`;
-          for (let d = 0; d < maxDays; d++) { html += `<td>-</td>`; }
+          for (let d = 0; d < maxDays; d++) {
+            html += `<td>-</td>`;
+          }
           html += `</tr></tbody></table></div>`;
         }
       }
 
       if (res.leaveDates && res.leaveDates.length > 0) {
         html += '<div class="date-banner" style="margin-top:12px;">LEAVE RECORDED DATES</div>';
-        html += '<div style="background:#000; border:2px solid #ef4444; border-radius:6px; padding:8px;"><div class="date-pill-container">';
-        res.leaveDates.forEach(ld => { html += `<span class="date-pill" style="border-color:#f87171; color:#f87171;">${ld}</span>`; });
+        html += '<div style="background:#000000; border:2px solid #ef4444; border-radius:6px; padding:8px;">';
+        html += '<div class="date-pill-container">';
+        res.leaveDates.forEach(ld => {
+          html += `<span class="date-pill" style="border-color:#f87171; color:#f87171;">${ld}</span>`;
+        });
         html += '</div></div>';
       }
 
       area.innerHTML = html;
     }
 
-    // LEAVE ENTRY
+    // 4. LEAVE ENTRY
     function openLeaveEntry() {
-      document.getElementById('uiLeaveName').value = localStorage.getItem(STORAGE_KEY) || "";
+      const myName = localStorage.getItem(STORAGE_KEY) || "";
+      document.getElementById('uiLeaveName').value = myName;
       document.getElementById('uiLeaveSuccessBox').style.display = 'none';
-      const btn = document.getElementById('btnSubmitLeave');
-      if(btn) { btn.innerText = "Submit Leave Request"; btn.disabled = false; }
+      document.getElementById('btnSubmitLeave').disabled = false;
       showPage('pageLeaveEntry');
     }
+
+    function formatDateToDDMMYYYY(dateStr) {
+      if (!dateStr) return "-";
+      const parts = dateStr.split('-');
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      return dateStr;
+    }
+
     function submitLeave() {
       const name = localStorage.getItem(STORAGE_KEY) || "";
       const type = document.getElementById('uiLeaveType').value;
       const fromDateVal = document.getElementById('uiLeaveFrom').value;
       const toDateVal = document.getElementById('uiLeaveTo').value;
       const reason = document.getElementById('uiLeaveReason').value;
-      if (!fromDateVal || !toDateVal) { alert("Select both From and To dates."); return; }
 
-      const parts1 = fromDateVal.split('-');
-      const parts2 = toDateVal.split('-');
-      const fromDate = `${parts1[2]}/${parts1[1]}/${parts1[0]}`;
-      const toDate = `${parts2[2]}/${parts2[1]}/${parts2[0]}`;
-
-      const btn = document.getElementById('btnSubmitLeave');
-      if(btn) { btn.innerText = "Submitting Leave..."; btn.disabled = true; }
-
-      const barContainer = document.getElementById('leaveProgressBarContainer');
-      const barFill = document.getElementById('leaveProgressBarFill');
-      if(barContainer && barFill) {
-        barContainer.style.display = 'block';
-        barFill.style.width = '40%';
-        setTimeout(() => barFill.style.width = '85%', 200);
+      if (!fromDateVal || !toDateVal) {
+        alert("Please select both From and To dates.");
+        return;
       }
 
-      lastSubmittedLeave = { name, type, fromDate, toDate, reason };
+      const d1 = new Date(fromDateVal + "T00:00:00");
+      const d2 = new Date(toDateVal + "T00:00:00");
+      if (d2 < d1) {
+        alert("To Date cannot be earlier than From Date.");
+        return;
+      }
 
-      const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=submitLeave&name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&reason=${encodeURIComponent(reason)}&callback=handleLeaveResponse&t=${Date.now()}`;
-      document.head.appendChild(s);
-    }
-    window.handleLeaveResponse = function(res) {
+      const diffTime = d2.getTime() - d1.getTime();
+      const calcDays = Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+      const fromDate = formatDateToDDMMYYYY(fromDateVal);
+      const toDate = formatDateToDDMMYYYY(toDateVal);
+
       const btn = document.getElementById('btnSubmitLeave');
+      btn.innerText = "Submitting Leave...";
+      btn.disabled = true;
+
       const barContainer = document.getElementById('leaveProgressBarContainer');
       const barFill = document.getElementById('leaveProgressBarFill');
-      if(barFill) barFill.style.width = '100%';
+      barContainer.style.display = 'block';
+      barFill.style.width = '30%';
 
-      setTimeout(() => {
-        if(barContainer) barContainer.style.display = 'none';
-        if(barFill) barFill.style.width = '0%';
-        if(btn) { btn.innerText = "Submit Leave Request"; btn.disabled = false; }
+      setTimeout(() => { barFill.style.width = '70%'; }, 200);
 
-        if (res && res.status === "success") {
-          document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
-          showToast("Leave recorded!");
-        } else { alert("Failed to record leave."); }
-      }, 300);
-    };
-    function forwardLeaveWhatsApp() {
-      if (!lastSubmittedLeave) return;
-      const msg = `*LEAVE APPLICATION*\n• Operator: ${lastSubmittedLeave.name}\n• Type: ${lastSubmittedLeave.type}\n• Period: ${lastSubmittedLeave.fromDate} to ${lastSubmittedLeave.toDate}\n• Reason: ${lastSubmittedLeave.reason || 'Personal'}`;
-      window.open("whatsapp://send?text=" + encodeURIComponent(msg), "_blank");
+      lastSubmittedLeave = { name, type, fromDate, toDate, days: calcDays, reason };
+
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=submitLeave&name=${encodeURIComponent(name)}&type=${encodeURIComponent(type)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}&days=${calcDays}&reason=${encodeURIComponent(reason)}&callback=handleLeaveResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
     }
 
-    // HOLIDAY & SCHEDULE & FESTIVAL
+    window.handleLeaveResponse = function(res) {
+      const btn = document.getElementById('btnSubmitLeave');
+      const barFill = document.getElementById('leaveProgressBarFill');
+      barFill.style.width = '100%';
+
+      setTimeout(() => {
+        btn.innerText = "Submit Leave Request";
+        if (res && res.status === "success") {
+          document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
+        } else {
+          alert("Error: " + (res ? res.message : "Submission failed"));
+          btn.disabled = false;
+        }
+        document.getElementById('leaveProgressBarContainer').style.display = 'none';
+        barFill.style.width = '0%';
+      }, 400);
+    };
+
+    function forwardLeaveWhatsApp() {
+      if (!lastSubmittedLeave) return;
+      const msg = `*LEAVE APPLICATION*\n` +
+        `• Operator: ${lastSubmittedLeave.name}\n` +
+        `• Type: ${lastSubmittedLeave.type}\n` +
+        `• Period: ${lastSubmittedLeave.fromDate} to ${lastSubmittedLeave.toDate} (${lastSubmittedLeave.days} Days)\n` +
+        `• Reason: ${lastSubmittedLeave.reason || 'Personal'}`;
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(msg);
+    }
+
+    // 5. COMPANY HOLIDAY
     function renderHolidayList() {
       const container = document.getElementById('uiHolidayContainer');
-      if(!container) return;
       container.innerHTML = '';
-      (portalData && portalData.holidays ? portalData.holidays : []).forEach(h => {
+      const list = (portalData && portalData.holidays) ? portalData.holidays : [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      list.forEach(h => {
         const item = document.createElement('div');
-        item.className = 'holiday-card-item';
+        let daysLeft = null;
+        if (h.date) {
+          const parts = h.date.split('/');
+          if (parts.length === 3) {
+            const hDate = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+            hDate.setHours(0, 0, 0, 0);
+            const diffTime = hDate.getTime() - today.getTime();
+            daysLeft = Math.round(diffTime / (1000 * 60 * 60 * 24));
+          }
+        }
+
+        const isFuture = (daysLeft !== null && daysLeft >= 0);
+        let cardClass = 'holiday-card-item';
+        let badge = '';
+
+        if (isFuture) {
+          cardClass += ' holiday-upcoming';
+          if (daysLeft === 0) badge = '<span class="badge-zoom-animated" style="background:#facc15; color:#000;">TODAY</span>';
+          else if (daysLeft === 1) badge = '<span class="badge-zoom-animated" style="background:#ef4444; color:#fff;">TOMORROW</span>';
+          else badge = `<span class="badge-zoom-animated" style="background:#10b981; color:#fff;">In ${daysLeft} Days</span>`;
+        }
+
+        item.className = cardClass;
         item.innerHTML = `
-          <div class="hol-top"><h5>🎈 ${h.name}</h5><p>${h.rawDate} (${h.day})</p></div>
+          <div class="hol-top">
+            <h5>🎈 ${h.name}${badge}</h5>
+            <p>${h.rawDate} (${h.day})</p>
+          </div>
           <div class="relay-badge-row">
             <div class="relay-chip"><span>R3</span><strong>${h.r3}</strong></div>
             <div class="relay-chip"><span>R2</span><strong>${h.r2}</strong></div>
@@ -1070,34 +1655,50 @@
       });
       showPage('pageHolidayList');
     }
-    function openShiftSchedule() { showPage('pageShiftSchedule'); }
+
+    // 6. SHIFT SCHEDULE
+    function openShiftSchedule() {
+      document.getElementById('uiScheduleResult').style.display = 'none';
+      showPage('pageShiftSchedule');
+    }
+
     function lookupShiftSchedule() {
       const val = document.getElementById('uiScheduleDateInput').value;
       if (!val) return;
       const parts = val.split('-');
       const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
       const sched = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup[formatted] : null;
+
       const resBox = document.getElementById('uiScheduleResult');
-      if (sched && resBox) {
+      if (sched) {
         document.getElementById('uiSchedDateTitle').innerText = `${formatted} (${sched.day})`;
         document.getElementById('uiSchedR3').innerText = sched.r3;
         document.getElementById('uiSchedR2').innerText = sched.r2;
         document.getElementById('uiSchedR1').innerText = sched.r1;
         resBox.style.display = 'block';
-      } else if(resBox) { resBox.style.display = 'none'; }
+      } else {
+        alert("Date " + formatted + " not found in Shift Schedule sheet.");
+        resBox.style.display = 'none';
+      }
     }
+
+    // 7. LOCAL FESTIVAL
     function renderLocalFestival() {
       const container = document.getElementById('uiFestivalContainer');
-      if(!container) return;
       container.innerHTML = '';
       const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
+      const currentYear = new Date().getFullYear();
+
       BASE_FESTIVALS.forEach(f => {
-        const fullDate = `${f.d}/${f.m}/2026`;
+        const fullDate = `${f.d}/${f.m}/${currentYear}`;
         const match = schedMap[fullDate] || { day: "-", r3: "-", r2: "-", r1: "-" };
         const item = document.createElement('div');
         item.className = 'holiday-card-item';
         item.innerHTML = `
-          <div class="hol-top"><h5>🪔 ${f.name}</h5><p>${fullDate} (${match.day})</p></div>
+          <div class="hol-top">
+            <h5>🪔 ${f.name}</h5>
+            <p>${fullDate} (${match.day})</p>
+          </div>
           <div class="relay-badge-row">
             <div class="relay-chip"><span>R3</span><strong>${match.r3}</strong></div>
             <div class="relay-chip"><span>R2</span><strong>${match.r2}</strong></div>
@@ -1109,393 +1710,82 @@
       showPage('pageLocalFestival');
     }
 
-    // VISAKA PRODUCTION DASHBOARD LOGIC
-    function jsonp(url, callbackName) {
-      const script = document.createElement("script");
-      script.src = url + "&callback=" + callbackName + "&t=" + Date.now();
-      script.onerror = function() { showToast("❌ Server connection failed."); };
-      document.body.appendChild(script);
+    // WHATSAPP SHARE FUNCTIONS
+    function sharePositionWhatsApp() {
+      if (!portalData || !portalData.board) return;
+      const b = portalData.board;
+      let text = `*R3 DUTY LINEUP*\n📅 ${b.dateBanner}\n\n`;
+      (b.rows || []).forEach(r => { text += `• ${r.pos}: ${r.duty}\n`; });
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    function loadProdDashboardData() {
-      const refreshBtn = document.getElementById("refreshBtn");
-      const refreshIcon = document.getElementById("refreshIcon");
-      if (refreshBtn) refreshBtn.disabled = true;
-      if (refreshIcon) refreshIcon.classList.add("spinning");
-
-      window.handleProdDashboardResponse = function(res) {
-        if (refreshBtn) refreshBtn.disabled = false;
-        if (refreshIcon) refreshIcon.classList.remove("spinning");
-        if (!res || res.status !== "success") { showToast("❌ Failed to load data."); return; }
-        globalProdData = res.data.rows || [];
-        masterSettings = res.data.masterSettings || masterSettings;
-        document.getElementById("setConfigTarget").value = masterSettings.targetProd !== "" ? masterSettings.targetProd : "";
-        document.getElementById("setConfigTargetSize").value = masterSettings.targetSize !== "" ? masterSettings.targetSize : "";
-        document.getElementById("setConfigBatch").value = masterSettings.batchWeight !== "" ? masterSettings.batchWeight : "";
-        renderProdDashboard();
-      };
-      jsonp(SCRIPT_URL + "?action=getProdDashboardData", "handleProdDashboardResponse");
+    function shareDueWhatsApp() {
+      const myName = localStorage.getItem(STORAGE_KEY) || "";
+      const recs = (portalData && portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
+      let text = `*DUE MATRIX - ${myName}*\n\n`;
+      recs.forEach(r => { text += `• ${r.pos} ➔ Due: ${r.due}\n`; });
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    function getSelectedShift() { return document.getElementById("opShift").value.trim().toUpperCase(); }
-    function todayDateString() {
-      const d = new Date();
-      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-      return String(d.getDate()).padStart(2,"0") + "-" + months[d.getMonth()] + "-" + d.getFullYear();
-    }
-    function getCurrentShiftRows() {
-      const shift = getSelectedShift(), today = todayDateString();
-      return globalProdData.filter(r => String(r.shift).trim().toUpperCase() === shift && String(r.date).trim() === today);
-    }
-    function hourNumber(hour) { const n = parseInt(String(hour || "")); return isNaN(n) ? 0 : n; }
-
-    function getRowProduction(r) {
-      let sheets = 0, size = 0;
-      if (r.s2Sheets && Number(r.s2Sheets) > 0) { sheets = Number(r.s2Sheets); size = Number(r.size2) || 0; }
-      else if (r.s1Sheets && Number(r.s1Sheets) > 0) { sheets = Number(r.s1Sheets); size = Number(r.size1) || 0; }
-      let sheetOutput = (sheets > 0 && size > 0) ? (sheets * size * 12.8) / 1000 : 0;
-      let mouldingOutput = (Number(r.moulding) || 0) > 0 ? (Number(r.moulding) * 7.7) / 1000 : 0;
-      return { sheets, size, sheetOutput, mouldingOutput, output: sheetOutput + mouldingOutput };
+    function shareMonthlyWhatsApp() {
+      const op = localStorage.getItem(STORAGE_KEY) || "Operator";
+      if (!currentReportResult) { alert("Please generate report first."); return; }
+      let text = `*MONTHLY REPORT - ${op}*\n\n*ATTENDANCE:*\n`;
+      (currentReportResult.attendance || []).forEach(a => { text += `• ${a.label}: ${a.val}\n`; });
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    function renderProdDashboard() {
-      const shift = getSelectedShift();
-      document.getElementById("bannerShift").innerText = "Shift " + (shift || "-");
-      document.getElementById("bannerDate").innerText = todayDateString();
-      const rows = getCurrentShiftRows();
-      renderProdTable(rows);
-      updateProdMetrics(rows);
-      updateProdGSR(rows);
-      updateProdBanner(rows);
+    function shareHolidayWhatsApp() {
+      const list = (portalData && portalData.holidays) ? portalData.holidays : [];
+      let text = `*COMPANY HOLIDAYS*\n\n`;
+      list.hl.forEach(h => { text += `• ${h.name} (${h.rawDate})\n`; });
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    function renderProdTable(rows) {
-      const tbody = document.getElementById("productionTableBody");
-      if (!tbody) return;
-      if (!rows.length) { tbody.innerHTML = `<tr><td colspan="13" style="padding:20px; color:#94a3b8;">No production entries found.</td></tr>`; return; }
-      rows.sort((a,b) => hourNumber(a.hour) - hourNumber(b.hour));
-      let html = "";
-      rows.forEach(r => {
-        const p = getRowProduction(r);
-        let input = (masterSettings.batchWeight !== "" && r.beater !== "") ? (Number(r.beater) * Number(masterSettings.batchWeight)) / 1000 : 0;
-        let me = (p.sheetOutput > 0 && input > 0) ? ((1 - p.sheetOutput / input) * 100).toFixed(1) + "%" : "";
-        let rop = (p.output > 0 && (Number(r.bd) || 0) < 60) ? (p.output * 60 / Math.max(1, 60 - Number(r.bd))).toFixed(2) : "";
-
-        html += `<tr>
-          <td class="hour">${r.hour}</td>
-          <td>${p.size || ""}</td>
-          <td class="yellow">${p.sheets || ""}</td>
-          <td>${r.beater !== "" ? r.beater : ""}</td>
-          <td>${r.bd !== "" ? r.bd : ""}</td>
-          <td class="yellow">${r.gsr !== "" ? r.gsr : ""}</td>
-          <td class="yellow">${p.output > 0 ? p.output.toFixed(2) : ""}</td>
-          <td>${input > 0 ? input.toFixed(2) : ""}</td>
-          <td class="cyan">${me}</td>
-          <td>${rop}</td>
-          <td>${r.moulding !== "" ? r.moulding : ""}</td>
-          <td class="yellow">${p.mouldingOutput > 0 ? p.mouldingOutput.toFixed(2) : ""}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="action-btn edit-btn" title="Edit" onclick="editProdRow(${r.rowIndex})"><i class="fa-solid fa-pen"></i></button>
-              <button class="action-btn delete-btn" title="Delete" onclick="deleteProdRow(${r.rowIndex})"><i class="fa-solid fa-trash-can"></i></button>
-              <button class="action-btn whatsapp-btn-table" title="WhatsApp" onclick="sendRowWhatsApp(${r.rowIndex})"><i class="fa-brands fa-whatsapp"></i></button>
-              <button class="action-btn pdf-btn-table" title="PDF" onclick="generateRowPDF(${r.rowIndex})"><i class="fa-solid fa-file-pdf"></i></button>
-            </div>
-          </td>
-        </tr>`;
-      });
-      tbody.innerHTML = html;
+    function shareScheduleWhatsApp() {
+      const title = document.getElementById('uiSchedDateTitle').innerText;
+      const r3 = document.getElementById('uiSchedR3').innerText;
+      if (title === "-") { alert("Please select a date first."); return; }
+      const text = `*SHIFT SCHEDULE*\n📅 ${title}\n• R3: ${r3}`;
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    function updateProdMetrics(rows) {
-      let totalOutput = 0, totalInput = 0, totalBD = 0, totalMEInput = 0, totalMESheetOutput = 0;
-      rows.forEach(r => {
-        const p = getRowProduction(r);
-        totalOutput += p.output;
-        if (masterSettings.batchWeight !== "" && r.beater !== "") {
-          const inp = (Number(r.beater) * Number(masterSettings.batchWeight)) / 1000;
-          totalInput += inp; totalMEInput += inp; totalMESheetOutput += p.sheetOutput;
-        }
-        totalBD += Number(r.bd) || 0;
-      });
-      let overallME = totalMEInput > 0 ? ((1 - totalMESheetOutput / totalMEInput) * 100).toFixed(1) : 0;
-      let overallROP = totalOutput > 0 ? (totalOutput * 60 / Math.max(1, rows.length * 60 - totalBD)).toFixed(2) : 0;
-      document.getElementById("totalProduction").innerText = totalOutput.toFixed(2) + " MT";
-      document.getElementById("totalInput").innerText = totalInput.toFixed(2) + " MT";
-      document.getElementById("overallME").innerText = overallME + "%";
-      document.getElementById("overallROP").innerText = overallROP + " MT/hr";
+    function shareFestivalWhatsApp() {
+      let text = `*LOCAL FESTIVALS*\n\n`;
+      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    function updateProdGSR(rows) {
-      let total = 0; rows.forEach(r => total += Number(r.gsr) || 0);
-      document.getElementById("totalGSR").innerText = total + " SHEETS";
-    }
-
-    function updateProdBanner(rows) {
-      const targetProd = Number(masterSettings.targetProd), targetSize = Number(masterSettings.targetSize);
-      if (!targetProd || !targetSize || targetSize <= 0) { document.getElementById("topReqSheetsVal").innerText = "SETUP REQUIRED"; return; }
-      const totalReqSheets = (targetProd * 1000) / (targetSize * 12.8);
-      let totalOutput = 0; rows.forEach(r => totalOutput += getRowProduction(r).output);
-      const producedSheets = (totalOutput * 1000) / (targetSize * 12.8);
-      const remSheets = Math.max(0, totalReqSheets - producedSheets);
-      let latestHour = 0; rows.forEach(r => { const n = hourNumber(r.hour); if (n > latestHour) latestHour = n; });
-      const remHours = Math.max(0, 8 - latestHour);
-      const reqHr = remHours > 0 ? remSheets / remHours : 0;
-      document.getElementById("topReqSheetsVal").innerText = totalReqSheets.toFixed(2);
-      document.getElementById("bannerProduced").innerText = producedSheets.toFixed(2);
-      document.getElementById("bannerReqSheet").innerText = remSheets.toFixed(2);
-      document.getElementById("bannerReqHr").innerText = reqHr.toFixed(2);
-      document.getElementById("bannerTargetSize").innerText = targetSize;
-      document.getElementById("bannerSft").innerText = reqHr > 0 ? (3600 / reqHr).toFixed(2) + " SEC" : "-";
-      document.getElementById("bannerTimeLeft").innerText = remHours === 0 ? "NO HOURS LEFT" : remHours + " HOURS AVAILABLE";
-    }
-
-    function saveSettingsData() {
-      const targetProd = document.getElementById("setConfigTarget").value.trim();
-      const targetSize = document.getElementById("setConfigTargetSize").value.trim();
-      const batchWeight = document.getElementById("setConfigBatch").value.trim();
-      if (!targetProd || !targetSize || !batchWeight) { showToast("⚠️ Fill all settings."); return; }
-
-      const btn = document.getElementById("settingsBtn");
-      const wrap = document.getElementById("settingsProgressWrap");
-      const progress = document.getElementById("settingsProgress");
-      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SAVING...';
-      wrap.style.display = "block"; progress.style.width = "40%";
-
-      window.handleSettingsRes = function(res) {
-        progress.style.width = "100%";
-        setTimeout(() => { wrap.style.display = "none"; progress.style.width = "0%"; }, 400);
-        btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> SAVE SETTINGS';
-        if (res && res.status === "success") { showToast("✅ Settings saved."); loadProdDashboardData(); }
-        else { showToast("❌ Save failed."); }
-      };
-      jsonp(SCRIPT_URL + "?action=saveProdSettings&targetProd=" + encodeURIComponent(targetProd) + "&targetSize=" + encodeURIComponent(targetSize) + "&batchWeight=" + encodeURIComponent(batchWeight), "handleSettingsRes");
-    }
-
-    function submitProductionEntry() {
-      const name = document.getElementById("opName").value.trim();
-      if (!name) { showToast("⚠️ Enter operator name."); return; }
-      const shift = getSelectedShift(), hour = document.getElementById("opHour").value;
-      const size1 = document.getElementById("opSize1").value, size2 = document.getElementById("opSize2").value;
-      const s1 = document.getElementById("opS1").value, s2 = document.getElementById("opS2").value;
-      const moulding = document.getElementById("opMoulding").value, beater = document.getElementById("opBeater").value;
-      const bd = document.getElementById("opBD").value, gsr = document.getElementById("opGSR").value;
-      const rowIndex = document.getElementById("editRowIndex").value;
-
-      const btn = document.getElementById("submitBtn");
-      const wrap = document.getElementById("submitProgressWrap");
-      const progress = document.getElementById("submitProgress");
-      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING...';
-      wrap.style.display = "block"; progress.style.width = "30%";
-
-      window.handleSubmitRes = function(res) {
-        progress.style.width = "100%";
-        setTimeout(() => { wrap.style.display = "none"; progress.style.width = "0%"; }, 400);
-        btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT HOURLY DATA';
-        if (res && res.status === "success") { showToast("✅ Saved."); resetProdForm(); loadProdDashboardData(); }
-        else { showToast("❌ " + (res.message || "Failed")); }
-      };
-
-      let url = SCRIPT_URL + "?action=submitProdHourly&operator=" + encodeURIComponent(name) + "&shift=" + encodeURIComponent(shift) + "&hour=" + encodeURIComponent(hour) + "&size1=" + encodeURIComponent(size1) + "&size2=" + encodeURIComponent(size2) + "&s1Sheets=" + encodeURIComponent(s1) + "&s2Sheets=" + encodeURIComponent(s2) + "&moulding=" + encodeURIComponent(moulding) + "&beater=" + encodeURIComponent(beater) + "&bd=" + encodeURIComponent(bd) + "&gsr=" + encodeURIComponent(gsr);
-      if (rowIndex) url += "&rowIndex=" + encodeURIComponent(rowIndex);
-      jsonp(url, "handleSubmitRes");
-    }
-
-    function editProdRow(idx) {
-      const row = globalProdData.find(r => Number(r.rowIndex) === Number(idx));
-      if (!row) return;
-      document.getElementById("editRowIndex").value = row.rowIndex;
-      document.getElementById("opName").value = row.name || localStorage.getItem(STORAGE_KEY) || "";
-      document.getElementById("opShift").value = row.shift || "A";
-      document.getElementById("opHour").value = row.hour || "1st Hour";
-      document.getElementById("opSize1").value = row.size1 || "";
-      document.getElementById("opSize2").value = row.size2 || "";
-      document.getElementById("opS1").value = row.s1Sheets || "";
-      document.getElementById("opS2").value = row.s2Sheets || "";
-      document.getElementById("opBeater").value = row.beater || "";
-      document.getElementById("opMoulding").value = row.moulding || "";
-      document.getElementById("opBD").value = row.bd || "";
-      document.getElementById("opGSR").value = row.gsr || "";
-      document.getElementById("formTitle").innerHTML = '<i class="fa-solid fa-pen"></i> EDIT HOURLY ENTRY';
-      document.getElementById("submitBtn").innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> UPDATE ENTRY';
-      document.getElementById("cancelBtn").style.display = "block";
-      showToast("✏️ Ready for editing.");
-    }
-
-    function resetProdForm() {
-      document.getElementById("editRowIndex").value = "";
-      document.getElementById("formTitle").innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Hourly Production Entry';
-      document.getElementById("submitBtn").innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SUBMIT HOURLY DATA';
-      document.getElementById("cancelBtn").style.display = "none";
-      document.getElementById("opName").value = localStorage.getItem(STORAGE_KEY) || "";
-      document.getElementById("opS1").value = ""; document.getElementById("opS2").value = "";
-      document.getElementById("opBeater").value = ""; document.getElementById("opMoulding").value = "";
-      document.getElementById("opBD").value = ""; document.getElementById("opGSR").value = "";
-    }
-
-    function deleteProdRow(idx) {
-      document.getElementById("confirmTitle").innerText = "DELETE HOURLY ENTRY?";
-      document.getElementById("confirmMessage").innerText = "This entry will be permanently deleted.";
-      document.getElementById("confirmActionBtn").onclick = function() {
-        closeConfirmModal();
-        window.handleDelRes = function(res) {
-          if (res && res.status === "success") { showToast("✅ Deleted."); loadProdDashboardData(); }
-          else { showToast("❌ Failed."); }
-        };
-        jsonp(SCRIPT_URL + "?action=deleteProdHourly&rowIndex=" + encodeURIComponent(idx), "handleDelRes");
-      };
-      document.getElementById("confirmModal").style.display = "flex";
-    }
-
-    function openDeleteAllModal() {
-      const shift = getSelectedShift(), rows = getCurrentShiftRows();
-      if (!rows.length) { showToast("ℹ️ No hours found."); return; }
-      document.getElementById("confirmTitle").innerText = "DELETE ALL HOURS?";
-      document.getElementById("confirmMessage").innerText = `All ${rows.length} entries of Shift ${shift} will be deleted.`;
-      document.getElementById("confirmActionBtn").onclick = function() {
-        closeConfirmModal();
-        window.handleDelAllRes = function(res) {
-          if (res && res.status === "success") { showToast("✅ All deleted."); loadProdDashboardData(); }
-          else { showToast("❌ Failed."); }
-        };
-        jsonp(SCRIPT_URL + "?action=deleteProdAllHours&shift=" + encodeURIComponent(shift), "handleDelAllRes");
-      };
-      document.getElementById("confirmModal").style.display = "flex";
-    }
-
-    function closeConfirmModal() { document.getElementById("confirmModal").style.display = "none"; }
-
-    function sendRowWhatsApp(idx) {
-      const row = globalProdData.find(r => Number(r.rowIndex) === Number(idx));
-      if (!row) return;
-      const p = getRowProduction(row);
-      const msg = `VISAKA PRODUCTION\nDate: ${row.date}\nShift: ${row.shift}\nHour: ${row.hour}\nSize: ${p.size}m\nSheets: ${p.sheets}\nTotal: ${p.output.toFixed(2)}MT\nOperator: ${row.name || "-"}`;
-      window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
-    }
-
-    function generateRowPDF(idx) {
-      const row = globalProdData.find(r => Number(r.rowIndex) === Number(idx));
-      if (!row) return;
-      const p = getRowProduction(row);
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(18); doc.text("VISAKA PRODUCTION ENTRY", 20, 20);
-      doc.setFontSize(11);
-      let y = 35;
-      [
-        `Date: ${row.date}`, `Shift: ${row.shift}`, `Hour: ${row.hour}`,
-        `Size: ${p.size} m`, `Sheets: ${p.sheets}`, `Total Production: ${p.output.toFixed(2)} MT`,
-        `Beater: ${row.beater || 0}`, `B/D: ${row.bd || 0} min`, `GSR: ${row.gsr || 0}`, `Operator: ${row.name || "-"}`
-      ].forEach(line => { doc.text(line, 20, y); y += 9; });
-      doc.save(`Visaka_${row.shift}_${row.hour}.pdf`);
-    }
-
-    function sendShiftWhatsApp() {
-      const shift = getSelectedShift(), rows = getCurrentShiftRows();
-      if (!rows.length) { showToast("ℹ️ No data."); return; }
-      let totalOutput = 0, msg = `VISAKA REPORT - Shift ${shift} (${todayDateString()})\n\n`;
-      rows.forEach(r => { const p = getRowProduction(r); totalOutput += p.output; msg += `${r.hour}: ${p.output.toFixed(2)}MT\n`; });
-      msg += `\nTOTAL PRODUCTION: ${totalOutput.toFixed(2)} MT`;
-      window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
-    }
-
-    // HORIZONTAL LANDSCAPE SHIFT PDF REPORT
-    function generateShiftPDF() {
-      const shift = getSelectedShift();
-      const rows = getCurrentShiftRows();
-      if (!rows.length) { showToast("ℹ️ No production data to export."); return; }
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ orientation: "landscape" });
-
-      doc.setFontSize(16);
-      doc.text("VISAKA PRODUCTION REPORT", 15, 15);
-      doc.setFontSize(10);
-      doc.text(`Date: ${todayDateString()}   Shift: ${shift}`, 15, 22);
-
-      let y = 32;
-      const headers = ["Hour", "Size", "Sheets", "Beater", "B/D", "GSR", "Output MT", "Input", "ME%", "ROP", "Moulding", "Moulding MT"];
-      
-      doc.setFillColor(169, 95, 0);
-      doc.setTextColor(0, 0, 0);
-      doc.rect(15, y - 5, 267, 7, "F");
-
-      headers.forEach((h, i) => {
-        doc.text(h, 17 + i * 22, y);
-      });
-
-      y += 8;
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(9);
-
-      let totalOutput = 0, totalMoulding = 0, totalGSR = 0;
-      rows.sort((a,b) => hourNumber(a.hour) - hourNumber(b.hour));
-
-      rows.forEach(r => {
-        const p = getRowProduction(r);
-        totalOutput += p.output;
-        totalMoulding += p.mouldingOutput;
-        totalGSR += Number(r.gsr) || 0;
-
-        let input = (masterSettings.batchWeight !== "" && r.beater !== "") ? (Number(r.beater) * Number(masterSettings.batchWeight)) / 1000 : 0;
-        let me = (p.sheetOutput > 0 && input > 0) ? ((1 - p.sheetOutput / input) * 100).toFixed(1) + "%" : "";
-        let rop = (p.output > 0 && (Number(r.bd) || 0) < 60) ? (p.output * 60 / Math.max(1, 60 - Number(r.bd))).toFixed(2) : "";
-
-        const vals = [
-          r.hour, String(p.size || ""), String(p.sheets || ""), String(r.beater || ""),
-          String(r.bd || ""), String(r.gsr || ""), p.output > 0 ? p.output.toFixed(2) : "",
-          input > 0 ? input.toFixed(2) : "", me, rop, String(r.moulding || ""), p.mouldingOutput > 0 ? p.mouldingOutput.toFixed(2) : ""
-        ];
-
-        doc.setTextColor(0, 0, 0);
-        vals.forEach((v, i) => {
-          doc.text(v, 17 + i * 22, y);
-        });
-
-        y += 7;
-        if (y > 185) { doc.addPage(); y = 20; }
-      });
-
-      y += 5;
-      doc.setFontSize(11);
-      doc.setTextColor(0, 0, 150);
-      doc.text(`TOTAL MOULDING PRODUCTION: ${totalMoulding.toFixed(2)} MT`, 15, y);
-      y += 7;
-      doc.text(`TOTAL PRODUCTION: ${totalOutput.toFixed(2)} MT`, 15, y);
-      y += 7;
-      doc.text(`TOTAL GSR SHEETS: ${totalGSR} SHEETS`, 15, y);
-
-      doc.save(`Visaka_Shift_${shift}_Report.pdf`);
-    }
-
+    // INITIAL LOAD
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
-      const dateBannerEl = document.getElementById('uiDashboardDate');
-      if(dateBannerEl) dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
+      document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
 
       const sel = document.getElementById('loginSelect');
-      if(sel) {
-        sel.innerHTML = '<option value="">-- Choose Name --</option>';
-        const guestOpt = document.createElement('option');
-        guestOpt.value = "Guest";
-        guestOpt.innerText = "Guest";
-        sel.appendChild(guestOpt);
+      sel.innerHTML = '<option value="">-- Choose Name --</option>';
+      
+      const guestOpt = document.createElement('option');
+      guestOpt.value = "Guest";
+      guestOpt.innerText = "Guest";
+      sel.appendChild(guestOpt);
 
-        (data.operators || []).forEach(op => {
-          const opt = document.createElement('option');
-          opt.value = op.name;
-          opt.innerText = op.name;
-          sel.appendChild(opt);
-        });
-      }
+      (data.operators || []).forEach(op => {
+        const opt = document.createElement('option');
+        opt.value = op.name;
+        opt.innerText = op.name;
+        sel.appendChild(opt);
+      });
 
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      if (currentUser && data.security) {
+      if (currentUser) {
         applySecurity(data.security, data.guestSecurity);
       }
 
-      hideSplashForcefully();
+      const splash = document.getElementById('splashScreen');
+      if (splash) {
+        splash.style.opacity = '0';
+        setTimeout(() => { splash.style.display = 'none'; }, 300);
+      }
     };
 
     window.onload = function() {
@@ -1503,10 +1793,6 @@
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
       document.head.appendChild(s);
-
-      setTimeout(() => {
-        hideSplashForcefully();
-      }, 3500);
     };
   </script>
 </body>
