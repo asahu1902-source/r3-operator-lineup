@@ -185,7 +185,7 @@
 
     /* TABLES */
     .board-container { width: 100%; border: 3px solid #00ff00; background-color: #000000; overflow: hidden; }
-    .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 14px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
+    .date-banner { background-color: #ffff00; color: #0000cd; font-weight: 900; font-size: 13.5px; text-align: center; padding: 6px 4px; border-bottom: 1px solid #000000; }
 
     .standard-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .standard-table th { background-color: #ff8c00; color: #000000; font-weight: 900; font-size: 11px; padding: 6px 2px; border: 1px solid #8b0000; text-align: center; }
@@ -368,7 +368,7 @@
   <!-- CUSTOM MODALS -->
   <div id="customAlertModal" class="custom-modal-backdrop">
     <div class="custom-modal-box">
-      <h4>🔒 LOCKED ACCESS</h4>
+      <h4>⚠️ NOTICE</h4>
       <p id="customAlertMsg">This section is currently disabled.</p>
       <button class="btn-modal-primary" onclick="closeCustomAlert()">OK</button>
     </div>
@@ -1360,10 +1360,13 @@
         showToast("Duty submitted successfully!");
         fetchDutySubmissionStatus();
       } else {
-        alert("Submission failed: " + (res ? res.message : "Unknown error"));
+        const errorMsg = (res && res.message) ? res.message : "Submission failed";
+        showCustomAlert(errorMsg);
         const btn = document.getElementById('btnConfirmMyDuty');
-        btn.innerText = "Confirm & Submit My Duty ✅";
-        btn.disabled = false;
+        if (btn) {
+          btn.innerText = "Confirm & Submit My Duty ✅";
+          btn.disabled = false;
+        }
       }
     };
 
