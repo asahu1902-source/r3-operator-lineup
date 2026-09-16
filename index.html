@@ -1014,7 +1014,6 @@
       if (chatFooterList) chatFooterList.innerHTML = html;
     };
 
-    // FIXED SECURITY & GUEST HIDE/SHOW LOGIC
     function applySecurity(sec, guestSec) {
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       const isGuest = (currentUser.toLowerCase() === "guest");
