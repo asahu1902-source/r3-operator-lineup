@@ -345,8 +345,7 @@
   <!-- WHATSAPP CONFIRMATION MODAL POPUP -->
   <div id="whatsappConfirmModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box" style="border-color: #25D366; box-shadow: 0 0 25px rgba(37, 211, 102, 0.4);">
-      <div style="font-size:36px; color:#25D366; margin-bottom:-4px;"><i class="fa-brands fa-whatsapp"></i>💬</div>
-      <h4 style="color: #25D366; font-size: 16px;">WHATSAPP NOTIFICATION</h4>
+      <h4 style="color: #25D366; font-size: 16px;">💬 WHATSAPP NOTIFICATION</h4>
       <p id="whatsappModalText" style="color: #fff; font-size: 13px;">Leave recorded successfully! Open WhatsApp to notify supervisor / relay group?</p>
       <div class="modal-btn-row">
         <button class="btn-modal-secondary" onclick="closeWhatsAppModal(false)">Cancel</button>
@@ -1559,7 +1558,7 @@
       area.innerHTML = html;
     }
 
-    // 4. LEAVE ENTRY & WHATSAPP CONFIRMATION FLOW
+    // 4. LEAVE ENTRY & WHATSAPP CONFIRMATION FLOW (WITH SMART PHONE/GROUP HANDLER)
     function openLeaveEntry() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       document.getElementById('uiLeaveName').value = myName;
@@ -1629,7 +1628,6 @@
           document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
           fetchedWhatsAppContacts = res.contacts || [];
           
-          // Trigger WhatsApp Popup Confirmation Modal automatically after leave saved
           setTimeout(() => {
             openWhatsAppConfirmModal();
           }, 400);
@@ -1663,25 +1661,31 @@
         `• Period: ${lastSubmittedLeave.fromDate} to ${lastSubmittedLeave.toDate} (${lastSubmittedLeave.days} Days)\n` +
         `• Reason: ${lastSubmittedLeave.reason || 'Personal'}`;
       
-      // Look for Relay Group link or Supervisor number from fetched contacts
-      let targetContact = "";
+      let supContact = "";
+      let groupContact = "";
+
       if (fetchedWhatsAppContacts && fetchedWhatsAppContacts.length > 0) {
-        const groupObj = fetchedWhatsAppContacts.find(c => c.role.toLowerCase().includes("group") || c.name.toLowerCase().includes("relay"));
-        const supObj = fetchedWhatsAppContacts.find(c => c.role.toLowerCase().includes("supervisor"));
-        if (groupObj && groupObj.contact) {
-          targetContact = groupObj.contact;
-        } else if (supObj && supObj.contact) {
-          targetContact = supObj.contact;
-        }
+        const groupObj = fetchedWhatsAppContacts.find(c => c.role.toLowerCase().includes("group") || c.name.toLowerCase().includes("relay") || c.contact.includes("chat.whatsapp.com"));
+        const supObj = fetchedWhatsAppContacts.find(c => c.role.toLowerCase().includes("supervisor") || (!c.contact.includes("chat.whatsapp.com") && c.contact.length >= 10));
+        
+        if (supObj && supObj.contact) supContact = supObj.contact.replace(/[^0-9]/g, "");
+        if (groupObj && groupObj.contact) groupContact = groupObj.contact;
       }
 
-      if (targetContact) {
-        if (targetContact.startsWith("http://") || targetContact.startsWith("https://")) {
-          window.open(targetContact, "_blank");
-        } else {
-          window.location.href = `https://wa.me/${targetContact}?text=` + encodeURIComponent(msg);
+      // Priority 1: If direct supervisor number exists, open direct chat with pre-filled message
+      if (supContact) {
+        window.location.href = `https://wa.me/${supContact}?text=` + encodeURIComponent(msg);
+      } 
+      // Priority 2: If group link exists, copy message to clipboard and open group link
+      else if (groupContact) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(msg).then(() => {
+            showToast("Leave message copied! Paste it in the group.");
+          }).catch(() => {});
         }
-      } else {
+        window.open(groupContact, "_blank");
+      } 
+      else {
         window.location.href = "whatsapp://send?text=" + encodeURIComponent(msg);
       }
     }
