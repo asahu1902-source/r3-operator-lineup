@@ -157,6 +157,32 @@
       box-shadow: 0 0 10px rgba(37, 211, 102, 0.4);
     }
     .whatsapp-btn svg { width: 24px; height: 24px; fill: #ffffff; flex-shrink: 0; }
+    
+    /* FIXED MEDIUM SIZE WHATSAPP BUTTON FOR LEAVE FORWARDING */
+    .whatsapp-btn-large {
+      background: #128C7E;
+      color: #ffffff;
+      border: 2px solid #25D366;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 900;
+      padding: 10px 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 8px;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    }
+    .whatsapp-btn-large svg {
+      width: 22px;
+      height: 22px;
+      fill: #ffffff;
+      flex-shrink: 0;
+    }
+
     .pdf-btn { background: #dc2626; color: #ffffff; border: none; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
     .toggle-btn { background: #0284c7; color: #ffffff; border: 1px solid #38bdf8; border-radius: 5px; font-size: 11px; font-weight: 900; padding: 6px 10px; cursor: pointer; }
 
@@ -1738,7 +1764,7 @@
     function shareHolidayWhatsApp() {
       const list = (portalData && portalData.holidays) ? portalData.holidays : [];
       let text = `*COMPANY HOLIDAYS*\n\n`;
-      list.hl.forEach(h => { text += `• ${h.name} (${h.rawDate})\n`; });
+      list.forEach(h => { text += `• ${h.name} (${h.rawDate})\n`; });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
