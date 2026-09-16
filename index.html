@@ -1014,10 +1014,11 @@
       if (chatFooterList) chatFooterList.innerHTML = html;
     };
 
-    // 100% RELIABLE HIDE/SHOW LOGIC FOR SECURITY
+    // FIXED SECURITY & GUEST HIDE/SHOW LOGIC
     function applySecurity(sec, guestSec) {
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      const activeSec = (currentUser.toLowerCase() === "guest") ? guestSec : sec;
+      const isGuest = (currentUser.toLowerCase() === "guest");
+      const activeSec = isGuest ? guestSec : sec;
       if (!activeSec) return;
 
       const map = [
