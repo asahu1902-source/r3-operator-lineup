@@ -130,11 +130,9 @@
       gap: 12px;
       cursor: pointer;
     }
-    .menu-item-btn.disabled { background: #1e293b; border-color: #475569; opacity: 0.55; cursor: not-allowed; }
     .menu-item-icon { font-size: 26px; }
     .menu-item-info h4 { font-size: 14.5px; color: #ffff00; font-weight: 900; }
     .menu-item-info p { font-size: 11px; color: #94a3b8; }
-    .menu-lock-tag { background: #ef4444; color: #ffffff; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-left: auto; }
 
     /* TOP ACTION BAR */
     .top-actions-bar { display: flex; justify-content: space-between; align-items: center; }
@@ -203,7 +201,7 @@
     .highlight-row .name-cell { color: #00ff00 !important; }
     .tag-you { background-color: #facc15; color: #000000; font-size: 8.5px; padding: 1px 4px; border-radius: 3px; margin-left: 3px; }
 
-    .form-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .form-card { background: #07142b; border: 2.5px solid #38bdf8; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
     .form-group label { display: block; color: #00ffff; font-size: 11.5px; font-weight: 800; margin-bottom: 4px; }
     .form-input { width: 100%; background: #000000; color: #ffff00; border: 1.5px solid #38bdf8; padding: 10px; font-size: 14px; border-radius: 6px; outline: none; }
     .form-input:disabled { opacity: 0.6; color: #94a3b8; }
@@ -355,7 +353,7 @@
     </div>
   </div>
 
-  <!-- STEP 2: SEQUENTIAL FOLLOW-UP MODAL (Do you want to send to the other?) -->
+  <!-- STEP 2: SEQUENTIAL FOLLOW-UP MODAL -->
   <div id="whatsappFollowupModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box" style="border-color: #25D366; box-shadow: 0 0 25px rgba(37, 211, 102, 0.4);">
       <h4 style="color: #25D366; font-size: 16px;" id="followupTitle">💬 NEXT STEP</h4>
@@ -870,7 +868,7 @@
     let portalData = null;
     let lastSubmittedLeave = null;
     let fetchedWhatsAppContacts = [];
-    let currentFirstChoice = ""; // Tracks whether operator chose 'supervisor' or 'group' first
+    let currentFirstChoice = "";
     let currentReportResult = null;
     let chatInterval = null;
     let presenceInterval = null;
@@ -1016,6 +1014,7 @@
       if (chatFooterList) chatFooterList.innerHTML = html;
     };
 
+    // UPDATED SECURITY LOGIC: HIDE BUTTON TOTALLY IF 'NO'
     function applySecurity(sec, guestSec) {
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       const activeSec = (currentUser.toLowerCase() === "guest") ? guestSec : sec;
@@ -1036,17 +1035,9 @@
         const el = document.getElementById(item.id);
         if (el) {
           if (!item.allowed) {
-            el.classList.add('disabled');
-            if (!el.querySelector('.menu-lock-tag')) {
-              const tag = document.createElement('span');
-              tag.className = 'menu-lock-tag';
-              tag.innerText = '🔒 Locked';
-              el.appendChild(tag);
-            }
+            el.style.display = 'none'; // Totally hide if NO
           } else {
-            el.classList.remove('disabled');
-            const tag = el.querySelector('.menu-lock-tag');
-            if (tag) tag.remove();
+            el.style.display = 'flex'; // Show if YES
           }
         }
       });
@@ -1642,7 +1633,6 @@
           document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
           fetchedWhatsAppContacts = res.contacts || [];
           
-          // Show initial 2-choice modal (Supervisor vs Group)
           setTimeout(() => {
             openWhatsAppChoiceModal();
           }, 400);
@@ -1665,10 +1655,9 @@
       if (modal) modal.style.display = 'none';
     }
 
-    // Step 1: User chooses either Supervisor or Relay Group first
     function chooseWhatsAppFirst(choice) {
       closeWhatsAppChoiceModal();
-      currentFirstChoice = choice; // 'supervisor' or 'group'
+      currentFirstChoice = choice;
       
       const msg = buildLeaveMessage();
       let targetLink = getContactLink(choice);
@@ -1685,7 +1674,6 @@
         }
       }
 
-      // After user returns/interacts, prompt the 2nd sequential follow-up option
       setTimeout(() => {
         openFollowupModal(choice === 'supervisor' ? 'group' : 'supervisor');
       }, 1500);
