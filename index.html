@@ -2146,7 +2146,7 @@
       const op = localStorage.getItem(STORAGE_KEY) || "Operator";
       if (!currentReportResult) { alert("Please generate report first."); return; }
       let text = `*MONTHLY REPORT - ${op}*\n\n*ATTENDANCE:*\n`;
-      (currentReportResult.attendance || []).forEach(a => { text += ️ `• ${a.label}: ${a.val}\n`; });
+      (currentReportResult.attendance || []).forEach(a => { text += `• ${a.label}: ${a.val}\n`; });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
