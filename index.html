@@ -936,7 +936,7 @@
         <!-- 🟢 ONLINE OPERATORS FOOTER BAR IN CHAT -->
         <div style="background:#000000; border:1px solid #10b981; border-radius:6px; padding:8px 10px; display:flex; align-items:center; gap:8px; margin-top:4px;">
           <span style="width:8px; height:8px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 6px #10b981; flex-shrink:0;"></span>
-          <span style="font-size:11px; color:#10b981; font-weight:900; white-space:nowrap;">Online (<span id="chatOnlineCount">0</span>):</span>
+          <span style="font-size:11.5px; color:#10b981; font-weight:900; white-space:nowrap;">Online (<span id="chatOnlineCount">0</span>):</span>
           <div id="chatOnlineFooterList" style="font-size:11.5px; color:#ffff00; font-weight:bold; display:flex; flex-wrap:wrap; gap:4px; overflow-x:auto;">
             Checking...
           </div>
@@ -2170,7 +2170,7 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    // INITIAL LOAD WITH PROGRESS SPLASH
+    // INITIAL LOAD WITH PROGRESS SPLASH & 4-SEC FAST FALLBACK TIMER FOR MOBILE
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
@@ -2213,7 +2213,6 @@
         applySecurity(data.security, data.guestSecurity);
       }
 
-      // Smooth finish splash progress to 100%
       const fill = document.getElementById('splashProgressFill');
       const txt = document.getElementById('splashStatusText');
       if (fill) fill.style.width = '100%';
@@ -2223,20 +2222,29 @@
         const splash = document.getElementById('splashScreen');
         if (splash) {
           splash.style.opacity = '0';
-          setTimeout(() => { splash.style.display = 'none'; }, 400);
+          setTimeout(() => { splash.style.display = 'none'; }, 300);
         }
-      }, 350);
+      }, 200);
     };
 
     window.onload = function() {
       initUser();
       
       const fill = document.getElementById('splashProgressFill');
-      if (fill) fill.style.width = '35%';
+      if (fill) fill.style.width = '60%';
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
       document.head.appendChild(s);
+
+      // Mobile Fast-Load Fallback: Force hide splash screen after 4 seconds max so mobile never hangs
+      setTimeout(() => {
+        const splash = document.getElementById('splashScreen');
+        if (splash && splash.style.display !== 'none') {
+          splash.style.opacity = '0';
+          setTimeout(() => { splash.style.display = 'none'; }, 300);
+        }
+      }, 4000);
     };
   </script>
 </body>
