@@ -533,6 +533,14 @@
           </div>
         </div>
 
+        <div id="btnDutyLookup" class="menu-item-btn" onclick="openMenuAction('dutyLookup')">
+          <div class="menu-item-icon">🔍</div>
+          <div class="menu-item-info">
+            <h4>Duty Date Lookup</h4>
+            <p>Check past or future duty lineup for any date</p>
+          </div>
+        </div>
+
         <div id="btnMyDueHistory" class="menu-item-btn" onclick="openMenuAction('myDueHistory')">
           <div class="menu-item-icon">⏳</div>
           <div class="menu-item-info">
@@ -649,6 +657,38 @@
 
       <!-- SUPERVISOR NOTICE CONTAINER -->
       <div id="uiSupervisorNoticeBox" style="display:none;"></div>
+    </div>
+
+    <!-- PAGE: DUTY DATE LOOKUP -->
+    <div id="pageDutyLookup" class="screen-page">
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
+        <div class="tools-group">
+          <button class="refresh-icon-btn" onclick="lookupDutyByDate()"><span class="ref-symbol">🔄</span> Search</button>
+        </div>
+      </div>
+      <div class="form-card">
+        <h3 style="color:#ffff00; font-size:16px;">🔍 Date-wise Duty Lookup</h3>
+        <div class="form-group">
+          <label>Select Date</label>
+          <input type="date" id="uiLookupDateInput" class="form-input" onchange="lookupDutyByDate()">
+        </div>
+
+        <div class="board-container" style="margin-top:10px;">
+          <div class="date-banner" id="uiLookupDateBanner">Select a date above</div>
+          <table class="standard-table">
+            <thead>
+              <tr>
+                <th style="width:45%;">Position</th>
+                <th style="width:55%;">Assigned Operator</th>
+              </tr>
+            </thead>
+            <tbody id="uiLookupTbody">
+              <tr><td colspan="2" style="padding:15px; color:#94a3b8;">No date selected.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <!-- PAGE 4: MY DUE HISTORY -->
@@ -1196,6 +1236,7 @@
 
       const map = [
         { id: "btnCheckPosition", allowed: activeSec.checkPosition !== false },
+        { id: "btnDutyLookup", allowed: activeSec.checkPosition !== false },
         { id: "btnMyDueHistory", allowed: activeSec.myDueHistory !== false },
         { id: "btnMonthlyReport", allowed: activeSec.monthlyReport !== false },
         { id: "btnLeaveEntry", allowed: activeSec.leaveEntry !== false },
@@ -1241,6 +1282,12 @@
         }
         renderPositionBoard();
       }
+      else if (type === "dutyLookup") {
+        showPage('pageDutyLookup');
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('uiLookupDateInput').value = todayStr;
+        lookupDutyByDate();
+      }
       else if (type === "myDueHistory") renderDueHistory();
       else if (type === "monthlyReport") openMonthlyReportScreen();
       else if (type === "leaveEntry") openLeaveEntry();
@@ -1249,6 +1296,39 @@
       else if (type === "localFestival") renderLocalFestival();
       else if (type === "groupChat") openGroupChat();
     }
+
+    // DATE-WISE DUTY LOOKUP CLIENT LOGIC
+    function lookupDutyByDate() {
+      const val = document.getElementById('uiLookupDateInput').value;
+      if (!val) return;
+      const parts = val.split('-');
+      const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`; // DD/MM/YYYY format
+
+      showToast("Fetching duty lineup...");
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=getDutyByDate&date=${encodeURIComponent(formatted)}&callback=handleDutyLookupResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleDutyLookupResponse = function(res) {
+      if (!res || res.status !== "success") return;
+      
+      document.getElementById('uiLookupDateBanner').innerText = `${res.date} (${res.day})`;
+      let tbodyHtml = '';
+
+      if (res.dutyRows && res.dutyRows.length > 0) {
+        res.dutyRows.forEach(r => {
+          tbodyHtml += `<tr>
+            <td class="cyan-cell align-left">${r.position}</td>
+            <td class="name-cell" style="color:#ffff00; font-weight:bold;">${r.operator}</td>
+          </tr>`;
+        });
+      } else {
+        tbodyHtml = `<tr><td colspan="2" style="padding:15px; color:#ef4444;">No duty records found for this date.</td></tr>`;
+      }
+
+      document.getElementById('uiLookupTbody').innerHTML = tbodyHtml;
+    };
 
     function toggleChatMenu(e) {
       e.stopPropagation();
@@ -2066,7 +2146,7 @@
       const op = localStorage.getItem(STORAGE_KEY) || "Operator";
       if (!currentReportResult) { alert("Please generate report first."); return; }
       let text = `*MONTHLY REPORT - ${op}*\n\n*ATTENDANCE:*\n`;
-      (currentReportResult.attendance || []).forEach(a => { text += `• ${a.label}: ${a.val}\n`; });
+      (currentReportResult.attendance || []).forEach(a => { text += ️ `• ${a.label}: ${a.val}\n`; });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
@@ -2151,7 +2231,6 @@
     window.onload = function() {
       initUser();
       
-      // Animate progress bar during fetch
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '35%';
 
