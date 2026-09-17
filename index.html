@@ -431,6 +431,9 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
+      <!-- 📢 SUPERVISOR NOTICE HIGHLIGHT BANNER ON MAIN DASHBOARD -->
+      <div id="uiDashboardNoticeBox" style="display:none;"></div>
+
       <!-- ONLINE STATUS WIDGET CARD -->
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
         <h4 style="color:#10b981; font-size:13px; font-weight:900; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
@@ -1921,6 +1924,21 @@
       if (!data) return;
       portalData = data;
       document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
+
+      // RENDER SUPERVISOR NOTICE ON MAIN DASHBOARD & POSITION PAGE
+      const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
+      if (data.security && data.security.noticeMessage) {
+        dashNoticeBox.style.display = 'block';
+        dashNoticeBox.innerHTML = `
+          <div class="supervisor-notice-card">
+            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
+            <div class="notice-body">${data.security.noticeMessage}</div>
+          </div>
+        `;
+      } else {
+        dashNoticeBox.style.display = 'none';
+        dashNoticeBox.innerHTML = '';
+      }
 
       const sel = document.getElementById('loginSelect');
       sel.innerHTML = '<option value="">-- Choose Name --</option>';
