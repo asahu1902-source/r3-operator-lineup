@@ -21,7 +21,7 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background-color: #07142b; z-index: 99999; display: flex;
       flex-direction: column; align-items: center; justify-content: center;
-      transition: opacity 0.8s ease-out;
+      transition: opacity 0.3s ease-out;
     }
     .splash-logo-container { position: relative; width: 130px; height: 130px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
     .splash-pulse-ring { position: absolute; width: 130px; height: 130px; border-radius: 50%; border: 3px dashed #facc15; animation: spinRing 2.5s linear infinite; }
@@ -216,19 +216,23 @@
     .chat-text { font-size: 13px; color: #ffffff; word-break: break-word; }
     .chat-input-row { display: flex; gap: 8px; margin-top: 6px; }
 
-    /* RUNNING TICKER ANIMATION */
+    /* RUNNING TICKER ANIMATION (Seamless Loop) */
     @keyframes tickerScroll {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
     }
     .ticker-container {
       background: #dc2626; color: #ffffff; font-size: 12px; font-weight: 900;
       padding: 6px 0; border-radius: 6px; overflow: hidden; white-space: nowrap;
-      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); position: relative;
     }
     .ticker-text {
-      display: inline-block; animation: tickerScroll 8s linear infinite;
-      text-transform: uppercase; letter-spacing: 0.5px;
+      display: inline-block; 
+      white-space: nowrap;
+      animation: tickerScroll 10s linear infinite;
+      text-transform: uppercase; 
+      letter-spacing: 0.5px;
+      padding-left: 100%;
     }
 
     /* ZOOM-IN ZOOM-OUT PULSING NOTICE BOX STYLING */
@@ -451,7 +455,7 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
-      <!-- 📢 RUNNING TICKER & PULSING ZOOM NOTICE BANNER ON MAIN DASHBOARD -->
+      <!-- 📢 SEAMLESS RUNNING TICKER & PULSING ZOOM NOTICE BANNER ON MAIN DASHBOARD -->
       <div id="uiDashboardNoticeBox" style="display:none; display:flex; flex-direction:column; gap:8px;"></div>
 
       <!-- ONLINE STATUS WIDGET CARD -->
@@ -1945,13 +1949,14 @@
       portalData = data;
       document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
 
-      // RENDER RUNNING TICKER & PULSING ZOOM NOTICE ON DASHBOARD
+      // RENDER SEAMLESS TICKER & PULSING ZOOM NOTICE ON DASHBOARD
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
       if (data.security && data.security.noticeMessage) {
         dashNoticeBox.style.display = 'flex';
+        const rawMsg = data.security.noticeMessage.replace(/<br>/g, " | ");
         dashNoticeBox.innerHTML = `
           <div class="ticker-container">
-            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📢 IMPORTANT NOTICE FROM MANAGEMENT 📢</div>
+            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY! &nbsp;&nbsp;&nbsp;&nbsp; 📢 ${rawMsg} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY! &nbsp;&nbsp;&nbsp;&nbsp; 📢 ${rawMsg}</div>
           </div>
           <div class="supervisor-notice-card">
             <div class="notice-title">📢 SUPERVISOR NOTICE</div>
