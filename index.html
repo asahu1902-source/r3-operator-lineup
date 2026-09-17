@@ -44,6 +44,11 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
+    /* FORCE HIDE ALL MENU BUTTONS INITIALLY UNTIL SECURITY RULES LOAD */
+    .dashboard-menu .menu-item-btn {
+      display: none !important;
+    }
+
     /* CUSTOM TOAST NOTIFICATION */
     #customToast {
       position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -1249,10 +1254,10 @@
       map.forEach(item => {
         const el = document.getElementById(item.id);
         if (el) {
-          if (!item.allowed) {
-            el.style.setProperty('display', 'none', 'important');
-          } else {
+          if (item.allowed) {
             el.style.setProperty('display', 'flex', 'important');
+          } else {
+            el.style.setProperty('display', 'none', 'important');
           }
         }
       });
@@ -1624,7 +1629,7 @@
       }
     };
 
-    // 2. DUE HISTORY
+    // 2. DUE HISTORY (WITH FLEXIBLE FUZZY OPERATOR MATCHING)
     function renderDueHistory() {
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
@@ -1634,13 +1639,13 @@
         const cleanKey = myName.toLowerCase();
         records = portalData.dueMatrix[cleanKey] || portalData.dueMatrix[myName] || [];
         if (records.length === 0) {
-          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.trim().toLowerCase() === cleanKey);
+          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.trim().toLowerCase().includes(cleanKey) || cleanKey.includes(k.trim().toLowerCase()));
           if (matchedKey) records = portalData.dueMatrix[matchedKey];
         }
       }
 
       let html = '';
-      records.forEach(rec => {
+      (records || []).forEach(rec => {
         html += `<tr>
           <td class="cyan-cell">${rec.pos}</td>
           <td class="due-cell">${rec.due}</td>
@@ -1651,7 +1656,7 @@
       });
 
       if (records.length === 0) {
-        html = `<tr><td colspan="5" style="padding:15px; color:#94a3b8;">No personal due records found for ${myName}.</td></tr>`;
+        html = `<tr><td colspan="5" style="padding:15px; color:#ef4444;">No due records found for "${myName}". Please check SUMMARY2 sheet operator name spelling.</td></tr>`;
       }
 
       document.getElementById('uiDueTbody').innerHTML = html;
