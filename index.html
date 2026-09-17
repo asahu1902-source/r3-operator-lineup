@@ -44,10 +44,8 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
-    /* FORCE HIDE ALL MENU BUTTONS INITIALLY UNTIL SECURITY RULES LOAD */
-    .dashboard-menu .menu-item-btn {
-      display: none !important;
-    }
+    /* INITIALLY HIDE MENU BUTTONS TO PREVENT FLASHING */
+    .dashboard-menu .menu-item-btn { display: none !important; }
 
     /* CUSTOM TOAST NOTIFICATION */
     #customToast {
@@ -1076,14 +1074,7 @@
       if (saved) {
         document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
         loadProfilePhoto(saved);
-        
-        if (portalData) {
-          applySecurity(portalData.security, portalData.guestSecurity);
-        }
-
-        showPage('pageDashboard');
-        startPresenceHeartbeat();
-        startGlobalChatWatcher();
+        // Do NOT show pageDashboard here until portalData is fully fetched and security is applied in handleInitialData!
       } else {
         showPage('pageLogin');
       }
@@ -1101,11 +1092,13 @@
 
       if (portalData) {
         applySecurity(portalData.security, portalData.guestSecurity);
+        showPage('pageDashboard');
+        startPresenceHeartbeat();
+        startGlobalChatWatcher();
+      } else {
+        // If data is still loading, trigger data fetch or wait
+        showToast("Synchronizing data, please wait...");
       }
-
-      showPage('pageDashboard');
-      startPresenceHeartbeat();
-      startGlobalChatWatcher();
     }
 
     function performLogout() {
@@ -2245,13 +2238,12 @@
     };
 
     window.onload = function() {
-      initUser();
-      
+      // Do NOT call initUser here before data is ready, let splash screen handle initial fetch first
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '60%';
 
       const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
+      s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialDataAndStart&t=` + Date.now();
       document.head.appendChild(s);
 
       // Mobile Fast-Load Fallback: Force hide splash screen after 4 seconds max so mobile never hangs
@@ -2262,6 +2254,11 @@
           setTimeout(() => { splash.style.display = 'none'; }, 300);
         }
       }, 4000);
+    };
+
+    window.handleInitialDataAndStart = function(data) {
+      window.handleInitialData(data);
+      initUser();
     };
   </script>
 </body>
