@@ -1053,6 +1053,7 @@
         if (data.board && data.board.dateBanner) {
           document.getElementById('uiDashboardDate').innerText = data.board.dateBanner;
         }
+        applySecurity(data.security, data.guestSecurity);
       }
 
       setTimeout(() => {
@@ -1075,6 +1076,11 @@
       if (saved) {
         document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
         loadProfilePhoto(saved);
+        
+        if (portalData) {
+          applySecurity(portalData.security, portalData.guestSecurity);
+        }
+
         showPage('pageDashboard');
         startPresenceHeartbeat();
         startGlobalChatWatcher();
@@ -1092,6 +1098,11 @@
       localStorage.setItem(STORAGE_KEY, sel);
       document.getElementById('uiWelcomeName').innerText = "Welcome, " + sel + "!";
       loadProfilePhoto(sel);
+
+      if (portalData) {
+        applySecurity(portalData.security, portalData.guestSecurity);
+      }
+
       showPage('pageDashboard');
       startPresenceHeartbeat();
       startGlobalChatWatcher();
@@ -2179,6 +2190,12 @@
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
+      
+      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
+      if (currentUser) {
+        applySecurity(data.security, data.guestSecurity);
+      }
+
       document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
 
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
@@ -2212,11 +2229,6 @@
         opt.innerText = op.name;
         sel.appendChild(opt);
       });
-
-      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      if (currentUser) {
-        applySecurity(data.security, data.guestSecurity);
-      }
 
       const fill = document.getElementById('splashProgressFill');
       const txt = document.getElementById('splashStatusText');
