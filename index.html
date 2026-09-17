@@ -44,9 +44,6 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
-    /* INITIALLY HIDE MENU BUTTONS TO PREVENT FLASHING */
-    .dashboard-menu .menu-item-btn { display: none !important; }
-
     /* CUSTOM TOAST NOTIFICATION */
     #customToast {
       position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -1051,7 +1048,6 @@
         if (data.board && data.board.dateBanner) {
           document.getElementById('uiDashboardDate').innerText = data.board.dateBanner;
         }
-        applySecurity(data.security, data.guestSecurity);
       }
 
       setTimeout(() => {
@@ -1074,7 +1070,9 @@
       if (saved) {
         document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
         loadProfilePhoto(saved);
-        // Do NOT show pageDashboard here until portalData is fully fetched and security is applied in handleInitialData!
+        showPage('pageDashboard');
+        startPresenceHeartbeat();
+        startGlobalChatWatcher();
       } else {
         showPage('pageLogin');
       }
@@ -1089,16 +1087,9 @@
       localStorage.setItem(STORAGE_KEY, sel);
       document.getElementById('uiWelcomeName').innerText = "Welcome, " + sel + "!";
       loadProfilePhoto(sel);
-
-      if (portalData) {
-        applySecurity(portalData.security, portalData.guestSecurity);
-        showPage('pageDashboard');
-        startPresenceHeartbeat();
-        startGlobalChatWatcher();
-      } else {
-        // If data is still loading, trigger data fetch or wait
-        showToast("Synchronizing data, please wait...");
-      }
+      showPage('pageDashboard');
+      startPresenceHeartbeat();
+      startGlobalChatWatcher();
     }
 
     function performLogout() {
@@ -1258,10 +1249,10 @@
       map.forEach(item => {
         const el = document.getElementById(item.id);
         if (el) {
-          if (item.allowed) {
-            el.style.setProperty('display', 'flex', 'important');
-          } else {
+          if (!item.allowed) {
             el.style.setProperty('display', 'none', 'important');
+          } else {
+            el.style.setProperty('display', 'flex', 'important');
           }
         }
       });
@@ -1633,7 +1624,7 @@
       }
     };
 
-    // 2. DUE HISTORY (WITH FLEXIBLE FUZZY OPERATOR MATCHING)
+    // 2. DUE HISTORY
     function renderDueHistory() {
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
@@ -1643,13 +1634,13 @@
         const cleanKey = myName.toLowerCase();
         records = portalData.dueMatrix[cleanKey] || portalData.dueMatrix[myName] || [];
         if (records.length === 0) {
-          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.trim().toLowerCase().includes(cleanKey) || cleanKey.includes(k.trim().toLowerCase()));
+          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.trim().toLowerCase() === cleanKey);
           if (matchedKey) records = portalData.dueMatrix[matchedKey];
         }
       }
 
       let html = '';
-      (records || []).forEach(rec => {
+      records.forEach(rec => {
         html += `<tr>
           <td class="cyan-cell">${rec.pos}</td>
           <td class="due-cell">${rec.due}</td>
@@ -1660,7 +1651,7 @@
       });
 
       if (records.length === 0) {
-        html = `<tr><td colspan="5" style="padding:15px; color:#ef4444;">No due records found for "${myName}". Please check SUMMARY2 sheet operator name spelling.</td></tr>`;
+        html = `<tr><td colspan="5" style="padding:15px; color:#94a3b8;">No personal due records found for ${myName}.</td></tr>`;
       }
 
       document.getElementById('uiDueTbody').innerHTML = html;
@@ -2183,12 +2174,6 @@
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
-      
-      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      if (currentUser) {
-        applySecurity(data.security, data.guestSecurity);
-      }
-
       document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
 
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
@@ -2223,6 +2208,11 @@
         sel.appendChild(opt);
       });
 
+      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
+      if (currentUser) {
+        applySecurity(data.security, data.guestSecurity);
+      }
+
       const fill = document.getElementById('splashProgressFill');
       const txt = document.getElementById('splashStatusText');
       if (fill) fill.style.width = '100%';
@@ -2238,12 +2228,13 @@
     };
 
     window.onload = function() {
-      // Do NOT call initUser here before data is ready, let splash screen handle initial fetch first
+      initUser();
+      
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '60%';
 
       const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialDataAndStart&t=` + Date.now();
+      s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
       document.head.appendChild(s);
 
       // Mobile Fast-Load Fallback: Force hide splash screen after 4 seconds max so mobile never hangs
@@ -2254,11 +2245,6 @@
           setTimeout(() => { splash.style.display = 'none'; }, 300);
         }
       }, 4000);
-    };
-
-    window.handleInitialDataAndStart = function(data) {
-      window.handleInitialData(data);
-      initUser();
     };
   </script>
 </body>
