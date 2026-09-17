@@ -216,21 +216,41 @@
     .chat-text { font-size: 13px; color: #ffffff; word-break: break-word; }
     .chat-input-row { display: flex; gap: 8px; margin-top: 6px; }
 
-    /* SUPERVISOR NOTICE BOX STYLING */
+    /* RUNNING TICKER ANIMATION */
+    @keyframes tickerScroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+    .ticker-container {
+      background: #dc2626; color: #ffffff; font-size: 12px; font-weight: 900;
+      padding: 6px 0; border-radius: 6px; overflow: hidden; white-space: nowrap;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+    }
+    .ticker-text {
+      display: inline-block; animation: tickerScroll 16s linear infinite;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* ZOOM-IN ZOOM-OUT PULSING NOTICE BOX STYLING */
+    @keyframes noticePulseAnim {
+      0% { transform: scale(1); border-color: #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
+      50% { transform: scale(1.02); border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.7); }
+      100% { transform: scale(1); border-color: #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
+    }
     .supervisor-notice-card {
-      background: linear-gradient(135deg, #07142b, #0f2b5c);
-      border: 2px dashed #facc15;
-      border-radius: 8px;
-      padding: 12px 14px;
+      background: linear-gradient(135deg, #07142b, #1e1b4b);
+      border: 3px solid #facc15;
+      border-radius: 10px;
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      box-shadow: 0 0 12px rgba(250, 204, 21, 0.25);
       max-height: 250px;
       overflow-y: auto;
+      animation: noticePulseAnim 2.2s infinite ease-in-out;
     }
-    .notice-title { color: #facc15; font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
-    .notice-body { color: #ffffff; font-size: 13px; font-weight: bold; line-height: 1.5; word-break: break-word; }
+    .notice-title { color: #facc15; font-size: 13px; font-weight: 900; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
+    .notice-body { color: #ffffff; font-size: 13.5px; font-weight: bold; line-height: 1.5; word-break: break-word; }
 
     /* PROGRESS BARS */
     #leaveProgressBarContainer, #reportProgressBarContainer {
@@ -431,8 +451,8 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
-      <!-- 📢 SUPERVISOR NOTICE HIGHLIGHT BANNER ON MAIN DASHBOARD -->
-      <div id="uiDashboardNoticeBox" style="display:none;"></div>
+      <!-- 📢 RUNNING TICKER & PULSING ZOOM NOTICE BANNER ON MAIN DASHBOARD -->
+      <div id="uiDashboardNoticeBox" style="display:none; display:flex; flex-direction:column; gap:8px;"></div>
 
       <!-- ONLINE STATUS WIDGET CARD -->
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
@@ -1925,11 +1945,14 @@
       portalData = data;
       document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
 
-      // RENDER SUPERVISOR NOTICE ON MAIN DASHBOARD & POSITION PAGE
+      // RENDER RUNNING TICKER & PULSING ZOOM NOTICE ON DASHBOARD
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
       if (data.security && data.security.noticeMessage) {
-        dashNoticeBox.style.display = 'block';
+        dashNoticeBox.style.display = 'flex';
         dashNoticeBox.innerHTML = `
+          <div class="ticker-container">
+            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📢 IMPORTANT NOTICE FROM MANAGEMENT 📢</div>
+          </div>
           <div class="supervisor-notice-card">
             <div class="notice-title">📢 SUPERVISOR NOTICE</div>
             <div class="notice-body">${data.security.noticeMessage}</div>
