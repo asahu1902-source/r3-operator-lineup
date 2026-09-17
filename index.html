@@ -43,6 +43,19 @@
     }
     #customToast.show { transform: translateX(-50%) translateY(0); }
 
+    /* CHAT NOTIFICATION BADGE ANIMATION */
+    @keyframes chatBadgePulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .chat-unread-badge {
+      background: #ef4444; color: #ffffff; font-size: 10px; font-weight: 900;
+      padding: 2px 7px; border-radius: 10px; border: 1.5px solid #facc15;
+      animation: chatBadgePulse 1.2s infinite ease-in-out;
+      display: inline-block; margin-left: 8px; box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+    }
+
     /* LOGIN SCREEN */
     .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
     .login-card img { width: 85px; height: 85px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
@@ -529,7 +542,7 @@
         <div id="btnGroupChat" class="menu-item-btn" onclick="openMenuAction('groupChat')">
           <div class="menu-item-icon">💬</div>
           <div class="menu-item-info">
-            <h4>Live Group Chat</h4>
+            <h4>Live Group Chat <span id="uiChatBadgeSpan"></span></h4>
             <p>Chat with operators & supervisor in real-time</p>
           </div>
         </div>
@@ -899,6 +912,8 @@
     let currentReportResult = null;
     let chatInterval = null;
     let presenceInterval = null;
+    let globalChatWatcherInterval = null;
+    let lastKnownChatCount = -1;
     let isScrollableReportMode = false;
     let myAssignedPositionName = "";
 
@@ -914,8 +929,14 @@
       const activeEl = document.getElementById(pageId);
       if (activeEl) activeEl.classList.add('active');
 
-      if (pageId === 'pageGroupChat') startChatPolling();
-      else stopChatPolling();
+      if (pageId === 'pageGroupChat') {
+        startChatPolling();
+        // Clear unread badge when entering chat
+        const badgeSpan = document.getElementById('uiChatBadgeSpan');
+        if (badgeSpan) badgeSpan.innerHTML = '';
+      } else {
+        stopChatPolling();
+      }
 
       if (pageId === 'pageDashboard') startPresenceHeartbeat();
       else stopPresenceHeartbeat();
@@ -928,6 +949,7 @@
         loadProfilePhoto(saved);
         showPage('pageDashboard');
         startPresenceHeartbeat();
+        startGlobalChatWatcher();
       } else {
         showPage('pageLogin');
       }
@@ -944,6 +966,7 @@
       loadProfilePhoto(sel);
       showPage('pageDashboard');
       startPresenceHeartbeat();
+      startGlobalChatWatcher();
     }
 
     function performLogout() {
@@ -956,6 +979,7 @@
 
     function confirmLogout() {
       stopPresenceHeartbeat();
+      stopGlobalChatWatcher();
       localStorage.removeItem(STORAGE_KEY);
       showPage('pageLogin');
       closeCustomLogout();
@@ -1039,6 +1063,46 @@
       
       if (listContainer) listContainer.innerHTML = html;
       if (chatFooterList) chatFooterList.innerHTML = html;
+    };
+
+    // BACKGROUND CHAT WATCHER (Notifies user if message arrives in other modules)
+    function startGlobalChatWatcher() {
+      if (globalChatWatcherInterval) clearInterval(globalChatWatcherInterval);
+      checkNewChatMessagesBackground();
+      globalChatWatcherInterval = setInterval(checkNewChatMessagesBackground, 6000);
+    }
+
+    function stopGlobalChatWatcher() {
+      if (globalChatWatcherInterval) {
+        clearInterval(globalChatWatcherInterval);
+        globalChatWatcherInterval = null;
+      }
+    }
+
+    function checkNewChatMessagesBackground() {
+      const chatPage = document.getElementById('pageGroupChat');
+      if (chatPage && chatPage.classList.contains('active')) return;
+
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=getChat&callback=handleGlobalChatCheckResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleGlobalChatCheckResponse = function(res) {
+      if (!res || res.status !== "success") return;
+      const messages = res.messages || [];
+      const currentCount = messages.length;
+
+      const badgeSpan = document.getElementById('uiChatBadgeSpan');
+      if (!badgeSpan) return;
+
+      if (lastKnownChatCount === -1) {
+        lastKnownChatCount = currentCount;
+      } else if (currentCount > lastKnownChatCount) {
+        badgeSpan.innerHTML = '<span class="chat-unread-badge">NEW 💬</span>';
+        showToast("💬 New message in Live Group Chat!");
+        lastKnownChatCount = currentCount;
+      }
     };
 
     function applySecurity(sec, guestSec) {
