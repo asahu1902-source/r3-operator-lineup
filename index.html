@@ -455,7 +455,7 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
-      <!-- 📢 SEAMLESS RUNNING TICKER & PULSING ZOOM NOTICE BANNER ON MAIN DASHBOARD -->
+      <!-- 📢 CLEAN RUNNING TICKER & PULSING ZOOM NOTICE BANNER ON MAIN DASHBOARD -->
       <div id="uiDashboardNoticeBox" style="display:none; display:flex; flex-direction:column; gap:8px;"></div>
 
       <!-- ONLINE STATUS WIDGET CARD -->
@@ -1949,14 +1949,13 @@
       portalData = data;
       document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
 
-      // RENDER SEAMLESS TICKER & PULSING ZOOM NOTICE ON DASHBOARD
+      // RENDER CLEAN TICKER & PULSING ZOOM NOTICE ON DASHBOARD
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
       if (data.security && data.security.noticeMessage) {
         dashNoticeBox.style.display = 'flex';
-        const rawMsg = data.security.noticeMessage.replace(/<br>/g, " | ");
         dashNoticeBox.innerHTML = `
           <div class="ticker-container">
-            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY! &nbsp;&nbsp;&nbsp;&nbsp; 📢 ${rawMsg} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY! &nbsp;&nbsp;&nbsp;&nbsp; 📢 ${rawMsg}</div>
+            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
           </div>
           <div class="supervisor-notice-card">
             <div class="notice-title">📢 SUPERVISOR NOTICE</div>
