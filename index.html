@@ -44,7 +44,6 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
-    /* PREVENT FLASHING: Keep buttons hidden until fully loaded */
     #pageDashboard:not(.fully-loaded) .menu-item-btn { display: none !important; }
 
     /* CUSTOM TOAST NOTIFICATION */
@@ -57,7 +56,6 @@
     }
     #customToast.show { transform: translateX(-50%) translateY(0); }
 
-    /* REFRESH ICON SPIN ANIMATION */
     @keyframes spinRefresh {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -73,7 +71,6 @@
       display: inline-block;
     }
 
-    /* CHAT NOTIFICATION BADGE ANIMATION */
     @keyframes chatBadgePulse {
       0% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.25); opacity: 0.7; }
@@ -265,7 +262,6 @@
     .chat-text { font-size: 13px; color: #ffffff; word-break: break-word; }
     .chat-input-row { display: flex; gap: 8px; margin-top: 6px; }
 
-    /* RUNNING TICKER ANIMATION (Seamless Loop) */
     @keyframes tickerScroll {
       0% { transform: translateX(0%); }
       100% { transform: translateX(-50%); }
@@ -284,7 +280,6 @@
       padding-left: 100%;
     }
 
-    /* ZOOM-IN ZOOM-OUT PULSING NOTICE BOX STYLING */
     @keyframes noticePulseAnim {
       0% { transform: scale(1); border-color: #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
       50% { transform: scale(1.02); border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.7); }
@@ -305,7 +300,6 @@
     .notice-title { color: #facc15; font-size: 13px; font-weight: 900; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
     .notice-body { color: #ffffff; font-size: 13.5px; font-weight: bold; line-height: 1.5; word-break: break-word; }
 
-    /* PROGRESS BARS */
     #leaveProgressBarContainer, #reportProgressBarContainer {
       width: 100%; height: 8px; background: #1e293b; border-radius: 4px;
       overflow: hidden; margin-top: 8px; display: none; border: 1px solid #38bdf8;
@@ -410,10 +404,8 @@
 
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
 
-  <!-- CUSTOM TOAST NOTIFICATION -->
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <!-- WHATSAPP CHOICE MODAL -->
   <div id="whatsappChoiceModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box" style="border-color: #25D366; box-shadow: 0 0 25px rgba(37, 211, 102, 0.4);">
       <h4 style="color: #25D366; font-size: 16px;">💬 NOTIFY VIA WHATSAPP</h4>
@@ -426,7 +418,6 @@
     </div>
   </div>
 
-  <!-- WHATSAPP FOLLOWUP MODAL -->
   <div id="whatsappFollowupModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box" style="border-color: #25D366; box-shadow: 0 0 25px rgba(37, 211, 102, 0.4);">
       <h4 style="color: #25D366; font-size: 16px;" id="followupTitle">💬 NEXT STEP</h4>
@@ -438,7 +429,6 @@
     </div>
   </div>
 
-  <!-- CUSTOM MODALS -->
   <div id="customAlertModal" class="custom-modal-backdrop">
     <div class="custom-modal-box">
       <h4>⚠️ NOTICE</h4>
@@ -469,7 +459,6 @@
     </div>
   </div>
 
-  <!-- ENHANCED GLOWING PROGRESS SPLASH SCREEN -->
   <div id="splashScreen">
     <div class="splash-logo-container">
       <div class="splash-pulse-ring"></div>
@@ -513,10 +502,8 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
-      <!-- 📢 CLEAN RUNNING TICKER & PULSING ZOOM NOTICE BANNER ON MAIN DASHBOARD -->
       <div id="uiDashboardNoticeBox" style="display:none; display:flex; flex-direction:column; gap:8px;"></div>
 
-      <!-- ONLINE STATUS WIDGET CARD -->
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
         <h4 style="color:#10b981; font-size:13px; font-weight:900; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
           <span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 8px #10b981;"></span> 
@@ -616,14 +603,12 @@
         </div>
       </div>
 
-      <!-- MY PERSONAL SUBMISSION HERO CARD -->
       <div id="myDutyActionCard" class="form-card" style="background: linear-gradient(135deg, #064e3b, #0f172a); border: 2px solid #10b981; display:none;">
         <h3 style="color:#10b981; font-size:15px; font-weight:900;">🎯 My Assigned Duty Confirmation</h3>
         <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
         <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
       </div>
 
-      <!-- LIVE STATUS COUNTER & LIST -->
       <div class="form-card" style="background:#07142b; border:2px solid #38bdf8;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 style="color:#ffff00; font-size:15px;">📊 Live Duty Submission Status</h3>
@@ -658,7 +643,6 @@
         </table>
       </div>
 
-      <!-- SUPERVISOR NOTICE CONTAINER -->
       <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
@@ -785,7 +769,6 @@
 
         <button class="btn-action-main" onclick="loadDynamicMonthlyReport()">Generate Report ➔</button>
 
-        <!-- REPORT PROGRESS BAR -->
         <div id="reportProgressBarContainer">
           <div id="reportProgressBarFill"></div>
         </div>
@@ -941,7 +924,6 @@
           <button class="btn-action-main" style="width:100px;" onclick="sendChatMessage()">Send</button>
         </div>
 
-        <!-- 🟢 ONLINE OPERATORS FOOTER BAR IN CHAT -->
         <div style="background:#000000; border:1px solid #10b981; border-radius:6px; padding:8px 10px; display:flex; align-items:center; gap:8px; margin-top:4px;">
           <span style="width:8px; height:8px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 6px #10b981; flex-shrink:0;"></span>
           <span style="font-size:11.5px; color:#10b981; font-weight:900; white-space:nowrap;">Online (<span id="chatOnlineCount">0</span>):</span>
@@ -1297,6 +1279,12 @@
       }
 
       if (type === "checkPosition") {
+        if (portalData && portalData.lineupStatus && portalData.lineupStatus.toLowerCase() !== "published") {
+          let statusText = portalData.lineupStatus;
+          showCustomAlert(`⚠️ Duty Lineup Status is currently "${statusText}". Please check back later.`);
+          return;
+        }
+
         if (activeSec.dutySubmission === false) {
           document.getElementById('myDutyActionCard').style.display = 'none';
         }
@@ -2210,28 +2198,42 @@
         applySecurity(data.security, data.guestSecurity);
       }
 
+      // CHECK LINEUP STATUS (Published / Unpublished / Maintenance)
+      if (data.lineupStatus) {
+        const st = data.lineupStatus.toLowerCase();
+        if (st.includes("unpublished") || st.includes("maintenance")) {
+          const dashNotice = document.getElementById('uiDashboardNoticeBox');
+          if (dashNotice) {
+            dashNotice.style.display = 'flex';
+            let msgTitle = st.includes("unpublished") ? "⏳ DUTY LINEUP UNDER PREPARATION" : "⚠️ SYSTEM TEMPORARILY UNAVAILABLE";
+            let msgBody = st.includes("unpublished") ? "Please Wait — ⏳ Duty Allocation in Progress" : "Google Server Busy — Sync in Progress. Please check back after 30 minutes.";
+            dashNotice.innerHTML = `
+              <div class="supervisor-notice-card" style="border-color: ${st.includes("unpublished") ? '#facc15' : '#ef4444'};">
+                <div class="notice-title" style="color: ${st.includes("unpublished") ? '#facc15' : '#ef4444'};">${msgTitle}</div>
+                <div class="notice-body">${msgBody}</div>
+              </div>
+            `;
+          }
+        }
+      }
+
       const dateBannerEl = document.getElementById('uiDashboardDate');
       if (dateBannerEl) {
         dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
       }
 
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
-      if (dashNoticeBox) {
-        if (data.security && data.security.noticeMessage) {
-          dashNoticeBox.style.display = 'flex';
-          dashNoticeBox.innerHTML = `
-            <div class="ticker-container">
-              <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
-            </div>
-            <div class="supervisor-notice-card">
-              <div class="notice-title">📢 SUPERVISOR NOTICE</div>
-              <div class="notice-body">${data.security.noticeMessage}</div>
-            </div>
-          `;
-        } else {
-          dashNoticeBox.style.display = 'none';
-          dashNoticeBox.innerHTML = '';
-        }
+      if (dashNoticeBox && data.security && data.security.noticeMessage && !dashNoticeBox.innerHTML.includes("DUTY LINEUP")) {
+        dashNoticeBox.style.display = 'flex';
+        dashNoticeBox.innerHTML = `
+          <div class="ticker-container">
+            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
+          </div>
+          <div class="supervisor-notice-card">
+            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
+            <div class="notice-body">${data.security.noticeMessage}</div>
+          </div>
+        `;
       }
 
       const sel = document.getElementById('loginSelect');
@@ -2281,7 +2283,7 @@
           splash.style.opacity = '0';
           setTimeout(() => { splash.style.display = 'none'; }, 300);
           const dash = document.getElementById('pageDashboard');
-          if (dash) dash.classList.add('fully-loaded');
+          if (dash) dash.classList.add('fully-logged');
           initUser();
         }
       }, 4000);
