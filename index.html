@@ -44,8 +44,8 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
-    /* ABSOLUTE HIDE FOR ALL MENU BUTTONS BY DEFAULT */
-    .dashboard-menu .menu-item-btn { display: none !important; }
+    /* PREVENT FLASHING: Keep buttons hidden until fully loaded */
+    #pageDashboard:not(.fully-loaded) .menu-item-btn { display: none !important; }
 
     /* CUSTOM TOAST NOTIFICATION */
     #customToast {
@@ -1183,7 +1183,7 @@
       
       const onlineUsers = res.onlineUsers || [];
 
-      countBadge.innerText = onlineUsers.length;
+      if (countBadge) countBadge.innerText = onlineUsers.length;
       if (chatCountBadge) chatCountBadge.innerText = onlineUsers.length;
 
       if (onlineUsers.length === 0) {
@@ -2247,7 +2247,7 @@
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
       document.head.appendChild(s);
 
-      // Safety Fallback Timer (4 seconds max)
+      // Fallback Timer (4 seconds max)
       setTimeout(() => {
         const splash = document.getElementById('splashScreen');
         if (splash && splash.style.display !== 'none') {
