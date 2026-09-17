@@ -44,6 +44,9 @@
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
+    /* ABSOLUTE HIDE FOR ALL MENU BUTTONS BY DEFAULT */
+    .dashboard-menu .menu-item-btn { display: none !important; }
+
     /* CUSTOM TOAST NOTIFICATION */
     #customToast {
       position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -1032,7 +1035,6 @@
       else stopPresenceHeartbeat();
     }
 
-    // GLOBAL REFRESH FUNCTION WITH SPINNING ICON
     function triggerGlobalRefresh(btnEl, context) {
       if (btnEl) btnEl.classList.add('spinning');
       showToast("Refreshing data...");
@@ -1048,6 +1050,7 @@
         if (data.board && data.board.dateBanner) {
           document.getElementById('uiDashboardDate').innerText = data.board.dateBanner;
         }
+        applySecurity(data.security, data.guestSecurity);
       }
 
       setTimeout(() => {
@@ -1066,14 +1069,21 @@
     };
 
     function initUser() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
-        loadProfilePhoto(saved);
-        showPage('pageDashboard');
-        startPresenceHeartbeat();
-        startGlobalChatWatcher();
-      } else {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
+          loadProfilePhoto(saved);
+          if (portalData) {
+            applySecurity(portalData.security, portalData.guestSecurity);
+          }
+          showPage('pageDashboard');
+          startPresenceHeartbeat();
+          startGlobalChatWatcher();
+        } else {
+          showPage('pageLogin');
+        }
+      } catch(e) {
         showPage('pageLogin');
       }
     }
@@ -1087,6 +1097,11 @@
       localStorage.setItem(STORAGE_KEY, sel);
       document.getElementById('uiWelcomeName').innerText = "Welcome, " + sel + "!";
       loadProfilePhoto(sel);
+
+      if (portalData) {
+        applySecurity(portalData.security, portalData.guestSecurity);
+      }
+
       showPage('pageDashboard');
       startPresenceHeartbeat();
       startGlobalChatWatcher();
@@ -1188,7 +1203,6 @@
       if (chatFooterList) chatFooterList.innerHTML = html;
     };
 
-    // BACKGROUND CHAT WATCHER
     function startGlobalChatWatcher() {
       if (globalChatWatcherInterval) clearInterval(globalChatWatcherInterval);
       checkNewChatMessagesBackground();
@@ -1249,10 +1263,10 @@
       map.forEach(item => {
         const el = document.getElementById(item.id);
         if (el) {
-          if (!item.allowed) {
-            el.style.setProperty('display', 'none', 'important');
-          } else {
+          if (item.allowed) {
             el.style.setProperty('display', 'flex', 'important');
+          } else {
+            el.style.setProperty('display', 'none', 'important');
           }
         }
       });
@@ -1297,12 +1311,11 @@
       else if (type === "groupChat") openGroupChat();
     }
 
-    // DATE-WISE DUTY LOOKUP CLIENT LOGIC
     function lookupDutyByDate() {
       const val = document.getElementById('uiLookupDateInput').value;
       if (!val) return;
       const parts = val.split('-');
-      const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`; // DD/MM/YYYY format
+      const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
 
       showToast("Fetching duty lineup...");
       const s = document.createElement('script');
@@ -1459,7 +1472,6 @@
       if (res && res.status === "success") loadChatMessages();
     };
 
-    // 1. POSITION BOARD & LIVE SUBMISSION
     function renderPositionBoard() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
@@ -1624,7 +1636,6 @@
       }
     };
 
-    // 2. DUE HISTORY
     function renderDueHistory() {
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
@@ -1634,13 +1645,13 @@
         const cleanKey = myName.toLowerCase();
         records = portalData.dueMatrix[cleanKey] || portalData.dueMatrix[myName] || [];
         if (records.length === 0) {
-          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.trim().toLowerCase() === cleanKey);
+          const matchedKey = Object.keys(portalData.dueMatrix).find(k => k.trim().toLowerCase().includes(cleanKey) || cleanKey.includes(k.trim().toLowerCase()));
           if (matchedKey) records = portalData.dueMatrix[matchedKey];
         }
       }
 
       let html = '';
-      records.forEach(rec => {
+      (records || []).forEach(rec => {
         html += `<tr>
           <td class="cyan-cell">${rec.pos}</td>
           <td class="due-cell">${rec.due}</td>
@@ -1651,14 +1662,13 @@
       });
 
       if (records.length === 0) {
-        html = `<tr><td colspan="5" style="padding:15px; color:#94a3b8;">No personal due records found for ${myName}.</td></tr>`;
+        html = `<tr><td colspan="5" style="padding:15px; color:#ef4444;">No due records found for "${myName}". Please check SUMMARY2 sheet operator name spelling.</td></tr>`;
       }
 
       document.getElementById('uiDueTbody').innerHTML = html;
       showPage('pageDueHistory');
     }
 
-    // 3. MONTHLY REPORT
     function openMonthlyReportScreen() {
       const op = localStorage.getItem(STORAGE_KEY) || "Operator";
       document.getElementById('uiMonthlyRepHeading').innerText = op + " - Monthly Performance Summary";
@@ -1820,7 +1830,6 @@
       area.innerHTML = html;
     }
 
-    // 4. LEAVE ENTRY & 2-STEP WHATSAPP SEQUENTIAL FLOW
     function openLeaveEntry() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       document.getElementById('uiLeaveName').value = myName;
@@ -2022,7 +2031,6 @@
       openWhatsAppChoiceModal();
     }
 
-    // 5. COMPANY HOLIDAY
     function renderHolidayList() {
       const container = document.getElementById('uiHolidayContainer');
       container.innerHTML = '';
@@ -2071,7 +2079,6 @@
       showPage('pageHolidayList');
     }
 
-    // 6. SHIFT SCHEDULE
     function openShiftSchedule() {
       document.getElementById('uiScheduleResult').style.display = 'none';
       showPage('pageShiftSchedule');
@@ -2097,7 +2104,6 @@
       }
     }
 
-    // 7. LOCAL FESTIVAL
     function renderLocalFestival() {
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
@@ -2125,7 +2131,6 @@
       showPage('pageLocalFestival');
     }
 
-    // WHATSAPP SHARE FUNCTIONS
     function sharePositionWhatsApp() {
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
@@ -2170,47 +2175,53 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    // INITIAL LOAD WITH PROGRESS SPLASH & 4-SEC FAST FALLBACK TIMER FOR MOBILE
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
-      document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
-
-      const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
-      if (data.security && data.security.noticeMessage) {
-        dashNoticeBox.style.display = 'flex';
-        dashNoticeBox.innerHTML = `
-          <div class="ticker-container">
-            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
-          </div>
-          <div class="supervisor-notice-card">
-            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
-            <div class="notice-body">${data.security.noticeMessage}</div>
-          </div>
-        `;
-      } else {
-        dashNoticeBox.style.display = 'none';
-        dashNoticeBox.innerHTML = '';
-      }
-
-      const sel = document.getElementById('loginSelect');
-      sel.innerHTML = '<option value="">-- Choose Name --</option>';
       
-      const guestOpt = document.createElement('option');
-      guestOpt.value = "Guest";
-      guestOpt.innerText = "Guest";
-      sel.appendChild(guestOpt);
-
-      (data.operators || []).forEach(op => {
-        const opt = document.createElement('option');
-        opt.value = op.name;
-        opt.innerText = op.name;
-        sel.appendChild(opt);
-      });
-
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       if (currentUser) {
         applySecurity(data.security, data.guestSecurity);
+      }
+
+      const dateBannerEl = document.getElementById('uiDashboardDate');
+      if (dateBannerEl) {
+        dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
+      }
+
+      const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
+      if (dashNoticeBox) {
+        if (data.security && data.security.noticeMessage) {
+          dashNoticeBox.style.display = 'flex';
+          dashNoticeBox.innerHTML = `
+            <div class="ticker-container">
+              <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
+            </div>
+            <div class="supervisor-notice-card">
+              <div class="notice-title">📢 SUPERVISOR NOTICE</div>
+              <div class="notice-body">${data.security.noticeMessage}</div>
+            </div>
+          `;
+        } else {
+          dashNoticeBox.style.display = 'none';
+          dashNoticeBox.innerHTML = '';
+        }
+      }
+
+      const sel = document.getElementById('loginSelect');
+      if (sel) {
+        sel.innerHTML = '<option value="">-- Choose Name --</option>';
+        const guestOpt = document.createElement('option');
+        guestOpt.value = "Guest";
+        guestOpt.innerText = "Guest";
+        sel.appendChild(guestOpt);
+
+        (data.operators || []).forEach(op => {
+          const opt = document.createElement('option');
+          opt.value = op.name;
+          opt.innerText = op.name;
+          sel.appendChild(opt);
+        });
       }
 
       const fill = document.getElementById('splashProgressFill');
@@ -2224,12 +2235,11 @@
           splash.style.opacity = '0';
           setTimeout(() => { splash.style.display = 'none'; }, 300);
         }
+        initUser();
       }, 200);
     };
 
     window.onload = function() {
-      initUser();
-      
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '60%';
 
@@ -2237,12 +2247,13 @@
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
       document.head.appendChild(s);
 
-      // Mobile Fast-Load Fallback: Force hide splash screen after 4 seconds max so mobile never hangs
+      // Safety Fallback Timer (4 seconds max)
       setTimeout(() => {
         const splash = document.getElementById('splashScreen');
         if (splash && splash.style.display !== 'none') {
           splash.style.opacity = '0';
           setTimeout(() => { splash.style.display = 'none'; }, 300);
+          initUser();
         }
       }, 4000);
     };
