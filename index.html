@@ -46,7 +46,6 @@
 
     #pageDashboard:not(.fully-loaded) .menu-item-btn { display: none !important; }
 
-    /* CUSTOM TOAST NOTIFICATION */
     #customToast {
       position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
       background: linear-gradient(135deg, #059669, #10b981); color: #ffffff;
@@ -254,7 +253,6 @@
 
     .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    /* CHAT STYLES */
     .chat-container { background: #000; border: 2px solid #38bdf8; border-radius: 10px; height: 280px; display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; }
     .chat-bubble { background: #1e293b; border-left: 4px solid #38bdf8; border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
     .chat-bubble.my-msg { border-left-color: #10b981; background: #064e3b; align-self: flex-end; width: 85%; }
@@ -406,6 +404,15 @@
 
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
+  <!-- WARNING STATUS POPUP MODAL (FETCHING A1/A2 FROM WARNING SHEET) -->
+  <div id="statusWarningModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box" style="border: 3px solid #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); background: #07142b;">
+      <h4 style="color: #ef4444; font-size: 17px; font-weight: 900;">⚠️ NOTICE</h4>
+      <p id="statusWarningText" style="color: #ffff00; font-size: 14.5px; font-weight: bold; line-height: 1.5; word-break: break-word;">Warning message here...</p>
+      <button class="btn-modal-primary" style="background: #10b981; font-weight: 900; font-size: 14px; padding: 12px;" onclick="closeStatusWarningAndRedirect()">OK</button>
+    </div>
+  </div>
+
   <div id="whatsappChoiceModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box" style="border-color: #25D366; box-shadow: 0 0 25px rgba(37, 211, 102, 0.4);">
       <h4 style="color: #25D366; font-size: 16px;">💬 NOTIFY VIA WHATSAPP</h4>
@@ -502,7 +509,7 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
-      <div id="uiDashboardNoticeBox" style="display:none; display:flex; flex-direction:column; gap:8px;"></div>
+      <div id="uiDashboardNoticeBox" style="display:none; flex-direction:column; gap:8px;"></div>
 
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
         <h4 style="color:#10b981; font-size:13px; font-weight:900; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
@@ -1035,6 +1042,7 @@
     window.handleGlobalRefreshResponse = function(data) {
       if (data) {
         portalData = data;
+        checkAndShowStatusWarning(data);
         if (data.board && data.board.dateBanner) {
           document.getElementById('uiDashboardDate').innerText = data.board.dateBanner;
         }
@@ -1063,6 +1071,7 @@
           document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
           loadProfilePhoto(saved);
           if (portalData) {
+            checkAndShowStatusWarning(portalData);
             applySecurity(portalData.security, portalData.guestSecurity);
           }
           showPage('pageDashboard');
@@ -1087,6 +1096,7 @@
       loadProfilePhoto(sel);
 
       if (portalData) {
+        checkAndShowStatusWarning(portalData);
         applySecurity(portalData.security, portalData.guestSecurity);
       }
 
@@ -1269,6 +1279,32 @@
       document.getElementById('customAlertModal').style.display = 'none';
     }
 
+    // CHECK C3 STATUS AND SHOW WARNING POPUP (FETCHING FROM WARNING SHEET A1/A2)
+    function checkAndShowStatusWarning(data) {
+      if (!data || !data.lineupStatus) return;
+      const st = data.lineupStatus.toLowerCase();
+      const modal = document.getElementById('statusWarningModal');
+      const textEl = document.getElementById('statusWarningText');
+
+      if (st.includes("unpublished")) {
+        let msg = (data.warningMessages && data.warningMessages.a1) ? data.warningMessages.a1 : "Duty Allocation in Progress — Please Check Back Later";
+        textEl.innerText = msg;
+        modal.style.display = 'flex';
+      } else if (st.includes("maintenance")) {
+        let msg = (data.warningMessages && data.warningMessages.a2) ? data.warningMessages.a2 : "CURRENTLY DUTY PORTAL SERVER DOWN, PLEASE CHECK LATER";
+        textEl.innerText = msg;
+        modal.style.display = 'flex';
+      } else {
+        if (modal) modal.style.display = 'none';
+      }
+    }
+
+    function closeStatusWarningAndRedirect() {
+      const modal = document.getElementById('statusWarningModal');
+      if (modal) modal.style.display = 'none';
+      showPage('pageDashboard');
+    }
+
     function openMenuAction(type) {
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       const activeSec = (currentUser.toLowerCase() === "guest") ? portalData.guestSecurity : portalData.security;
@@ -1278,13 +1314,15 @@
         return;
       }
 
-      if (type === "checkPosition") {
-        if (portalData && portalData.lineupStatus && portalData.lineupStatus.toLowerCase() !== "published") {
-          let statusText = portalData.lineupStatus;
-          showCustomAlert(`⚠️ Duty Lineup Status is currently "${statusText}". Please check back later.`);
+      if (portalData && portalData.lineupStatus) {
+        const st = portalData.lineupStatus.toLowerCase();
+        if (st.includes("unpublished") || st.includes("maintenance")) {
+          checkAndShowStatusWarning(portalData);
           return;
         }
+      }
 
+      if (type === "checkPosition") {
         if (activeSec.dutySubmission === false) {
           document.getElementById('myDutyActionCard').style.display = 'none';
         }
@@ -2198,24 +2236,7 @@
         applySecurity(data.security, data.guestSecurity);
       }
 
-      // CHECK LINEUP STATUS (Published / Unpublished / Maintenance)
-      if (data.lineupStatus) {
-        const st = data.lineupStatus.toLowerCase();
-        if (st.includes("unpublished") || st.includes("maintenance")) {
-          const dashNotice = document.getElementById('uiDashboardNoticeBox');
-          if (dashNotice) {
-            dashNotice.style.display = 'flex';
-            let msgTitle = st.includes("unpublished") ? "⏳ DUTY LINEUP UNDER PREPARATION" : "⚠️ SYSTEM TEMPORARILY UNAVAILABLE";
-            let msgBody = st.includes("unpublished") ? "Please Wait — ⏳ Duty Allocation in Progress" : "Google Server Busy — Sync in Progress. Please check back after 30 minutes.";
-            dashNotice.innerHTML = `
-              <div class="supervisor-notice-card" style="border-color: ${st.includes("unpublished") ? '#facc15' : '#ef4444'};">
-                <div class="notice-title" style="color: ${st.includes("unpublished") ? '#facc15' : '#ef4444'};">${msgTitle}</div>
-                <div class="notice-body">${msgBody}</div>
-              </div>
-            `;
-          }
-        }
-      }
+      checkAndShowStatusWarning(data);
 
       const dateBannerEl = document.getElementById('uiDashboardDate');
       if (dateBannerEl) {
@@ -2223,7 +2244,7 @@
       }
 
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
-      if (dashNoticeBox && data.security && data.security.noticeMessage && !dashNoticeBox.innerHTML.includes("DUTY LINEUP")) {
+      if (dashNoticeBox && data.security && data.security.noticeMessage) {
         dashNoticeBox.style.display = 'flex';
         dashNoticeBox.innerHTML = `
           <div class="ticker-container">
@@ -2283,7 +2304,7 @@
           splash.style.opacity = '0';
           setTimeout(() => { splash.style.display = 'none'; }, 300);
           const dash = document.getElementById('pageDashboard');
-          if (dash) dash.classList.add('fully-logged');
+          if (dash) dash.classList.add('fully-loaded');
           initUser();
         }
       }, 4000);
