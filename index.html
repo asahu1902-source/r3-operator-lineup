@@ -21,12 +21,24 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background-color: #07142b; z-index: 99999; display: flex;
       flex-direction: column; align-items: center; justify-content: center;
-      transition: opacity 0.3s ease-out;
+      transition: opacity 0.4s ease-out;
     }
-    .splash-logo-container { position: relative; width: 130px; height: 130px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .splash-logo-container { position: relative; width: 130px; height: 130px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
     .splash-pulse-ring { position: absolute; width: 130px; height: 130px; border-radius: 50%; border: 3px dashed #facc15; animation: spinRing 2.5s linear infinite; }
     .splash-app-icon { width: 95px; height: 95px; border-radius: 50%; object-fit: cover; border: 3px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
-    .splash-load-text { color: #00ffff; font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    
+    .splash-progress-wrapper { width: 220px; display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; }
+    .splash-load-text { color: #00ffff; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    
+    .splash-progress-bar-container {
+      width: 100%; height: 10px; background: #000000; border-radius: 6px;
+      overflow: hidden; border: 1.5px solid #38bdf8; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+    .splash-progress-bar-fill {
+      width: 0%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
+      border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.3s ease-in-out;
+    }
+
     @keyframes spinRing { 100% { transform: rotate(360deg); } }
 
     .app-viewport { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
@@ -455,12 +467,18 @@
     </div>
   </div>
 
+  <!-- ENHANCED GLOWING PROGRESS SPLASH SCREEN -->
   <div id="splashScreen">
     <div class="splash-logo-container">
       <div class="splash-pulse-ring"></div>
       <img src="icon.png" alt="Logo" class="splash-app-icon">
     </div>
-    <div class="splash-load-text">⚡ Connecting Duty Portal...</div>
+    <div class="splash-progress-wrapper">
+      <div class="splash-load-text" id="splashStatusText">⚡ Synchronizing Duty Portal...</div>
+      <div class="splash-progress-bar-container">
+        <div id="splashProgressFill" class="splash-progress-bar-fill"></div>
+      </div>
+    </div>
   </div>
 
   <div class="app-viewport">
@@ -733,7 +751,6 @@
     <div id="pageLeaveEntry" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <button class="refresh-icon-btn" onclick="triggerGlobalRefresh(this, 'LeaveEntry')"><span class="ref-symbol">🔄</span> Refresh</button>
       </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">📝 Apply Leave</h3>
@@ -994,12 +1011,10 @@
         }
       }
 
-      // Stop spinning after short delay and show success
       setTimeout(() => {
         document.querySelectorAll('.refresh-icon-btn').forEach(b => b.classList.remove('spinning'));
         showToast("Refreshed successfully! ✅");
         
-        // Refresh current active view data if needed
         const activePage = document.querySelector('.screen-page.active');
         if (activePage) {
           if (activePage.id === 'pagePosition') renderPositionBoard();
@@ -2076,13 +2091,12 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    // INITIAL LOAD
+    // INITIAL LOAD WITH PROGRESS SPLASH
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
       document.getElementById('uiDashboardDate').innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
 
-      // RENDER CLEAN TICKER & PULSING ZOOM NOTICE ON DASHBOARD
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
       if (data.security && data.security.noticeMessage) {
         dashNoticeBox.style.display = 'flex';
@@ -2120,15 +2134,28 @@
         applySecurity(data.security, data.guestSecurity);
       }
 
-      const splash = document.getElementById('splashScreen');
-      if (splash) {
-        splash.style.opacity = '0';
-        setTimeout(() => { splash.style.display = 'none'; }, 300);
-      }
+      // Smooth finish splash progress to 100%
+      const fill = document.getElementById('splashProgressFill');
+      const txt = document.getElementById('splashStatusText');
+      if (fill) fill.style.width = '100%';
+      if (txt) txt.innerText = "⚡ Synchronized Successfully!";
+
+      setTimeout(() => {
+        const splash = document.getElementById('splashScreen');
+        if (splash) {
+          splash.style.opacity = '0';
+          setTimeout(() => { splash.style.display = 'none'; }, 400);
+        }
+      }, 350);
     };
 
     window.onload = function() {
       initUser();
+      
+      // Animate progress bar during fetch
+      const fill = document.getElementById('splashProgressFill');
+      if (fill) fill.style.width = '35%';
+
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
       document.head.appendChild(s);
