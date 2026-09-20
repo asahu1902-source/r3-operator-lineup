@@ -387,14 +387,23 @@
       padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
     }
 
+    /* OPTIMIZED PDF / PRINT STYLES - COMPACT & AUTO-FIT */
     @media print {
-      body { background: #ffffff !important; color: #000 !important; font-size: 8px !important; zoom: 60%; }
+      body { background: #ffffff !important; color: #000 !important; font-size: 9px !important; zoom: 85%; }
       .top-actions-bar, #splashScreen, .filter-grid, .btn-action-main, #reportProgressBarContainer, .toggle-btn { display: none !important; }
       .app-viewport { max-width: 100% !important; width: 100% !important; gap: 4px !important; }
       .form-card { border: none !important; padding: 0 !important; background: #fff !important; box-shadow: none !important; }
-      .standard-table th, .standard-table td { border: 1px solid #000 !important; color: #000 !important; padding: 2px 1px !important; font-size: 7px !important; white-space: nowrap !important; }
-      .cyan-cell { background-color: #e0e0e0 !important; color: #000 !important; }
-      @page { size: landscape; margin: 3mm; }
+      
+      .standard-table { width: 100% !important; border-collapse: collapse !important; table-layout: auto !important; }
+      .standard-table th, .standard-table td { border: 1px solid #000 !important; color: #000 !important; padding: 4px 6px !important; font-size: 8.5px !important; word-break: break-word !important; white-space: normal !important; }
+      .cyan-cell { background-color: #e2e8f0 !important; color: #000 !important; }
+      
+      .date-pill { background: #fff !important; border: 1px solid #000 !important; color: #000 !important; font-size: 8px !important; padding: 1px 3px !important; }
+
+      @page { 
+        size: auto; 
+        margin: 8mm; 
+      }
     }
   </style>
 </head>
