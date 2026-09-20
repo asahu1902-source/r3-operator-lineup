@@ -394,7 +394,13 @@
       .app-viewport { max-width: 100% !important; width: 100% !important; gap: 4px !important; }
       .form-card { border: none !important; padding: 0 !important; background: #fff !important; box-shadow: none !important; }
       
-      .standard-table { width: 100% !important; border-collapse: collapse !important; table-layout: auto !important; }
+      /* Attendance Summary table compact & left aligned with 60% width */
+      #uiMonthlyResultArea .standard-table:first-of-type {
+        width: 60% !important;
+        margin-left: 0 !important;
+      }
+
+      .standard-table { width: 100% !important; border-collapse: collapse !important; table-layout: auto !important; margin-bottom: 12px !important; }
       .standard-table th, .standard-table td { border: 1px solid #000 !important; color: #000 !important; padding: 4px 6px !important; font-size: 8.5px !important; word-break: break-word !important; white-space: normal !important; }
       .cyan-cell { background-color: #e2e8f0 !important; color: #000 !important; }
       
