@@ -387,21 +387,22 @@
       padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
     }
 
-    /* OPTIMIZED PDF / PRINT STYLES - COMPACT & AUTO-FIT */
+    /* OPTIMIZED PDF / PRINT STYLES - COMPACT & CENTERED */
     @media print {
       body { background: #ffffff !important; color: #000 !important; font-size: 9px !important; zoom: 85%; }
       .top-actions-bar, #splashScreen, .filter-grid, .btn-action-main, #reportProgressBarContainer, .toggle-btn { display: none !important; }
       .app-viewport { max-width: 100% !important; width: 100% !important; gap: 4px !important; }
       .form-card { border: none !important; padding: 0 !important; background: #fff !important; box-shadow: none !important; }
       
-      /* Attendance Summary table compact & left aligned with 60% width */
+      /* Make Attendance Summary table very compact (45% width) and centered */
       #uiMonthlyResultArea .standard-table:first-of-type {
-        width: 60% !important;
-        margin-left: 0 !important;
+        width: 45% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
       }
 
       .standard-table { width: 100% !important; border-collapse: collapse !important; table-layout: auto !important; margin-bottom: 12px !important; }
-      .standard-table th, .standard-table td { border: 1px solid #000 !important; color: #000 !important; padding: 4px 6px !important; font-size: 8.5px !important; word-break: break-word !important; white-space: normal !important; }
+      .standard-table th, .standard-table td { border: 1px solid #000 !important; color: #000 !important; padding: 3px 5px !important; font-size: 8.5px !important; word-break: break-word !important; white-space: normal !important; }
       .cyan-cell { background-color: #e2e8f0 !important; color: #000 !important; }
       
       .date-pill { background: #fff !important; border: 1px solid #000 !important; color: #000 !important; font-size: 8px !important; padding: 1px 3px !important; }
