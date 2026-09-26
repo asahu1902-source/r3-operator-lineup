@@ -668,7 +668,7 @@
       <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
-    <!-- PAGE: DUTY DATE LOOKUP (UPDATED WITH DUE & LAST DATE) -->
+    <!-- PAGE: DUTY DATE LOOKUP -->
     <div id="pageDutyLookup" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -1412,6 +1412,7 @@
           </tr>`;
         });
 
+        // FIXED: Single Thank You row
         tbodyHtml += `<tr>
           <td class="cyan-cell" colspan="2">Thank You</td>
           <td class="name-cell" colspan="2" style="color:#00ff00; font-weight:bold; text-align:center;">🙏 Thank You</td>
