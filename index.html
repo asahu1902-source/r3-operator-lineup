@@ -668,7 +668,7 @@
       <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
-    <!-- PAGE: DUTY DATE LOOKUP -->
+    <!-- PAGE: DUTY DATE LOOKUP (UPDATED WITH DUE & LAST DATE) -->
     <div id="pageDutyLookup" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -691,14 +691,19 @@
         <div class="board-container" style="margin-top:10px;">
           <div class="date-banner" id="uiLookupDateBanner">Select a date above</div>
           <table class="standard-table">
+            <colgroup>
+              <col style="width:30%"><col style="width:34%"><col style="width:14%"><col style="width:22%">
+            </colgroup>
             <thead>
               <tr>
-                <th style="width:45%;">Position</th>
-                <th style="width:55%;">Assigned Operator</th>
+                <th>Position</th>
+                <th>Operator</th>
+                <th>Due</th>
+                <th>Last Date</th>
               </tr>
             </thead>
             <tbody id="uiLookupTbody">
-              <tr><td colspan="2" style="padding:15px; color:#94a3b8;">No date selected.</td></tr>
+              <tr><td colspan="4" style="padding:15px; color:#94a3b8;">No date selected.</td></tr>
             </tbody>
           </table>
         </div>
@@ -1402,15 +1407,17 @@
           tbodyHtml += `<tr>
             <td class="cyan-cell align-left">${r.position}</td>
             <td class="name-cell" style="color:#ffff00; font-weight:bold;">${r.operator}</td>
+            <td class="due-cell">${r.due}</td>
+            <td style="font-size:10px; color:#38bdf8;">${r.lastDate}</td>
           </tr>`;
         });
 
         tbodyHtml += `<tr>
-          <td class="cyan-cell">Thank You</td>
-          <td class="name-cell" style="color:#00ff00; font-weight:bold; text-align:center;">🙏 Thank You</td>
+          <td class="cyan-cell" colspan="2">Thank You</td>
+          <td class="name-cell" colspan="2" style="color:#00ff00; font-weight:bold; text-align:center;">🙏 Thank You</td>
         </tr>`;
       } else {
-        tbodyHtml = `<tr><td colspan="2" style="padding:15px; color:#ef4444;">No duty records found for this date.</td></tr>`;
+        tbodyHtml = `<tr><td colspan="4" style="padding:15px; color:#ef4444;">No duty records found for this date.</td></tr>`;
       }
 
       document.getElementById('uiLookupTbody').innerHTML = tbodyHtml;
@@ -1424,7 +1431,7 @@
       const res = currentLookupResultData;
       let text = `*R3 DUTY LOOKUP*\n📅 Date: ${res.date} (${res.day})\n\n`;
       res.dutyRows.forEach(r => {
-        text += `• ${r.position}: ${r.operator}\n`;
+        text += `• ${r.position}: ${r.operator} (Due: ${r.due}, Last: ${r.lastDate})\n`;
       });
       text += `\n🙏 Thank You`;
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
