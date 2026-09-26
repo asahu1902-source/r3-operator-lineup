@@ -419,7 +419,7 @@
 
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <!-- WARNING STATUS POPUP MODAL (FETCHING A1/A2 FROM WARNING SHEET) -->
+  <!-- WARNING STATUS POPUP MODAL -->
   <div id="statusWarningModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box" style="border: 3px solid #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); background: #07142b;">
       <h4 style="color: #ef4444; font-size: 17px; font-weight: 900;">⚠️ NOTICE</h4>
@@ -456,6 +456,18 @@
       <h4>⚠️ NOTICE</h4>
       <p id="customAlertMsg">This section is currently disabled.</p>
       <button class="btn-modal-primary" onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
+
+  <!-- CUSTOM WITHDRAW CONFIRMATION MODAL (REPLACES BROWSER ALERT) -->
+  <div id="customWithdrawModal" class="custom-modal-backdrop">
+    <div class="custom-modal-box info-box" style="border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);">
+      <h4 style="color: #ef4444; font-size: 16px;">⚠️ WITHDRAW LEAVE</h4>
+      <p style="color: #fff; font-size: 13.5px;">Are you sure you want to withdraw this leave request?</p>
+      <div class="modal-btn-row">
+        <button class="btn-modal-secondary" onclick="closeCustomWithdrawModal()">Cancel</button>
+        <button class="btn-modal-danger" onclick="confirmWithdrawLeave()">Yes, Withdraw</button>
+      </div>
     </div>
   </div>
 
@@ -808,7 +820,7 @@
     <div id="pageLeaveEntry" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <button class="refresh-icon-btn" onclick="loadOperatorLeaveHistory()"><span class="ref-symbol">🔄</span> Status</button>
+        <button class="refresh-icon-btn" onclick="openLeaveEntry()"><span class="ref-symbol">🔄</span> Status</button>
       </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">📝 Apply Leave</h3>
@@ -816,6 +828,29 @@
         <div class="form-group">
           <label>Operator Name</label>
           <input type="text" id="uiLeaveName" class="form-input" disabled>
+        </div>
+
+        <!-- LEAVE BALANCE CARDS DISPLAY -->
+        <div style="background:#000; border:2px solid #10b981; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:6px;">
+          <h4 style="color:#10b981; font-size:12.5px; font-weight:900; text-transform:uppercase;">📊 My Available Leave Balance:</h4>
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; text-align:center;">
+            <div style="background:#064e3b; border:1px solid #10b981; border-radius:6px; padding:6px 2px;">
+              <span style="display:block; font-size:9.5px; color:#94a3b8; font-weight:bold;">PL</span>
+              <strong id="balPL" style="font-size:14px; color:#ffff00;">-</strong>
+            </div>
+            <div style="background:#064e3b; border:1px solid #10b981; border-radius:6px; padding:6px 2px;">
+              <span style="display:block; font-size:9.5px; color:#94a3b8; font-weight:bold;">SL</span>
+              <strong id="balSL" style="font-size:14px; color:#ffff00;">-</strong>
+            </div>
+            <div style="background:#064e3b; border:1px solid #10b981; border-radius:6px; padding:6px 2px;">
+              <span style="display:block; font-size:9.5px; color:#94a3b8; font-weight:bold;">CL</span>
+              <strong id="balCL" style="font-size:14px; color:#ffff00;">-</strong>
+            </div>
+            <div style="background:#064e3b; border:1px solid #10b981; border-radius:6px; padding:6px 2px;">
+              <span style="display:block; font-size:9.5px; color:#94a3b8; font-weight:bold;">C/OFF</span>
+              <strong id="balCOff" style="font-size:14px; color:#ffff00;">-</strong>
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
@@ -1046,6 +1081,7 @@
     let isScrollableReportMode = false;
     let myAssignedPositionName = "";
     let currentLookupResultData = null;
+    let pendingWithdrawRowIndex = null; // For custom withdraw modal
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
@@ -1412,7 +1448,6 @@
           </tr>`;
         });
 
-        // FIXED: Single clean merged Thank You row across all 4 columns
         tbodyHtml += `<tr>
           <td colspan="4" style="background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; text-align: center !important; padding: 6px 4px !important;">🙏 Thank You</td>
         </tr>`;
@@ -1931,7 +1966,23 @@
       document.getElementById('btnSubmitLeave').disabled = false;
       showPage('pageLeaveEntry');
       loadOperatorLeaveHistory();
+      loadOperatorLeaveBalance(myName);
     }
+
+    function loadOperatorLeaveBalance(name) {
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=getLeaveBalance&name=${encodeURIComponent(name)}&callback=handleLeaveBalanceResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleLeaveBalanceResponse = function(res) {
+      if (!res || res.status !== "success") return;
+      const b = res.balance || {};
+      document.getElementById('balPL').innerText = b.pl !== undefined ? b.pl : 15;
+      document.getElementById('balSL').innerText = b.sl !== undefined ? b.sl : 7;
+      document.getElementById('balCL').innerText = b.cl !== undefined ? b.cl : 8;
+      document.getElementById('balCOff').innerText = b.coff !== undefined ? b.coff : 0;
+    };
 
     function loadOperatorLeaveHistory() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
@@ -1958,7 +2009,7 @@
 
         let actionBtn = '-';
         if (statusText.toLowerCase() === 'pending') {
-          actionBtn = `<button class="btn-modal-danger" style="padding:4px 8px; font-size:10px;" onclick="withdrawLeaveRequest(${l.rowIndex})">Withdraw</button>`;
+          actionBtn = `<button class="btn-modal-danger" style="padding:4px 8px; font-size:10px;" onclick="promptWithdrawLeave(${l.rowIndex})">Withdraw</button>`;
         }
 
         html += `<tr>
@@ -1972,8 +2023,22 @@
       tbody.innerHTML = html;
     };
 
-    function withdrawLeaveRequest(rowIndex) {
-      if (!confirm("Are you sure you want to withdraw this leave request?")) return;
+    // CUSTOM WITHDRAW MODAL FUNCTIONS (REPLACES BROWSER ALERT)
+    function promptWithdrawLeave(rowIndex) {
+      pendingWithdrawRowIndex = rowIndex;
+      document.getElementById('customWithdrawModal').style.display = 'flex';
+    }
+
+    function closeCustomWithdrawModal() {
+      pendingWithdrawRowIndex = null;
+      document.getElementById('customWithdrawModal').style.display = 'none';
+    }
+
+    function confirmWithdrawLeave() {
+      if (!pendingWithdrawRowIndex) return;
+      const rowIndex = pendingWithdrawRowIndex;
+      closeCustomWithdrawModal();
+
       showToast("Withdrawing leave...");
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=withdrawLeave&rowIndex=${rowIndex}&callback=handleWithdrawResponse&t=${Date.now()}`;
@@ -1984,6 +2049,8 @@
       if (res && res.status === "success") {
         showToast("Leave withdrawn successfully!");
         loadOperatorLeaveHistory();
+        const myName = localStorage.getItem(STORAGE_KEY) || "";
+        loadOperatorLeaveBalance(myName);
       } else {
         alert("Error: " + (res ? res.message : "Failed to withdraw"));
       }
@@ -2050,12 +2117,14 @@
           document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
           fetchedWhatsAppContacts = res.contacts || [];
           loadOperatorLeaveHistory();
+          const myName = localStorage.getItem(STORAGE_KEY) || "";
+          loadOperatorLeaveBalance(myName);
           
           setTimeout(() => {
             openWhatsAppChoiceModal();
           }, 400);
         } else {
-          alert("Error: " + (res ? res.message : "Submission failed"));
+          showCustomAlert(res ? res.message : "Submission failed");
           btn.disabled = false;
         }
         document.getElementById('leaveProgressBarContainer').style.display = 'none';
