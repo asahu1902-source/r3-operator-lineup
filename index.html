@@ -1412,10 +1412,9 @@
           </tr>`;
         });
 
-        // FIXED: Single Thank You row
+        // FIXED: Merged single centered Thank You row
         tbodyHtml += `<tr>
-          <td class="cyan-cell" colspan="2">Thank You</td>
-          <td class="name-cell" colspan="2" style="color:#00ff00; font-weight:bold; text-align:center;">🙏 Thank You</td>
+          <td colspan="4" style="background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; text-align: center !important; padding: 6px 4px !important;">🙏 Thank You</td>
         </tr>`;
       } else {
         tbodyHtml = `<tr><td colspan="4" style="padding:15px; color:#ef4444;">No duty records found for this date.</td></tr>`;
