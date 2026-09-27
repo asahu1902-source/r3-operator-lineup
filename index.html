@@ -418,12 +418,12 @@
     </div>
   </div>
 
-  <!-- OPERATOR SEND MESSAGE INPUT MODAL -->
+  <!-- OPERATOR SEND MESSAGE INPUT MODAL (PLACEHOLDER UPDATED TO "Type here anything...") -->
   <div id="operatorSendMessageModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #38bdf8; background: #07142b; max-width: 340px;">
       <h4 style="color: #38bdf8; font-size: 16px; font-weight: 900;">✍️ SEND BROADCAST MESSAGE</h4>
       <p style="color: #ffff00; font-size: 12px;">Type your message to broadcast to all operators:</p>
-      <textarea id="operatorMessageInputBox" class="form-input" rows="3" placeholder="Type here (e.g. Kali deri heijiba)..." style="resize:none;"></textarea>
+      <textarea id="operatorMessageInputBox" class="form-input" rows="3" placeholder="Type here anything..." style="resize:none;"></textarea>
       <div class="modal-btn-row">
         <button class="btn-modal-secondary" onclick="closeOperatorSendMessageModal()">Cancel</button>
         <button class="btn-modal-primary" onclick="submitOperatorBroadcastMessage()">Send ➔</button>
@@ -517,7 +517,6 @@
           </div>
         </div>
 
-        <!-- MESSAGE BUTTON -->
         <div id="btnMessage" class="menu-item-btn" onclick="openOperatorSendMessageModal()">
           <div class="menu-item-icon">📢</div>
           <div class="menu-item-info">
@@ -609,6 +608,12 @@
       <div id="myDutyActionCard" class="form-card" style="background: linear-gradient(135deg, #064e3b, #0f172a); border: 2px solid #10b981; display:none;">
         <h3 style="color:#10b981; font-size:15px; font-weight:900;">🎯 My Assigned Duty Confirmation</h3>
         <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
+        
+        <!-- PROGRESS BAR (ADDED) -->
+        <div id="dutyProgressBarContainer" style="width:100%; height:8px; background:#1e293b; border-radius:4px; overflow:hidden; display:none; border:1px solid #38bdf8;">
+          <div id="dutyProgressBarFill" style="width:0%; height:100%; background:linear-gradient(90deg, #38bdf8, #10b981); transition:width 0.3s ease-in-out;"></div>
+        </div>
+
         <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
       </div>
 
@@ -1789,8 +1794,15 @@
       }
 
       const btn = document.getElementById('btnConfirmMyDuty');
-      btn.innerText = "Submitting...";
+      btn.innerText = "Submitting Duty...";
       btn.disabled = true;
+
+      const barContainer = document.getElementById('dutyProgressBarContainer');
+      const barFill = document.getElementById('dutyProgressBarFill');
+      if (barContainer) barContainer.style.display = 'block';
+      if (barFill) barFill.style.width = '40%';
+
+      setTimeout(() => { if (barFill) barFill.style.width = '80%'; }, 300);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=submitMyDuty&name=${encodeURIComponent(name)}&position=${encodeURIComponent(myAssignedPositionName)}&callback=handleDutySubmitResult&t=${Date.now()}`;
@@ -1799,17 +1811,26 @@
 
     window.handleDutySubmitResult = function(res) {
       const btn = document.getElementById('btnConfirmMyDuty');
-      if (res && res.status === "success") {
-        showToast("Duty submitted successfully!");
-        fetchDutySubmissionStatus();
-      } else {
-        const errorMsg = (res && res.message) ? res.message : "Submission failed";
-        showCustomAlert(errorMsg);
-        if (btn) {
-          btn.innerText = "Confirm & Submit My Duty ✅";
-          btn.disabled = false;
+      const barFill = document.getElementById('dutyProgressBarFill');
+      if (barFill) barFill.style.width = '100%';
+
+      setTimeout(() => {
+        const barContainer = document.getElementById('dutyProgressBarContainer');
+        if (barContainer) barContainer.style.display = 'none';
+        if (barFill) barFill.style.width = '0%';
+
+        if (res && res.status === "success") {
+          showToast("Duty submitted successfully!");
+          fetchDutySubmissionStatus();
+        } else {
+          const errorMsg = (res && res.message) ? res.message : "Submission failed";
+          showCustomAlert(errorMsg);
+          if (btn) {
+            btn.innerText = "Confirm & Submit My Duty ✅";
+            btn.disabled = false;
+          }
         }
-      }
+      }, 400);
     };
 
     function renderDueHistory() {
