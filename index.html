@@ -923,7 +923,7 @@
       </div>
     </div>
 
-    <!-- PAGE 9: LOCAL FESTIVAL (WITH SEARCH & 2050 YEARS) -->
+    <!-- PAGE 9: LOCAL FESTIVAL -->
     <div id="pageLocalFestival" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -2492,26 +2492,6 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    function shareHolidayWhatsApp() {
-      const list = (portalData && portalData.holidays) ? portalData.holidays : [];
-      let text = `*COMPANY HOLIDAYS*\n\n`;
-      list.forEach(h => { text += `• ${h.name} (${h.rawDate})\n`; });
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
-    function shareScheduleWhatsApp() {
-      const title = document.getElementById('uiSchedDateTitle').innerText;
-      const r3 = document.getElementById('uiSchedR3').innerText;
-      if (title === "-") { alert("Please select a date first."); return; }
-      const text = `*SHIFT SCHEDULE*\n📅 ${title}\n• R3: ${r3}`;
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
-    function shareFestivalWhatsApp() {
-      let text = `*LOCAL FESTIVALS*\n\n`;
-      window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
     window.handleInitialData = function(data) {
       if (!data) return;
       portalData = data;
@@ -2527,6 +2507,15 @@
       if (dateBannerEl) {
         dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
       }
+
+      // Fast-track splash screen removal so it never gets stuck on "Loading..."
+      const splash = document.getElementById('splashScreen');
+      if (splash) {
+        splash.style.opacity = '0';
+        setTimeout(() => { splash.style.display = 'none'; }, 200);
+      }
+      const dash = document.getElementById('pageDashboard');
+      if (dash) dash.classList.add('fully-loaded');
 
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
       if (dashNoticeBox && data.security && data.security.noticeMessage) {
@@ -2558,21 +2547,7 @@
         });
       }
 
-      const fill = document.getElementById('splashProgressFill');
-      const txt = document.getElementById('splashStatusText');
-      if (fill) fill.style.width = '100%';
-      if (txt) txt.innerText = "⚡ Synchronized Successfully!";
-
-      setTimeout(() => {
-        const splash = document.getElementById('splashScreen');
-        if (splash) {
-          splash.style.opacity = '0';
-          setTimeout(() => { splash.style.display = 'none'; }, 300);
-        }
-        const dash = document.getElementById('pageDashboard');
-        if (dash) dash.classList.add('fully-loaded');
-        initUser();
-      }, 200);
+      initUser();
     };
 
     window.onload = function() {
