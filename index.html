@@ -431,9 +431,16 @@
     </div>
   </div>
 
+  <div id="customAlertModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box" style="border: 3px solid #ef4444; background: #07142b;">
+      <h4 style="color: #ef4444; font-size: 17px; font-weight: 900;">⚠️ ALERT</h4>
+      <p id="customAlertMsg" style="color: #ffff00; font-size: 14px; font-weight: bold; line-height: 1.5;">Alert message...</p>
+      <button class="btn-modal-primary" style="background: #10b981; font-weight: 900; font-size: 14px; padding: 12px;" onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
+
   <div id="whatsappChoiceModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
   <div id="whatsappFollowupModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
-  <div id="customAlertModal" class="custom-modal-backdrop"><div class="custom-modal-box"></div></div>
   <div id="customWithdrawModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
   <div id="customLogoutModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
   <div id="customClearChatModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
@@ -1825,13 +1832,13 @@
     }
 
     window.handleDutySubmitResult = function(res) {
+      const btn = document.getElementById('btnConfirmMyDuty');
       if (res && res.status === "success") {
         showToast("Duty submitted successfully!");
         fetchDutySubmissionStatus();
       } else {
         const errorMsg = (res && res.message) ? res.message : "Submission failed";
         showCustomAlert(errorMsg);
-        const btn = document.getElementById('btnConfirmMyDuty');
         if (btn) {
           btn.innerText = "Confirm & Submit My Duty ✅";
           btn.disabled = false;
@@ -2508,7 +2515,6 @@
         dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
       }
 
-      // Fast-track splash screen removal so it never gets stuck on "Loading..."
       const splash = document.getElementById('splashScreen');
       if (splash) {
         splash.style.opacity = '0';
@@ -2517,19 +2523,7 @@
       const dash = document.getElementById('pageDashboard');
       if (dash) dash.classList.add('fully-loaded');
 
-      const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
-      if (dashNoticeBox && data.security && data.security.noticeMessage) {
-        dashNoticeBox.style.display = 'flex';
-        dashNoticeBox.innerHTML = `
-          <div class="ticker-container">
-            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
-          </div>
-          <div class="supervisor-notice-card">
-            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
-            <div class="notice-body">${data.security.noticeMessage}</div>
-          </div>
-        `;
-      }
+      checkAndShowSupervisorMessages(data);
 
       const sel = document.getElementById('loginSelect');
       if (sel) {
