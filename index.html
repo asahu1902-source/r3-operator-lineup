@@ -459,7 +459,7 @@
     </div>
   </div>
 
-  <!-- CUSTOM WITHDRAW CONFIRMATION MODAL (REPLACES BROWSER ALERT) -->
+  <!-- CUSTOM WITHDRAW MODAL -->
   <div id="customWithdrawModal" class="custom-modal-backdrop">
     <div class="custom-modal-box info-box" style="border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);">
       <h4 style="color: #ef4444; font-size: 16px;">⚠️ WITHDRAW LEAVE</h4>
@@ -816,11 +816,11 @@
       </div>
     </div>
 
-    <!-- PAGE 6: LEAVE ENTRY & STATUS TRACKER -->
+    <!-- PAGE 6: LEAVE ENTRY & STATUS TRACKER (WITH REFRESH BUTTON) -->
     <div id="pageLeaveEntry" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <button class="refresh-icon-btn" onclick="openLeaveEntry()"><span class="ref-symbol">🔄</span> Status</button>
+        <button class="refresh-icon-btn" id="leaveRefreshBtn" onclick="refreshLeavePage(this)"><span class="ref-symbol">🔄</span> Status</button>
       </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">📝 Apply Leave</h3>
@@ -1081,7 +1081,7 @@
     let isScrollableReportMode = false;
     let myAssignedPositionName = "";
     let currentLookupResultData = null;
-    let pendingWithdrawRowIndex = null; // For custom withdraw modal
+    let pendingWithdrawRowIndex = null;
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
@@ -1969,6 +1969,21 @@
       loadOperatorLeaveBalance(myName);
     }
 
+    // Refresh function for Leave Page with spinning animation
+    function refreshLeavePage(btnEl) {
+      if (btnEl) btnEl.classList.add('spinning');
+      showToast("Refreshing leave status & balance...");
+      
+      const myName = localStorage.getItem(STORAGE_KEY) || "";
+      loadOperatorLeaveBalance(myName);
+      loadOperatorLeaveHistory();
+
+      setTimeout(() => {
+        if (btnEl) btnEl.classList.remove('spinning');
+        showToast("Refreshed! ✅");
+      }, 700);
+    }
+
     function loadOperatorLeaveBalance(name) {
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getLeaveBalance&name=${encodeURIComponent(name)}&callback=handleLeaveBalanceResponse&t=${Date.now()}`;
@@ -2023,7 +2038,6 @@
       tbody.innerHTML = html;
     };
 
-    // CUSTOM WITHDRAW MODAL FUNCTIONS (REPLACES BROWSER ALERT)
     function promptWithdrawLeave(rowIndex) {
       pendingWithdrawRowIndex = rowIndex;
       document.getElementById('customWithdrawModal').style.display = 'flex';
