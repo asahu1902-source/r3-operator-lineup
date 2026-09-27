@@ -680,7 +680,7 @@
       <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
-    <!-- PAGE: DUTY DATE LOOKUP (WITH FETCH DATA BUTTON & PROGRESS BAR) -->
+    <!-- PAGE: DUTY DATE LOOKUP -->
     <div id="pageDutyLookup" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -969,7 +969,7 @@
       </div>
     </div>
 
-    <!-- PAGE 9: LOCAL FESTIVAL -->
+    <!-- PAGE 9: LOCAL FESTIVAL (WITH SEARCH & DYNAMIC YEAR) -->
     <div id="pageLocalFestival" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -984,7 +984,26 @@
       </div>
       <div class="form-card">
         <h3 style="color:#ffff00; font-size:16px;">🪔 Local Festivals & Relay Shifts</h3>
-        <div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
+        
+        <div class="filter-grid" style="margin-top:4px;">
+          <div class="form-group">
+            <label>Select Year</label>
+            <select id="uiFestivalYearSelect" class="form-input" onchange="filterLocalFestivals()">
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+              <option value="2030">2030</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Search Keyword</label>
+            <input type="text" id="uiFestivalSearchInput" class="form-input" placeholder="Type keyword (e.g. Lax)..." oninput="filterLocalFestivals()">
+          </div>
+        </div>
+
+        <div id="uiFestivalContainer" style="display:flex; flex-direction:column; gap:9px; margin-top:6px;"></div>
       </div>
     </div>
 
@@ -1030,48 +1049,48 @@
     const STORAGE_KEY = "r3_operator_user";
 
     const BASE_FESTIVALS = [
-      { name: "Swami Vivekananda Jayanti", d: "12", m: "01" },
-      { name: "Makar Sankranti / Poush Parbon", d: "14", m: "01" },
-      { name: "Netaji Jayanti", d: "23", m: "01" },
-      { name: "Saraswati Puja (Basant Panchami)", d: "23", m: "01" },
-      { name: "Republic Day", d: "26", m: "01" },
-      { name: "Maha Shivratri", d: "15", m: "02" },
-      { name: "Dol Jatra / Holi", d: "03", m: "03" },
-      { name: "Eid-ul-Fitr", d: "21", m: "03" },
-      { name: "Utkal Divas", d: "01", m: "04" },
-      { name: "Good Friday", d: "03", m: "04" },
-      { name: "Pohila Baishakh (Bengali New Year)", d: "15", m: "04" },
-      { name: "Akshaya Tritiya", d: "20", m: "04" },
-      { name: "May Day / Labour Day", d: "01", m: "05" },
-      { name: "Rabindra Jayanti", d: "08", m: "05" },
-      { name: "Sabitri Brata", d: "16", m: "05" },
-      { name: "Kazi Nazrul Islam Jayanti", d: "26", m: "05" },
-      { name: "Pahili Raja", d: "14", m: "06" },
-      { name: "Raja Sankranti", d: "15", m: "06" },
-      { name: "Snana Purnima", d: "29", m: "06" },
-      { name: "Rath Yatra", d: "16", m: "07" },
-      { name: "Bahuda Yatra", d: "24", m: "07" },
-      { name: "Independence Day", d: "15", m: "08" },
-      { name: "Raksha Bandhan / Gamha Purnima", d: "28", m: "08" },
-      { name: "Janmashtami", d: "04", m: "09" },
-      { name: "Ganesh Chaturthi", d: "14", m: "09" },
-      { name: "Nuakhai", d: "16", m: "09" },
-      { name: "Vishwakarma Puja", d: "17", m: "09" },
-      { name: "Gandhi Jayanti", d: "02", m: "10" },
-      { name: "Mahalaya", d: "10", m: "10" },
-      { name: "Durga Puja (Maha Sasthi)", d: "17", m: "10" },
-      { name: "Durga Puja (Maha Saptami)", d: "18", m: "10" },
-      { name: "Durga Puja (Maha Astami)", d: "19", m: "10" },
-      { name: "Durga Puja (Maha Navami)", d: "20", m: "10" },
-      { name: "Bijoya Dashami (Dussehra)", d: "21", m: "10" },
-      { name: "Kojagari Lakshmi Puja", d: "25", m: "10" },
-      { name: "Kali Puja / Diwali", d: "09", m: "11" },
-      { name: "Bhai Phonta", d: "11", m: "11" },
-      { name: "Chhath Puja", d: "15", m: "11" },
-      { name: "Kartika Purnima / Boita Bandana", d: "24", m: "11" },
-      { name: "Guru Nanak Jayanti", d: "24", m: "11" },
-      { name: "Prathamastami", d: "02", m: "12" },
-      { name: "Christmas Day (Bara Din)", d: "25", m: "12" }
+      { name: "Swami Vivekananda Jayanti", d: 12, m: 1 },
+      { name: "Makar Sankranti / Poush Parbon", d: 14, m: 1 },
+      { name: "Netaji Jayanti", d: 23, m: 1 },
+      { name: "Saraswati Puja (Basant Panchami)", d: 23, m: 1 },
+      { name: "Republic Day", d: 26, m: 1 },
+      { name: "Maha Shivratri", d: 15, m: 2 },
+      { name: "Dol Jatra / Holi", d: "03", m: 3 },
+      { name: "Eid-ul-Fitr", d: 21, m: 3 },
+      { name: "Utkal Divas", d: 1, m: 4 },
+      { name: "Good Friday", d: 3, m: 4 },
+      { name: "Pohila Baishakh (Bengali New Year)", d: 15, m: 4 },
+      { name: "Akshaya Tritiya", d: 20, m: 4 },
+      { name: "May Day / Labour Day", d: 1, m: 5 },
+      { name: "Rabindra Jayanti", d: 8, m: 5 },
+      { name: "Sabitri Brata", d: 16, m: 5 },
+      { name: "Kazi Nazrul Islam Jayanti", d: 26, m: 5 },
+      { name: "Pahili Raja", d: 14, m: 6 },
+      { name: "Raja Sankranti", d: 15, m: 6 },
+      { name: "Snana Purnima", d: 29, m: 6 },
+      { name: "Rath Yatra", d: 16, m: 7 },
+      { name: "Bahuda Yatra", d: 24, m: 7 },
+      { name: "Independence Day", d: 15, m: 8 },
+      { name: "Raksha Bandhan / Gamha Purnima", d: 28, m: 8 },
+      { name: "Janmashtami", d: 4, m: 9 },
+      { name: "Ganesh Chaturthi", d: 14, m: 9 },
+      { name: "Nuakhai", d: 16, m: 9 },
+      { name: "Vishwakarma Puja", d: 17, m: 9 },
+      { name: "Gandhi Jayanti", d: 2, m: 10 },
+      { name: "Mahalaya", d: 10, m: 10 },
+      { name: "Durga Puja (Maha Sasthi)", d: 17, m: 10 },
+      { name: "Durga Puja (Maha Saptami)", d: 18, m: 10 },
+      { name: "Durga Puja (Maha Astami)", d: 19, m: 10 },
+      { name: "Durga Puja (Maha Navami)", d: 20, m: 10 },
+      { name: "Bijoya Dashami (Dussehra)", d: 21, m: 10 },
+      { name: "Kojagari Lakshmi Puja", d: 25, m: 10 },
+      { name: "Kali Puja / Diwali", d: 9, m: 11 },
+      { name: "Bhai Phonta", d: 11, m: 11 },
+      { name: "Chhath Puja", d: 15, m: 11 },
+      { name: "Kartika Purnima / Boita Bandana", d: 24, m: 11 },
+      { name: "Guru Nanak Jayanti", d: 24, m: 11 },
+      { name: "Prathamastami", d: 2, m: 12 },
+      { name: "Christmas Day (Bara Din)", d: 25, m: 12 }
     ];
 
     let portalData = null;
@@ -2357,21 +2376,57 @@
       }
     }
 
+    // LOCAL FESTIVAL RENDERING WITH DYNAMIC FUTURE YEAR CALENDAR CALCULATION
+    const DAYS_ABBR = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
     function renderLocalFestival() {
+      const searchInput = document.getElementById('uiFestivalSearchInput');
+      if (searchInput) searchInput.value = '';
+      
+      const yearSelect = document.getElementById('uiFestivalYearSelect');
+      if (yearSelect) yearSelect.value = new Date().getFullYear().toString();
+
+      displayFilteredFestivals();
+      showPage('pageLocalFestival');
+    }
+
+    function filterLocalFestivals() {
+      displayFilteredFestivals();
+    }
+
+    function displayFilteredFestivals() {
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
+      
       const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
-      const currentYear = new Date().getFullYear();
+      const selectedYear = parseInt(document.getElementById('uiFestivalYearSelect').value, 10);
+      const query = document.getElementById('uiFestivalSearchInput').value.trim().toLowerCase();
+
+      let matchCount = 0;
 
       BASE_FESTIVALS.forEach(f => {
-        const fullDate = `${f.d}/${f.m}/${currentYear}`;
-        const match = schedMap[fullDate] || { day: "-", r3: "-", r2: "-", r1: "-" };
+        if (query && !f.name.toLowerCase().includes(query)) {
+          return;
+        }
+
+        matchCount++;
+        
+        // Dynamic Future Year Date Calculation using JavaScript Date object
+        const festDateObj = new Date(selectedYear, f.m - 1, f.d);
+        const dayOfWeekName = DAYS_ABBR[festDateObj.getDay()];
+        
+        const padZero = (n) => n < 10 ? '0' + n : '' + n;
+        const fullDate = `${padZero(f.d)}/${padZero(f.m)}/${selectedYear}`;
+        
+        // Fetch matching shift schedule if available for that exact calculated date
+        const match = schedMap[fullDate] || { day: dayOfWeekName, r3: "-", r2: "-", r1: "-" };
+        
         const item = document.createElement('div');
         item.className = 'holiday-card-item';
         item.innerHTML = `
           <div class="hol-top">
             <h5>🪔 ${f.name}</h5>
-            <p>${fullDate} (${match.day})</p>
+            <p>${fullDate} (${match.day || dayOfWeekName})</p>
           </div>
           <div class="relay-badge-row">
             <div class="relay-chip"><span>R3</span><strong>${match.r3}</strong></div>
@@ -2381,7 +2436,10 @@
         `;
         container.appendChild(item);
       });
-      showPage('pageLocalFestival');
+
+      if (matchCount === 0) {
+        container.innerHTML = `<div style="padding:15px; text-align:center; color:#ef4444; font-weight:bold;">No matching festivals found.</div>`;
+      }
     }
 
     function sharePositionWhatsApp() {
