@@ -298,11 +298,11 @@
     .notice-title { color: #facc15; font-size: 13px; font-weight: 900; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
     .notice-body { color: #ffffff; font-size: 13.5px; font-weight: bold; line-height: 1.5; word-break: break-word; }
 
-    #leaveProgressBarContainer, #reportProgressBarContainer {
+    #leaveProgressBarContainer, #reportProgressBarContainer, #lookupProgressBarContainer {
       width: 100%; height: 8px; background: #1e293b; border-radius: 4px;
       overflow: hidden; margin-top: 8px; display: none; border: 1px solid #38bdf8;
     }
-    #leaveProgressBarFill, #reportProgressBarFill {
+    #leaveProgressBarFill, #reportProgressBarFill, #lookupProgressBarFill {
       width: 0%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
       transition: width 0.4s ease-in-out;
     }
@@ -680,7 +680,7 @@
       <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
-    <!-- PAGE: DUTY DATE LOOKUP -->
+    <!-- PAGE: DUTY DATE LOOKUP (WITH FETCH DATA BUTTON & PROGRESS BAR) -->
     <div id="pageDutyLookup" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -697,11 +697,17 @@
         <h3 style="color:#ffff00; font-size:16px;">🔍 Date-wise Duty Lookup</h3>
         <div class="form-group">
           <label>Select Date</label>
-          <input type="date" id="uiLookupDateInput" class="form-input" onchange="lookupDutyByDate()">
+          <input type="date" id="uiLookupDateInput" class="form-input">
+        </div>
+
+        <button class="btn-action-main" onclick="lookupDutyByDate()">Fetch Data ➔</button>
+
+        <div id="lookupProgressBarContainer">
+          <div id="lookupProgressBarFill"></div>
         </div>
 
         <div class="board-container" style="margin-top:10px;">
-          <div class="date-banner" id="uiLookupDateBanner">Select a date above</div>
+          <div class="date-banner" id="uiLookupDateBanner">Select a date and click Fetch Data</div>
           <table class="standard-table">
             <colgroup>
               <col style="width:30%"><col style="width:34%"><col style="width:14%"><col style="width:22%">
@@ -816,7 +822,7 @@
       </div>
     </div>
 
-    <!-- PAGE 6: LEAVE ENTRY & STATUS TRACKER (WITH REFRESH BUTTON) -->
+    <!-- PAGE 6: LEAVE ENTRY & STATUS TRACKER -->
     <div id="pageLeaveEntry" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -830,7 +836,6 @@
           <input type="text" id="uiLeaveName" class="form-input" disabled>
         </div>
 
-        <!-- LEAVE BALANCE CARDS DISPLAY -->
         <div style="background:#000; border:2px solid #10b981; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:6px;">
           <h4 style="color:#10b981; font-size:12.5px; font-weight:900; text-transform:uppercase;">📊 My Available Leave Balance:</h4>
           <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; text-align:center;">
@@ -1421,41 +1426,63 @@
 
     function lookupDutyByDate() {
       const val = document.getElementById('uiLookupDateInput').value;
-      if (!val) return;
+      if (!val) {
+        alert("Please select a date first.");
+        return;
+      }
       const parts = val.split('-');
       const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
 
-      showToast("Fetching duty lineup...");
+      const barContainer = document.getElementById('lookupProgressBarContainer');
+      const barFill = document.getElementById('lookupProgressBarFill');
+      barContainer.style.display = 'block';
+      barFill.style.width = '40%';
+
+      setTimeout(() => { barFill.style.width = '80%'; }, 200);
+
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDutyByDate&date=${encodeURIComponent(formatted)}&callback=handleDutyLookupResponse&t=${Date.now()}`;
       document.head.appendChild(s);
     }
 
     window.handleDutyLookupResponse = function(res) {
-      if (!res || res.status !== "success") return;
-      currentLookupResultData = res;
-      
-      document.getElementById('uiLookupDateBanner').innerText = `${res.date} (${res.day})`;
-      let tbodyHtml = '';
+      const barFill = document.getElementById('lookupProgressBarFill');
+      if (barFill) barFill.style.width = '100%';
 
-      if (res.dutyRows && res.dutyRows.length > 0) {
-        res.dutyRows.forEach(r => {
+      setTimeout(() => {
+        const barContainer = document.getElementById('lookupProgressBarContainer');
+        if (barContainer) barContainer.style.display = 'none';
+        if (barFill) barFill.style.width = '0%';
+
+        if (!res || res.status !== "success") {
+          document.getElementById('uiLookupTbody').innerHTML = `<tr><td colspan="4" style="padding:15px; color:#ef4444;">Failed to fetch duty records.</td></tr>`;
+          return;
+        }
+
+        currentLookupResultData = res;
+        document.getElementById('uiLookupDateBanner').innerText = `${res.date} (${res.day})`;
+        let tbodyHtml = '';
+
+        if (res.dutyRows && res.dutyRows.length > 0) {
+          res.dutyRows.forEach(r => {
+            tbodyHtml += `<tr>
+              <td class="cyan-cell align-left">${r.position}</td>
+              <td class="name-cell" style="color:#ffff00; font-weight:bold;">${r.operator}</td>
+              <td class="due-cell">${r.due}</td>
+              <td style="font-size:10px; color:#38bdf8;">${r.lastDate}</td>
+            </tr>`;
+          });
+
           tbodyHtml += `<tr>
-            <td class="cyan-cell align-left">${r.position}</td>
-            <td class="name-cell" style="color:#ffff00; font-weight:bold;">${r.operator}</td>
-            <td class="due-cell">${r.due}</td>
-            <td style="font-size:10px; color:#38bdf8;">${r.lastDate}</td>
+            <td colspan="4" style="background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; text-align: center !important; padding: 6px 4px !important;">🙏 Thank You</td>
           </tr>`;
-        });
+        } else {
+          tbodyHtml = `<tr><td colspan="4" style="padding:15px; color:#ef4444;">No duty records found for this date.</td></tr>`;
+        }
 
-        tbodyHtml += `<tr>
-          <td colspan="4" style="background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; text-align: center !important; padding: 6px 4px !important;">🙏 Thank You</td>
-        </tr>`;
-      } else {
-        tbodyHtml = `<tr><td colspan="4" style="padding:15px; color:#ef4444;">No duty records found for this date.</td></tr>`;
-      }
-
-      document.getElementById('uiLookupTbody').innerHTML = tbodyHtml;
+        document.getElementById('uiLookupTbody').innerHTML = tbodyHtml;
+        showToast("Data fetched successfully! ✅");
+      }, 400);
     };
 
     function shareDutyLookupWhatsApp() {
@@ -1969,7 +1996,6 @@
       loadOperatorLeaveBalance(myName);
     }
 
-    // Refresh function for Leave Page with spinning animation
     function refreshLeavePage(btnEl) {
       if (btnEl) btnEl.classList.add('spinning');
       showToast("Refreshing leave status & balance...");
