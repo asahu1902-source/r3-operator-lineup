@@ -496,6 +496,7 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
+      <!-- SECURITY NOTICE TICKER & CARD (RESTORED EXACTLY) -->
       <div id="uiDashboardNoticeBox" style="display:none; flex-direction:column; gap:8px;"></div>
 
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
@@ -1341,6 +1342,7 @@
 
       const map = [
         { id: "btnCheckPosition", allowed: activeSec.checkPosition !== false },
+        { id: "btnMessage", allowed: activeSec.message !== false },
         { id: "btnDutyLookup", allowed: activeSec.dutyDateLookup !== false },
         { id: "btnMyDueHistory", allowed: activeSec.myDueHistory !== false },
         { id: "btnMonthlyReport", allowed: activeSec.monthlyReport !== false },
@@ -1465,7 +1467,10 @@
         }
       }
 
-      if (type === "checkPosition") {
+      if (type === "message") {
+        openOperatorSendMessageModal();
+      }
+      else if (type === "checkPosition") {
         if (activeSec.dutySubmission === false) {
           document.getElementById('myDutyActionCard').style.display = 'none';
         }
@@ -2441,7 +2446,7 @@
       container.innerHTML = '';
       
       const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
-      const selectedYear = parseInt(document.getElementById('uiFestivalYearSelect').value, 10);
+      const selectedYear = parseInt(document.getElementById('uiFestivalYearSelect', 10));
       const query = document.getElementById('uiFestivalSearchInput').value.trim().toLowerCase();
 
       let matchCount = 0;
@@ -2522,6 +2527,23 @@
         dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
       }
 
+      // RESTORED FULLY: Security D2:D10 notice ticker & supervisor notice card
+      const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
+      if (dashNoticeBox && data.security && data.security.noticeMessage) {
+        dashNoticeBox.style.display = 'flex';
+        dashNoticeBox.innerHTML = `
+          <div class="ticker-container">
+            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
+          </div>
+          <div class="supervisor-notice-card">
+            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
+            <div class="notice-body">${data.security.noticeMessage}</div>
+          </div>
+        `;
+      } else {
+        if (dashNoticeBox) dashNoticeBox.style.display = 'none';
+      }
+
       const splash = document.getElementById('splashScreen');
       if (splash) {
         splash.style.opacity = '0';
@@ -2529,8 +2551,6 @@
       }
       const dash = document.getElementById('pageDashboard');
       if (dash) dash.classList.add('fully-loaded');
-
-      checkAndShowSupervisorMessages(data);
 
       const sel = document.getElementById('loginSelect');
       if (sel) {
