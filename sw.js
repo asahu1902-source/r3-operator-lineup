@@ -1,4 +1,4 @@
-const CACHE_NAME = 'r3-operator-v1';
+const CACHE_NAME = 'r3-operator-v2';
 self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
