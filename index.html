@@ -260,6 +260,44 @@
     .chat-text { font-size: 13px; color: #ffffff; word-break: break-word; }
     .chat-input-row { display: flex; gap: 8px; margin-top: 6px; }
 
+    @keyframes tickerScroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-container {
+      background: #dc2626; color: #ffffff; font-size: 12px; font-weight: 900;
+      padding: 6px 0; border-radius: 6px; overflow: hidden; white-space: nowrap;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); position: relative;
+    }
+    .ticker-text {
+      display: inline-block; 
+      white-space: nowrap;
+      animation: tickerScroll 10s linear infinite;
+      text-transform: uppercase; 
+      letter-spacing: 0.5px;
+      padding-left: 100%;
+    }
+
+    @keyframes noticePulseAnim {
+      0% { transform: scale(1); border-color: #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
+      50% { transform: scale(1.02); border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.7); }
+      100% { transform: scale(1); border-color: #facc15; box-shadow: 0 0 10px rgba(250, 204, 21, 0.3); }
+    }
+    .supervisor-notice-card {
+      background: linear-gradient(135deg, #07142b, #1e1b4b);
+      border: 3px solid #facc15;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 250px;
+      overflow-y: auto;
+      animation: noticePulseAnim 2.2s infinite ease-in-out;
+    }
+    .notice-title { color: #facc15; font-size: 13px; font-weight: 900; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
+    .notice-body { color: #ffffff; font-size: 13.5px; font-weight: bold; line-height: 1.5; word-break: break-word; }
+
     #leaveProgressBarContainer, #reportProgressBarContainer, #lookupProgressBarContainer {
       width: 100%; height: 8px; background: #1e293b; border-radius: 4px;
       overflow: hidden; margin-top: 8px; display: none; border: 1px solid #38bdf8;
@@ -348,6 +386,14 @@
       flex: 1; background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8; font-size: 13px; font-weight: 900;
       padding: 10px; border-radius: 6px; cursor: pointer; text-transform: uppercase;
     }
+
+    @media print {
+      body { background: #ffffff !important; color: #000 !important; font-size: 9px !important; zoom: 85%; }
+      .top-actions-bar, #splashScreen, .filter-grid, .btn-action-main, #reportProgressBarContainer, .toggle-btn { display: none !important; }
+      .app-viewport { max-width: 100% !important; width: 100% !important; gap: 4px !important; }
+      .form-card { border: none !important; padding: 0 !important; background: #fff !important; box-shadow: none !important; }
+      @page { size: auto; margin: 8mm; }
+    }
   </style>
 </head>
 <body>
@@ -355,12 +401,25 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <!-- IMPORTANT MESSAGE POPUP MODAL -->
-  <div id="customNoticeModal" class="custom-modal-backdrop" style="display:none;">
-    <div class="custom-modal-box info-box" style="border: 3px solid #facc15; background: #07142b;">
+  <!-- SUPERVISOR MESSAGE POPUP MODAL -->
+  <div id="supervisorMessageModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box info-box" style="border: 3px solid #facc15; background: #07142b; max-width: 340px;">
       <h4 style="color: #facc15; font-size: 17px; font-weight: 900;">📢 IMPORTANT MESSAGE</h4>
-      <p id="customNoticeText" style="color: #ffffff; font-size: 14.5px; font-weight: bold; line-height: 1.5; word-break: break-word;">Message here...</p>
-      <button class="btn-modal-primary" style="background: #10b981; font-weight: 900; font-size: 14px; padding: 12px;" onclick="closeCustomNoticeModal()">OK ✅</button>
+      <p id="supervisorMessageText" style="color: #ffffff; font-size: 14.5px; font-weight: bold; line-height: 1.5; word-break: break-word;">Loading message...</p>
+      <button class="btn-modal-primary" style="background: #10b981; font-weight: 900; font-size: 14px; padding: 12px;" onclick="closeSupervisorMessageModal()">OK ✅</button>
+    </div>
+  </div>
+
+  <!-- OPERATOR SEND MESSAGE INPUT MODAL -->
+  <div id="operatorSendMessageModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box info-box" style="border: 3px solid #38bdf8; background: #07142b; max-width: 340px;">
+      <h4 style="color: #38bdf8; font-size: 16px; font-weight: 900;">✍️ SEND BROADCAST MESSAGE</h4>
+      <p style="color: #ffff00; font-size: 12px;">Type your message to broadcast to all operators:</p>
+      <textarea id="operatorMessageInputBox" class="form-input" rows="3" placeholder="Type here (e.g. Kali deri heijiba)..." style="resize:none;"></textarea>
+      <div class="modal-btn-row">
+        <button class="btn-modal-secondary" onclick="closeOperatorSendMessageModal()">Cancel</button>
+        <button class="btn-modal-primary" onclick="submitOperatorBroadcastMessage()">Send ➔</button>
+      </div>
     </div>
   </div>
 
@@ -372,69 +431,12 @@
     </div>
   </div>
 
-  <div id="whatsappChoiceModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box info-box" style="border-color: #25D366; box-shadow: 0 0 25px rgba(37, 211, 102, 0.4);">
-      <h4 style="color: #25D366; font-size: 16px;">💬 NOTIFY VIA WHATSAPP</h4>
-      <p style="color: #fff; font-size: 13px;">Leave recorded successfully! Where would you like to send the notification first?</p>
-      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
-        <button class="btn-modal-primary" style="background:#128C7E;" onclick="chooseWhatsAppFirst('supervisor')">Send to Supervisor</button>
-        <button class="btn-modal-primary" style="background:#25D366; color:#000;" onclick="chooseWhatsAppFirst('group')">Send to Relay Group</button>
-        <button class="btn-modal-secondary" onclick="closeWhatsAppChoiceModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="whatsappFollowupModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box info-box" style="border-color: #25D366; box-shadow: 0 0 25px rgba(37, 211, 102, 0.4);">
-      <h4 style="color: #25D366; font-size: 16px;" id="followupTitle">💬 NEXT STEP</h4>
-      <p id="followupText" style="color: #fff; font-size: 13px;">Do you also want to send this message to the other destination?</p>
-      <div class="modal-btn-row">
-        <button class="btn-modal-secondary" onclick="closeFollowupModal(false)">No</button>
-        <button class="btn-modal-primary" style="background:#128C7E;" onclick="closeFollowupModal(true)">Yes, Send</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="customAlertModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box">
-      <h4>⚠️ NOTICE</h4>
-      <p id="customAlertMsg">This section is currently disabled.</p>
-      <button class="btn-modal-primary" onclick="closeCustomAlert()">OK</button>
-    </div>
-  </div>
-
-  <div id="customWithdrawModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box info-box" style="border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);">
-      <h4 style="color: #ef4444; font-size: 16px;">⚠️ WITHDRAW LEAVE</h4>
-      <p style="color: #fff; font-size: 13.5px;">Are you sure you want to withdraw this leave request?</p>
-      <div class="modal-btn-row">
-        <button class="btn-modal-secondary" onclick="closeCustomWithdrawModal()">Cancel</button>
-        <button class="btn-modal-danger" onclick="confirmWithdrawLeave()">Yes, Withdraw</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="customLogoutModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box info-box">
-      <h4>⚠️ CONFIRM LOGOUT</h4>
-      <p>Are you sure you want to log out?</p>
-      <div class="modal-btn-row">
-        <button class="btn-modal-secondary" onclick="closeCustomLogout()">Cancel</button>
-        <button class="btn-modal-danger" onclick="confirmLogout()">Yes, Logout</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="customClearChatModal" class="custom-modal-backdrop">
-    <div class="custom-modal-box info-box">
-      <h4>🗑️ CLEAR CHAT</h4>
-      <p>Clear your chat history on this device?</p>
-      <div class="modal-btn-row">
-        <button class="btn-modal-secondary" onclick="closeClearChatModal()">Cancel</button>
-        <button class="btn-modal-danger" onclick="confirmClearChat()">Yes, Clear</button>
-      </div>
-    </div>
-  </div>
+  <div id="whatsappChoiceModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
+  <div id="whatsappFollowupModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
+  <div id="customAlertModal" class="custom-modal-backdrop"><div class="custom-modal-box"></div></div>
+  <div id="customWithdrawModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
+  <div id="customLogoutModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
+  <div id="customClearChatModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
 
   <div id="splashScreen">
     <div class="splash-logo-container">
@@ -479,6 +481,8 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
+      <div id="uiDashboardNoticeBox" style="display:none; flex-direction:column; gap:8px;"></div>
+
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
         <h4 style="color:#10b981; font-size:13px; font-weight:900; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
           <span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block; box-shadow:0 0 8px #10b981;"></span> 
@@ -498,11 +502,12 @@
           </div>
         </div>
 
-        <div id="btnMessage" class="menu-item-btn" onclick="openMenuAction('message')">
+        <!-- MESSAGE BUTTON -->
+        <div id="btnMessage" class="menu-item-btn" onclick="openOperatorSendMessageModal()">
           <div class="menu-item-icon">📢</div>
           <div class="menu-item-info">
-            <h4>Important Message</h4>
-            <p>View broadcast notice from supervisor</p>
+            <h4>Message</h4>
+            <p>Send broadcast message to all operators</p>
           </div>
         </div>
 
@@ -918,7 +923,7 @@
       </div>
     </div>
 
-    <!-- PAGE 9: LOCAL FESTIVAL -->
+    <!-- PAGE 9: LOCAL FESTIVAL (WITH SEARCH & 2050 YEARS) -->
     <div id="pageLocalFestival" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -1117,6 +1122,7 @@
           document.getElementById('uiDashboardDate').innerText = data.board.dateBanner;
         }
         applySecurity(data.security, data.guestSecurity);
+        checkAndShowSupervisorMessages(data);
       }
 
       setTimeout(() => {
@@ -1143,7 +1149,7 @@
           if (portalData) {
             checkAndShowStatusWarning(portalData);
             applySecurity(portalData.security, portalData.guestSecurity);
-            checkAndShowInitialNotice(portalData);
+            checkAndShowSupervisorMessages(portalData);
           }
           showPage('pageDashboard');
           startPresenceHeartbeat();
@@ -1169,7 +1175,7 @@
       if (portalData) {
         checkAndShowStatusWarning(portalData);
         applySecurity(portalData.security, portalData.guestSecurity);
-        checkAndShowInitialNotice(portalData);
+        checkAndShowSupervisorMessages(portalData);
       }
 
       showPage('pageDashboard');
@@ -1320,7 +1326,6 @@
 
       const map = [
         { id: "btnCheckPosition", allowed: activeSec.checkPosition !== false },
-        { id: "btnMessage", allowed: activeSec.message !== false },
         { id: "btnDutyLookup", allowed: activeSec.dutyDateLookup !== false },
         { id: "btnMyDueHistory", allowed: activeSec.myDueHistory !== false },
         { id: "btnMonthlyReport", allowed: activeSec.monthlyReport !== false },
@@ -1343,25 +1348,56 @@
       });
     }
 
-    function checkAndShowInitialNotice(data) {
-      const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      const isGuest = (currentUser.toLowerCase() === "guest");
-      const activeSec = isGuest ? data.guestSecurity : data.security;
-
-      if (activeSec && activeSec.message !== false && activeSec.noticeMessage) {
-        const lastSeenNotice = localStorage.getItem('last_seen_notice') || "";
-        if (lastSeenNotice !== activeSec.noticeMessage) {
-          document.getElementById('customNoticeText').innerHTML = activeSec.noticeMessage;
-          document.getElementById('customNoticeModal').style.display = 'flex';
+    // CHECK AND SHOW SUPERVISOR_MESSAGE MODAL
+    function checkAndShowSupervisorMessages(data) {
+      if (data && data.supervisorMessages && data.supervisorMessages.length > 0) {
+        const latestMsg = data.supervisorMessages[data.supervisorMessages.length - 1];
+        const lastSeen = localStorage.getItem('last_seen_sup_msg') || "";
+        if (lastSeen !== latestMsg) {
+          document.getElementById('supervisorMessageText').innerText = latestMsg;
+          document.getElementById('supervisorMessageModal').dataset.msg = latestMsg;
+          document.getElementById('supervisorMessageModal').style.display = 'flex';
         }
       }
     }
 
-    function closeCustomNoticeModal() {
-      const noticeText = document.getElementById('customNoticeText').innerHTML;
-      localStorage.setItem('last_seen_notice', noticeText);
-      document.getElementById('customNoticeModal').style.display = 'none';
+    function closeSupervisorMessageModal() {
+      const modal = document.getElementById('supervisorMessageModal');
+      const msg = modal.dataset.msg || "";
+      if (msg) localStorage.setItem('last_seen_sup_msg', msg);
+      modal.style.display = 'none';
     }
+
+    function openOperatorSendMessageModal() {
+      document.getElementById('operatorMessageInputBox').value = '';
+      document.getElementById('operatorSendMessageModal').style.display = 'flex';
+    }
+
+    function closeOperatorSendMessageModal() {
+      document.getElementById('operatorSendMessageModal').style.display = 'none';
+    }
+
+    function submitOperatorBroadcastMessage() {
+      const msg = document.getElementById('operatorMessageInputBox').value.trim();
+      const myName = localStorage.getItem(STORAGE_KEY) || "Operator";
+      if (!msg) { alert("Please type a message."); return; }
+
+      closeOperatorSendMessageModal();
+      showToast("Broadcasting message...");
+
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=sendOperatorMessage&name=${encodeURIComponent(myName)}&message=${encodeURIComponent(msg)}&callback=handleOpMsgResponse&t=` + Date.now();
+      document.head.appendChild(s);
+    }
+
+    window.handleOpMsgResponse = function(res) {
+      if (res && res.status === "success") {
+        showToast("Message broadcasted successfully! ✅");
+        triggerGlobalRefresh(null, 'MsgSent');
+      } else {
+        alert("Failed to send message.");
+      }
+    };
 
     function showCustomAlert(msg) {
       document.getElementById('customAlertMsg').innerText = msg;
@@ -1414,15 +1450,7 @@
         }
       }
 
-      if (type === "message") {
-        if (activeSec && activeSec.noticeMessage) {
-          document.getElementById('customNoticeText').innerHTML = activeSec.noticeMessage;
-          document.getElementById('customNoticeModal').style.display = 'flex';
-        } else {
-          showCustomAlert("No important message available right now.");
-        }
-      }
-      else if (type === "checkPosition") {
+      if (type === "checkPosition") {
         if (activeSec.dutySubmission === false) {
           document.getElementById('myDutyActionCard').style.display = 'none';
         }
@@ -2498,6 +2526,20 @@
       const dateBannerEl = document.getElementById('uiDashboardDate');
       if (dateBannerEl) {
         dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
+      }
+
+      const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
+      if (dashNoticeBox && data.security && data.security.noticeMessage) {
+        dashNoticeBox.style.display = 'flex';
+        dashNoticeBox.innerHTML = `
+          <div class="ticker-container">
+            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
+          </div>
+          <div class="supervisor-notice-card">
+            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
+            <div class="notice-body">${data.security.noticeMessage}</div>
+          </div>
+        `;
       }
 
       const sel = document.getElementById('loginSelect');
