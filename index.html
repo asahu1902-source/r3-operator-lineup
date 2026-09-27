@@ -496,7 +496,6 @@
         <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
       </div>
 
-      <!-- SECURITY NOTICE TICKER & CARD (RESTORED EXACTLY) -->
       <div id="uiDashboardNoticeBox" style="display:none; flex-direction:column; gap:8px;"></div>
 
       <div class="card" style="background:#07142b; border:2px solid #10b981; border-radius:10px; padding:12px;">
@@ -989,7 +988,7 @@
           </div>
           <div class="form-group">
             <label>Search Keyword</label>
-            <input type="text" id="uiFestivalSearchInput" class="form-input" placeholder="Type keyword (e.g. Lax)..." oninput="filterLocalFestivals()">
+            <input type="text" id="uiFestivalSearchInput" class="form-input" placeholder="Type keyword (e.g. Dola)..." oninput="filterLocalFestivals()">
           </div>
         </div>
 
@@ -1037,51 +1036,6 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHQ5BMKG-IHIGMCqL4N2efVOshdsP34EY3Gu054YwmhC5qYZBNyEkRvW0_3SAOmMK8fA/exec";
     const STORAGE_KEY = "r3_operator_user";
-
-    const BASE_FESTIVALS = [
-      { name: "Swami Vivekananda Jayanti", d: 12, m: 1 },
-      { name: "Makar Sankranti / Poush Parbon", d: 14, m: 1 },
-      { name: "Netaji Jayanti", d: 23, m: 1 },
-      { name: "Saraswati Puja (Basant Panchami)", d: 23, m: 1 },
-      { name: "Republic Day", d: 26, m: 1 },
-      { name: "Maha Shivratri", d: 15, m: 2 },
-      { name: "Dol Jatra / Holi", d: 3, m: 3 },
-      { name: "Eid-ul-Fitr", d: 21, m: 3 },
-      { name: "Utkal Divas", d: 1, m: 4 },
-      { name: "Good Friday", d: 3, m: 4 },
-      { name: "Pohila Baishakh (Bengali New Year)", d: 15, m: 4 },
-      { name: "Akshaya Tritiya", d: 20, m: 4 },
-      { name: "May Day / Labour Day", d: 1, m: 5 },
-      { name: "Rabindra Jayanti", d: 8, m: 5 },
-      { name: "Sabitri Brata", d: 16, m: 5 },
-      { name: "Kazi Nazrul Islam Jayanti", d: 26, m: 5 },
-      { name: "Pahili Raja", d: 14, m: 6 },
-      { name: "Raja Sankranti", d: 15, m: 6 },
-      { name: "Snana Purnima", d: 29, m: 6 },
-      { name: "Rath Yatra", d: 16, m: 7 },
-      { name: "Bahuda Yatra", d: 24, m: 7 },
-      { name: "Independence Day", d: 15, m: 8 },
-      { name: "Raksha Bandhan / Gamha Purnima", d: 28, m: 8 },
-      { name: "Janmashtami", d: 4, m: 9 },
-      { name: "Ganesh Chaturthi", d: 14, m: 9 },
-      { name: "Nuakhai", d: 16, m: 9 },
-      { name: "Vishwakarma Puja", d: 17, m: 9 },
-      { name: "Gandhi Jayanti", d: 2, m: 10 },
-      { name: "Mahalaya", d: 10, m: 10 },
-      { name: "Durga Puja (Maha Sasthi)", d: 17, m: 10 },
-      { name: "Durga Puja (Maha Saptami)", d: 18, m: 10 },
-      { name: "Durga Puja (Maha Astami)", d: 19, m: 10 },
-      { name: "Durga Puja (Maha Navami)", d: 20, m: 10 },
-      { name: "Bijoya Dashami (Dussehra)", d: 21, m: 10 },
-      { name: "Kojagari Lakshmi Puja", d: 25, m: 10 },
-      { name: "Kali Puja / Diwali", d: 9, m: 11 },
-      { name: "Bhai Phonta", d: 11, m: 11 },
-      { name: "Chhath Puja", d: 15, m: 11 },
-      { name: "Kartika Purnima / Boita Bandana", d: 24, m: 11 },
-      { name: "Guru Nanak Jayanti", d: 24, m: 11 },
-      { name: "Prathamastami", d: 2, m: 12 },
-      { name: "Christmas Day (Bara Din)", d: 25, m: 12 }
-    ];
 
     let portalData = null;
     let lastSubmittedLeave = null;
@@ -1365,7 +1319,6 @@
       });
     }
 
-    // CHECK AND SHOW SUPERVISOR_MESSAGE MODAL
     function checkAndShowSupervisorMessages(data) {
       if (data && data.supervisorMessages && data.supervisorMessages.length > 0) {
         const latestMsg = data.supervisorMessages[data.supervisorMessages.length - 1];
@@ -2424,8 +2377,6 @@
       }
     }
 
-    const DAYS_ABBR = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
     function renderLocalFestival() {
       const searchInput = document.getElementById('uiFestivalSearchInput');
       if (searchInput) searchInput.value = '';
@@ -2445,45 +2396,41 @@
       const container = document.getElementById('uiFestivalContainer');
       container.innerHTML = '';
       
-      const schedMap = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup : {};
-      const selectedYear = parseInt(document.getElementById('uiFestivalYearSelect', 10));
+      const list = (portalData && portalData.localFestivals) ? portalData.localFestivals : [];
+      const selectedYear = document.getElementById('uiFestivalYearSelect').value;
       const query = document.getElementById('uiFestivalSearchInput').value.trim().toLowerCase();
 
       let matchCount = 0;
 
-      BASE_FESTIVALS.forEach(f => {
+      list.forEach(f => {
+        if (f.date && !f.date.includes(selectedYear) && !f.rawDate.includes(selectedYear)) {
+          return;
+        }
+
         if (query && !f.name.toLowerCase().includes(query)) {
           return;
         }
 
         matchCount++;
         
-        const festDateObj = new Date(selectedYear, f.m - 1, f.d);
-        const dayOfWeekName = DAYS_ABBR[festDateObj.getDay()];
-        
-        const padZero = (n) => n < 10 ? '0' + n : '' + n;
-        const fullDate = `${padZero(f.d)}/${padZero(f.m)}/${selectedYear}`;
-        
-        const match = schedMap[fullDate] || { day: dayOfWeekName, r3: "-", r2: "-", r1: "-" };
-        
         const item = document.createElement('div');
         item.className = 'holiday-card-item';
         item.innerHTML = `
           <div class="hol-top">
             <h5>🪔 ${f.name}</h5>
-            <p>${fullDate} (${match.day || dayOfWeekName})</p>
+            <p>${f.rawDate} (${f.day})</p>
           </div>
           <div class="relay-badge-row">
-            <div class="relay-chip"><span>R3</span><strong>${match.r3}</strong></div>
-            <div class="relay-chip"><span>R2</span><strong>${match.r2}</strong></div>
-            <div class="relay-chip"><span>R1</span><strong>${match.r1}</strong></div>
+            <div class="relay-chip"><span>R3</span><strong>${f.r3}</strong></div>
+            <div class="relay-chip"><span>R2</span><strong>${f.r2}</strong></div>
+            <div class="relay-chip"><span>R1</span><strong>${f.r1}</strong></div>
           </div>
         `;
         container.appendChild(item);
       });
 
       if (matchCount === 0) {
-        container.innerHTML = `<div style="padding:15px; text-align:center; color:#ef4444; font-weight:bold;">No matching festivals found.</div>`;
+        container.innerHTML = `<div style="padding:15px; text-align:center; color:#ef4444; font-weight:bold;">No local festivals found for ${selectedYear}.</div>`;
       }
     }
 
@@ -2527,7 +2474,6 @@
         dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
       }
 
-      // RESTORED FULLY: Security D2:D10 notice ticker & supervisor notice card
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
       if (dashNoticeBox && data.security && data.security.noticeMessage) {
         dashNoticeBox.style.display = 'flex';
