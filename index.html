@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#07142b">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="R3 Duty">
+  <meta name="apple-mobile-web-app-title" content="Relay-3 Hub">
   <link rel="apple-touch-icon" href="icon.png">
 
   <style>
@@ -23,9 +23,8 @@
       flex-direction: column; align-items: center; justify-content: center;
       transition: opacity 0.4s ease-out;
     }
-    .splash-logo-container { position: relative; width: 130px; height: 130px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
-    .splash-pulse-ring { position: absolute; width: 130px; height: 130px; border-radius: 50%; border: 3px dashed #facc15; animation: spinRing 2.5s linear infinite; }
-    .splash-app-icon { width: 95px; height: 95px; border-radius: 50%; object-fit: cover; border: 3px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.5); }
+    .splash-logo-container { position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+    .splash-app-icon { width: 130px; height: 130px; border-radius: 20px; object-fit: cover; border: 3px solid #38bdf8; box-shadow: 0 0 30px rgba(56, 189, 248, 0.5); }
     
     .splash-progress-wrapper { width: 220px; display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; }
     .splash-load-text { color: #00ffff; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
@@ -37,8 +36,6 @@
       width: 35%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
       border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.3s ease-in-out;
     }
-
-    @keyframes spinRing { 100% { transform: rotate(360deg); } }
 
     .app-viewport { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
@@ -84,7 +81,7 @@
 
     /* LOGIN SCREEN */
     .login-card { background: #07142b; border: 2px solid #38bdf8; border-radius: 12px; padding: 24px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
-    .login-card img { width: 85px; height: 85px; border-radius: 50%; border: 2.5px solid #ef4444; margin-bottom: 12px; }
+    .login-card img { width: 95px; height: 95px; border-radius: 16px; border: 2.5px solid #ef4444; margin-bottom: 12px; object-fit: cover; }
     .login-card h2 { color: #ffff00; font-size: 18px; font-weight: 900; margin-bottom: 4px; }
     .login-card p { color: #38bdf8; font-size: 13px; margin-bottom: 18px; }
 
@@ -418,7 +415,7 @@
     </div>
   </div>
 
-  <!-- OPERATOR SEND MESSAGE INPUT MODAL (PLACEHOLDER UPDATED TO "Type here anything...") -->
+  <!-- OPERATOR SEND MESSAGE INPUT MODAL -->
   <div id="operatorSendMessageModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #38bdf8; background: #07142b; max-width: 340px;">
       <h4 style="color: #38bdf8; font-size: 16px; font-weight: 900;">✍️ SEND BROADCAST MESSAGE</h4>
@@ -453,13 +450,13 @@
   <div id="customLogoutModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
   <div id="customClearChatModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
 
+  <!-- SPLASH SCREEN (ROUND SPIN REMOVED, BADGE LOGO DISPLAYED) -->
   <div id="splashScreen">
     <div class="splash-logo-container">
-      <div class="splash-pulse-ring"></div>
       <img src="icon.png" alt="Logo" class="splash-app-icon">
     </div>
     <div class="splash-progress-wrapper">
-      <div class="splash-load-text" id="splashStatusText">⚡ Synchronizing Duty Portal...</div>
+      <div class="splash-load-text" id="splashStatusText">⚡ SYNCHRONIZING DUTY PORTAL...</div>
       <div class="splash-progress-bar-container">
         <div id="splashProgressFill" class="splash-progress-bar-fill"></div>
       </div>
@@ -472,7 +469,7 @@
     <div id="pageLogin" class="screen-page">
       <div class="login-card">
         <img src="icon.png" alt="R3 Logo">
-        <h2>R-3 OPERATOR PORTAL</h2>
+        <h2>RELAY -3 SMART HUB</h2>
         <p>Please choose your name to log in</p>
         <select id="loginSelect" class="operator-select">
           <option value="">-- Choose Name --</option>
@@ -609,7 +606,6 @@
         <h3 style="color:#10b981; font-size:15px; font-weight:900;">🎯 My Assigned Duty Confirmation</h3>
         <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
         
-        <!-- PROGRESS BAR (ADDED) -->
         <div id="dutyProgressBarContainer" style="width:100%; height:8px; background:#1e293b; border-radius:4px; overflow:hidden; display:none; border:1px solid #38bdf8;">
           <div id="dutyProgressBarFill" style="width:0%; height:100%; background:linear-gradient(90deg, #38bdf8, #10b981); transition:width 0.3s ease-in-out;"></div>
         </div>
