@@ -969,7 +969,7 @@
       </div>
     </div>
 
-    <!-- PAGE 9: LOCAL FESTIVAL (WITH SEARCH & DYNAMIC YEAR) -->
+    <!-- PAGE 9: LOCAL FESTIVAL (WITH EXTENDED 2025-2050 YEARS & FIXED HOLIDAYS) -->
     <div id="pageLocalFestival" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -995,6 +995,26 @@
               <option value="2028">2028</option>
               <option value="2029">2029</option>
               <option value="2030">2030</option>
+              <option value="2031">2031</option>
+              <option value="2032">2032</option>
+              <option value="2033">2033</option>
+              <option value="2034">2034</option>
+              <option value="2035">2035</option>
+              <option value="2036">2036</option>
+              <option value="2037">2037</option>
+              <option value="2038">2038</option>
+              <option value="2039">2039</option>
+              <option value="2040">2040</option>
+              <option value="2041">2041</option>
+              <option value="2042">2042</option>
+              <option value="2043">2043</option>
+              <option value="2044">2044</option>
+              <option value="2045">2045</option>
+              <option value="2046">2046</option>
+              <option value="2047">2047</option>
+              <option value="2048">2048</option>
+              <option value="2049">2049</option>
+              <option value="2050">2050</option>
             </select>
           </div>
           <div class="form-group">
@@ -1055,7 +1075,7 @@
       { name: "Saraswati Puja (Basant Panchami)", d: 23, m: 1 },
       { name: "Republic Day", d: 26, m: 1 },
       { name: "Maha Shivratri", d: 15, m: 2 },
-      { name: "Dol Jatra / Holi", d: "03", m: 3 },
+      { name: "Dol Jatra / Holi", d: 3, m: 3 }, // Fixed from string "03" to number 3
       { name: "Eid-ul-Fitr", d: 21, m: 3 },
       { name: "Utkal Divas", d: 1, m: 4 },
       { name: "Good Friday", d: 3, m: 4 },
@@ -2411,14 +2431,12 @@
 
         matchCount++;
         
-        // Dynamic Future Year Date Calculation using JavaScript Date object
         const festDateObj = new Date(selectedYear, f.m - 1, f.d);
         const dayOfWeekName = DAYS_ABBR[festDateObj.getDay()];
         
         const padZero = (n) => n < 10 ? '0' + n : '' + n;
         const fullDate = `${padZero(f.d)}/${padZero(f.m)}/${selectedYear}`;
         
-        // Fetch matching shift schedule if available for that exact calculated date
         const match = schedMap[fullDate] || { day: dayOfWeekName, r3: "-", r2: "-", r1: "-" };
         
         const item = document.createElement('div');
