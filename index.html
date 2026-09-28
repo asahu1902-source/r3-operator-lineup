@@ -387,11 +387,11 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <div id="supervisorMessageModal" class="custom-modal-backdrop" style="display:none;">
+  <div id="broadcastMessageModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #facc15; background: #07142b; max-width: 340px;">
-      <h4 style="color: #facc15; font-size: 17px; font-weight: 900;">📢 SUPERVISOR NOTICE</h4>
-      <p id="supervisorMessageText" style="color: #ffffff; font-size: 14.5px; font-weight: bold; line-height: 1.5; word-break: break-word;">Loading message...</p>
-      <button class="btn-modal-primary" style="background: #10b981; font-weight: 900; font-size: 14px; padding: 12px;" onclick="closeSupervisorMessageModal()">OK ✅</button>
+      <h4 style="color: #facc15; font-size: 17px; font-weight: 900;">📢 BROADCAST MESSAGE</h4>
+      <p id="broadcastMessageText" style="color: #ffffff; font-size: 14.5px; font-weight: bold; line-height: 1.5; word-break: break-word;">New message...</p>
+      <button class="btn-modal-primary" style="background: #10b981; font-weight: 900; font-size: 14px; padding: 12px;" onclick="closeBroadcastMessageModal()">OK ✅</button>
     </div>
   </div>
 
@@ -1007,11 +1007,12 @@
     let currentReportResult = null;
     let chatInterval = null;
     let presenceInterval = null;
+    let supervisorMsgInterval = null;
     let isScrollableReportMode = false;
     let myAssignedPositionName = "";
     let currentLookupResultData = null;
     let pendingWithdrawRowIndex = null;
-    let lastSeenNoticeMessage = "";
+    let lastSeenSupervisorMsg = "";
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
@@ -1031,8 +1032,13 @@
         stopChatPolling();
       }
 
-      if (pageId === 'pageDashboard') startPresenceHeartbeat();
-      else stopPresenceHeartbeat();
+      if (pageId === 'pageDashboard') {
+        startPresenceHeartbeat();
+        startSupervisorMsgPolling();
+      } else {
+        stopPresenceHeartbeat();
+        stopSupervisorMsgPolling();
+      }
     }
 
     function triggerGlobalRefresh(btnEl, context) {
@@ -1052,14 +1058,6 @@
           document.getElementById('uiDashboardDate').innerText = data.board.dateBanner;
         }
         applySecurity(data.security, data.guestSecurity);
-        
-        // Check for new notice message broadcast
-        if (data.security && data.security.noticeMessage) {
-          if (data.security.noticeMessage !== lastSeenNoticeMessage) {
-            lastSeenNoticeMessage = data.security.noticeMessage;
-            openSupervisorMessageModal(data.security.noticeMessage);
-          }
-        }
       }
 
       setTimeout(() => {
@@ -1089,6 +1087,7 @@
           }
           showPage('pageDashboard');
           startPresenceHeartbeat();
+          startSupervisorMsgPolling();
         } else {
           showPage('pageLogin');
         }
@@ -1114,6 +1113,7 @@
 
       showPage('pageDashboard');
       startPresenceHeartbeat();
+      startSupervisorMsgPolling();
     }
 
     function performLogout() {
@@ -1126,6 +1126,7 @@
 
     function confirmLogout() {
       stopPresenceHeartbeat();
+      stopSupervisorMsgPolling();
       localStorage.removeItem(STORAGE_KEY);
       showPage('pageLogin');
       closeCustomLogout();
@@ -1171,6 +1172,40 @@
         presenceInterval = null;
       }
     }
+
+    function startSupervisorMsgPolling() {
+      checkSupervisorMessages();
+      if (supervisorMsgInterval) clearInterval(supervisorMsgInterval);
+      supervisorMsgInterval = setInterval(checkSupervisorMessages, 5000);
+    }
+
+    function stopSupervisorMsgPolling() {
+      if (supervisorMsgInterval) {
+        clearInterval(supervisorMsgInterval);
+        supervisorMsgInterval = null;
+      }
+    }
+
+    function checkSupervisorMessages() {
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=getOperatorMessages&callback=handleSupervisorMessagesPoll&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleSupervisorMessagesPoll = function(res) {
+      if (!res || res.status !== "success" || !res.supervisorMessages) return;
+      const msgs = res.supervisorMessages;
+      if (msgs.length === 0) return;
+
+      const latestMsg = msgs[msgs.length - 1];
+      const dismissedKey = "dismissed_sup_msg";
+      const lastDismissed = localStorage.getItem(dismissedKey) || "";
+
+      if (latestMsg && latestMsg !== lastDismissed) {
+        localStorage.setItem(dismissedKey, latestMsg);
+        openBroadcastMessageModal(latestMsg);
+      }
+    };
 
     function sendPresencePing() {
       const currentOp = localStorage.getItem(STORAGE_KEY);
@@ -1242,13 +1277,13 @@
       });
     }
 
-    function openSupervisorMessageModal(text) {
-      document.getElementById('supervisorMessageText').innerHTML = text || "No notice message available.";
-      document.getElementById('supervisorMessageModal').style.display = 'flex';
+    function openBroadcastMessageModal(text) {
+      document.getElementById('broadcastMessageText').innerText = text || "";
+      document.getElementById('broadcastMessageModal').style.display = 'flex';
     }
 
-    function closeSupervisorMessageModal() {
-      document.getElementById('supervisorMessageModal').style.display = 'none';
+    function closeBroadcastMessageModal() {
+      document.getElementById('broadcastMessageModal').style.display = 'none';
     }
 
     function openOperatorSendMessageModal() {
@@ -2296,16 +2331,11 @@
           <div class="ticker-container">
             <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
           </div>
-          <div class="supervisor-notice-card" onclick="openSupervisorMessageModal('${data.security.noticeMessage.replace(/'/g, "\\'")}')" style="cursor:pointer;">
-            <div class="notice-title">📢 SUPERVISOR NOTICE (TAP TO VIEW)</div>
+          <div class="supervisor-notice-card">
+            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
             <div class="notice-body">${data.security.noticeMessage}</div>
           </div>
         `;
-
-        if (data.security.noticeMessage !== lastSeenNoticeMessage) {
-          lastSeenNoticeMessage = data.security.noticeMessage;
-          openSupervisorMessageModal(data.security.noticeMessage);
-        }
       } else {
         if (dashNoticeBox) dashNoticeBox.style.display = 'none';
       }
