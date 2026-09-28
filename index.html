@@ -387,6 +387,31 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
+  <!-- WHATSAPP CHOICE MODAL -->
+  <div id="whatsappChoiceModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box info-box" style="border: 3px solid #25D366; background: #07142b; max-width: 330px;">
+      <h4 style="color: #25D366; font-size: 16px; font-weight: 900;">💬 WHATSAPP NOTIFICATION</h4>
+      <p style="color: #ffff00; font-size: 13.5px;">Where do you want to send this leave application first?</p>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+        <button class="btn-modal-primary" style="background: #128C7E;" onclick="chooseWhatsAppFirst('supervisor')">Send to Supervisor ➔</button>
+        <button class="btn-modal-primary" style="background: #059669;" onclick="chooseWhatsAppFirst('group')">Send to Relay Group ➔</button>
+      </div>
+      <button class="btn-modal-secondary" style="margin-top: 4px;" onclick="closeWhatsAppChoiceModal()">Skip / Close</button>
+    </div>
+  </div>
+
+  <!-- WHATSAPP FOLLOWUP MODAL -->
+  <div id="whatsappFollowupModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box info-box" style="border: 3px solid #25D366; background: #07142b; max-width: 330px;">
+      <h4 id="followupTitle" style="color: #25D366; font-size: 16px; font-weight: 900;">💬 NEXT NOTIFICATION</h4>
+      <p id="followupText" style="color: #ffff00; font-size: 13.5px;">Do you also want to notify the other destination?</p>
+      <div class="modal-btn-row" style="margin-top: 6px;">
+        <button class="btn-modal-secondary" onclick="closeFollowupModal(false)">No</button>
+        <button class="btn-modal-primary" style="background: #128C7E;" onclick="closeFollowupModal(true)">Yes, Send ➔</button>
+      </div>
+    </div>
+  </div>
+
   <div id="broadcastMessageModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #facc15; background: #07142b; max-width: 340px;">
       <h4 style="color: #facc15; font-size: 17px; font-weight: 900;">📢 BROADCAST MESSAGE</h4>
@@ -423,11 +448,38 @@
     </div>
   </div>
 
-  <div id="whatsappChoiceModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
-  <div id="whatsappFollowupModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
-  <div id="customWithdrawModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
-  <div id="customLogoutModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
-  <div id="customClearChatModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
+  <div id="customWithdrawModal" class="custom-modal-backdrop">
+    <div class="custom-modal-box" style="border: 2px solid #ef4444; background: #07142b;">
+      <h4 style="color: #ef4444;">⚠️ WITHDRAW LEAVE</h4>
+      <p style="color: #ffff00;">Are you sure you want to withdraw this leave request?</p>
+      <div class="modal-btn-row">
+        <button class="btn-modal-secondary" onclick="closeCustomWithdrawModal()">Cancel</button>
+        <button class="btn-modal-danger" onclick="confirmWithdrawLeave()">Withdraw</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="customLogoutModal" class="custom-modal-backdrop">
+    <div class="custom-modal-box" style="border: 2px solid #ef4444; background: #07142b;">
+      <h4 style="color: #ef4444;">🚪 LOGOUT</h4>
+      <p style="color: #ffff00;">Are you sure you want to logout?</p>
+      <div class="modal-btn-row">
+        <button class="btn-modal-secondary" onclick="closeCustomLogout()">Cancel</button>
+        <button class="btn-modal-danger" onclick="confirmLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="customClearChatModal" class="custom-modal-backdrop">
+    <div class="custom-modal-box" style="border: 2px solid #ef4444; background: #07142b;">
+      <h4 style="color: #ef4444;">🗑️ CLEAR CHAT</h4>
+      <p style="color: #ffff00;">Are you sure you want to clear your chat history?</p>
+      <div class="modal-btn-row">
+        <button class="btn-modal-secondary" onclick="closeClearChatModal()">Cancel</button>
+        <button class="btn-modal-danger" onclick="confirmClearChat()">Clear</button>
+      </div>
+    </div>
+  </div>
 
   <div id="splashScreen">
     <div class="splash-logo-container">
@@ -1007,7 +1059,6 @@
     let currentReportResult = null;
     let chatInterval = null;
     let presenceInterval = null;
-    let supervisorMsgInterval = null;
     let isScrollableReportMode = false;
     let myAssignedPositionName = "";
     let currentLookupResultData = null;
@@ -1031,13 +1082,8 @@
         stopChatPolling();
       }
 
-      if (pageId === 'pageDashboard') {
-        startPresenceHeartbeat();
-        startSupervisorMsgPolling();
-      } else {
-        stopPresenceHeartbeat();
-        stopSupervisorMsgPolling();
-      }
+      if (pageId === 'pageDashboard') startPresenceHeartbeat();
+      else stopPresenceHeartbeat();
     }
 
     function triggerGlobalRefresh(btnEl, context) {
@@ -1086,7 +1132,6 @@
           }
           showPage('pageDashboard');
           startPresenceHeartbeat();
-          startSupervisorMsgPolling();
         } else {
           showPage('pageLogin');
         }
@@ -1112,7 +1157,6 @@
 
       showPage('pageDashboard');
       startPresenceHeartbeat();
-      startSupervisorMsgPolling();
     }
 
     function performLogout() {
@@ -1125,7 +1169,6 @@
 
     function confirmLogout() {
       stopPresenceHeartbeat();
-      stopSupervisorMsgPolling();
       localStorage.removeItem(STORAGE_KEY);
       showPage('pageLogin');
       closeCustomLogout();
@@ -1171,40 +1214,6 @@
         presenceInterval = null;
       }
     }
-
-    function startSupervisorMsgPolling() {
-      checkSupervisorMessages();
-      if (supervisorMsgInterval) clearInterval(supervisorMsgInterval);
-      supervisorMsgInterval = setInterval(checkSupervisorMessages, 6000);
-    }
-
-    function stopSupervisorMsgPolling() {
-      if (supervisorMsgInterval) {
-        clearInterval(supervisorMsgInterval);
-        supervisorMsgInterval = null;
-      }
-    }
-
-    function checkSupervisorMessages() {
-      const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=getOperatorMessages&callback=handleSupervisorMessagesPoll&t=${Date.now()}`;
-      document.head.appendChild(s);
-    }
-
-    window.handleSupervisorMessagesPoll = function(res) {
-      if (!res || res.status !== "success" || !res.supervisorMessages) return;
-      const msgs = res.supervisorMessages;
-      if (msgs.length === 0) return;
-
-      const latestMsg = msgs[msgs.length - 1];
-      const dismissedKey = "dismissed_sup_msg";
-      const lastDismissed = localStorage.getItem(dismissedKey) || "";
-
-      if (latestMsg && latestMsg !== lastDismissed) {
-        localStorage.setItem(dismissedKey, latestMsg);
-        openBroadcastMessageModal(latestMsg);
-      }
-    };
 
     function sendPresencePing() {
       const currentOp = localStorage.getItem(STORAGE_KEY);
@@ -1274,15 +1283,6 @@
           }
         }
       });
-    }
-
-    function openBroadcastMessageModal(text) {
-      document.getElementById('broadcastMessageText').innerText = text || "";
-      document.getElementById('broadcastMessageModal').style.display = 'flex';
-    }
-
-    function closeBroadcastMessageModal() {
-      document.getElementById('broadcastMessageModal').style.display = 'none';
     }
 
     function openOperatorSendMessageModal() {
@@ -1724,7 +1724,7 @@
       }
 
       const btn = document.getElementById('btnConfirmMyDuty');
-      btn.innerText = "Submitting Duty...";
+      btn.innerText = "Submitting...";
       btn.disabled = true;
 
       const barContainer = document.getElementById('dutyProgressBarContainer');
@@ -2151,6 +2151,107 @@
     function closeWhatsAppChoiceModal() {
       const modal = document.getElementById('whatsappChoiceModal');
       if (modal) modal.style.display = 'none';
+    }
+
+    function chooseWhatsAppFirst(choice) {
+      closeWhatsAppChoiceModal();
+      
+      const msg = buildLeaveMessage();
+      let targetLink = getContactLink(choice);
+
+      if (choice === 'group') {
+        copyToClipboard(msg);
+      }
+
+      if (targetLink) {
+        if (targetLink.startsWith("http://") || targetLink.startsWith("https://")) {
+          window.open(targetLink, "_blank");
+        } else {
+          window.location.href = targetLink;
+        }
+      }
+
+      setTimeout(() => {
+        openFollowupModal(choice === 'supervisor' ? 'group' : 'supervisor');
+      }, 1500);
+    }
+
+    function openFollowupModal(remainingChoice) {
+      const modal = document.getElementById('whatsappFollowupModal');
+      const titleEl = document.getElementById('followupTitle');
+      const textEl = document.getElementById('followupText');
+      
+      modal.dataset.remaining = remainingChoice;
+      if (remainingChoice === 'group') {
+        titleEl.innerText = "💬 RELAY GROUP NOTIFICATION";
+        textEl.innerText = "Do you also want to send this leave to your Relay Group?";
+      } else {
+        titleEl.innerText = "💬 SUPERVISOR NOTIFICATION";
+        textEl.innerText = "Do you also want to send this leave to your Supervisor?";
+      }
+      modal.style.display = 'flex';
+    }
+
+    function closeFollowupModal(shouldSend) {
+      const modal = document.getElementById('whatsappFollowupModal');
+      const remainingChoice = modal.dataset.remaining;
+      modal.style.display = 'none';
+
+      if (shouldSend) {
+        const msg = buildLeaveMessage();
+        let targetLink = getContactLink(remainingChoice);
+
+        if (remainingChoice === 'group') {
+          copyToClipboard(msg);
+        }
+
+        if (targetLink) {
+          if (targetLink.startsWith("http://") || targetLink.startsWith("https://")) {
+            window.open(targetLink, "_blank");
+          } else {
+            window.location.href = targetLink;
+          }
+        }
+      }
+    }
+
+    function buildLeaveMessage() {
+      if (!lastSubmittedLeave) return "";
+      return `*LEAVE APPLICATION (PENDING)*\n` +
+        `• Operator: ${lastSubmittedLeave.name}\n` +
+        `• Type: ${lastSubmittedLeave.type}\n` +
+        `• Period: ${lastSubmittedLeave.fromDate} to ${lastSubmittedLeave.toDate} (${lastSubmittedLeave.days} Days)\n` +
+        `• Reason: ${lastSubmittedLeave.reason || 'Personal'}`;
+    }
+
+    function getContactLink(type) {
+      const msg = buildLeaveMessage();
+      let supContact = "";
+      let groupContact = "";
+
+      if (fetchedWhatsAppContacts && fetchedWhatsAppContacts.length > 0) {
+        const groupObj = fetchedWhatsAppContacts.find(c => c.role.toLowerCase().includes("group") || c.name.toLowerCase().includes("relay") || c.contact.includes("chat.whatsapp.com"));
+        const supObj = fetchedWhatsAppContacts.find(c => c.role.toLowerCase().includes("supervisor") || (!c.contact.includes("chat.whatsapp.com") && c.contact.length >= 10));
+        
+        if (supObj && supObj.contact) supContact = supObj.contact.replace(/[^0-9]/g, "");
+        if (groupObj && groupObj.contact) groupContact = groupObj.contact;
+      }
+
+      if (type === 'supervisor') {
+        if (supContact) return `https://wa.me/${supContact}?text=` + encodeURIComponent(msg);
+        return "whatsapp://send?text=" + encodeURIComponent(msg);
+      } else {
+        if (groupContact) return groupContact;
+        return "whatsapp://send?text=" + encodeURIComponent(msg);
+      }
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("Leave message copied! Paste it in the group.");
+        }).catch(() => {});
+      }
     }
 
     function renderHolidayList() {
