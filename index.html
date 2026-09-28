@@ -387,6 +387,14 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
+  <div id="supervisorMessageModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box info-box" style="border: 3px solid #facc15; background: #07142b; max-width: 340px;">
+      <h4 style="color: #facc15; font-size: 17px; font-weight: 900;">📢 SUPERVISOR NOTICE</h4>
+      <p id="supervisorMessageText" style="color: #ffffff; font-size: 14.5px; font-weight: bold; line-height: 1.5; word-break: break-word;">Loading message...</p>
+      <button class="btn-modal-primary" style="background: #10b981; font-weight: 900; font-size: 14px; padding: 12px;" onclick="closeSupervisorMessageModal()">OK ✅</button>
+    </div>
+  </div>
+
   <div id="operatorSendMessageModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #38bdf8; background: #07142b; max-width: 340px;">
       <h4 style="color: #38bdf8; font-size: 16px; font-weight: 900;">✍️ SEND BROADCAST MESSAGE</h4>
@@ -486,7 +494,7 @@
           <div class="menu-item-icon">📢</div>
           <div class="menu-item-info">
             <h4>Message</h4>
-            <p>Send broadcast message to all operators</p>
+            <p>Supervisor notifications & notices</p>
           </div>
         </div>
 
@@ -1225,6 +1233,15 @@
       });
     }
 
+    function openSupervisorMessageModal(text) {
+      document.getElementById('supervisorMessageText').innerHTML = text || "No notice message available.";
+      document.getElementById('supervisorMessageModal').style.display = 'flex';
+    }
+
+    function closeSupervisorMessageModal() {
+      document.getElementById('supervisorMessageModal').style.display = 'none';
+    }
+
     function openOperatorSendMessageModal() {
       document.getElementById('operatorMessageInputBox').value = '';
       document.getElementById('operatorSendMessageModal').style.display = 'flex';
@@ -1308,7 +1325,11 @@
       }
 
       if (type === "message") {
-        openOperatorSendMessageModal();
+        if (portalData && portalData.security && portalData.security.noticeMessage) {
+          openSupervisorMessageModal(portalData.security.noticeMessage);
+        } else {
+          openSupervisorMessageModal("No supervisor notice available.");
+        }
       }
       else if (type === "checkPosition") {
         if (activeSec.dutySubmission === false) {
@@ -2270,8 +2291,8 @@
           <div class="ticker-container">
             <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
           </div>
-          <div class="supervisor-notice-card">
-            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
+          <div class="supervisor-notice-card" onclick="openSupervisorMessageModal('${data.security.noticeMessage.replace(/'/g, "\\'")}')" style="cursor:pointer;">
+            <div class="notice-title">📢 SUPERVISOR NOTICE (TAP TO VIEW)</div>
             <div class="notice-body">${data.security.noticeMessage}</div>
           </div>
         `;
