@@ -26,16 +26,31 @@
     .splash-logo-container { position: relative; width: 210px; height: 210px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
     .splash-app-icon { width: 200px; height: 200px; border-radius: 28px; object-fit: cover; border: 3.5px solid #38bdf8; box-shadow: 0 0 40px rgba(56, 189, 248, 0.6); }
     
-    .splash-progress-wrapper { width: 220px; display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; }
-    .splash-load-text { color: #00ffff; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    .splash-progress-wrapper { width: 240px; display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; }
+    .splash-load-text { color: #00ffff; font-size: 13px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
     .splash-progress-bar-container {
-      width: 100%; height: 10px; background: #000000; border-radius: 6px;
+      width: 100%; height: 12px; background: #000000; border-radius: 6px;
       overflow: hidden; border: 1.5px solid #38bdf8; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.4);
     }
     .splash-progress-bar-fill {
-      width: 90%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
-      border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.2s ease-in-out;
+      width: 15%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
+      border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.3s ease-in-out;
     }
+
+    /* FULL SCREEN BLUR LOADING OVERLAY */
+    #globalBlurLoader {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px); z-index: 999998;
+      display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    }
+    .blur-loader-box {
+      background: #07142b; border: 3px solid #38bdf8; border-radius: 16px;
+      padding: 24px; width: 280px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px;
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.5);
+    }
+    .blur-loader-title { color: #ffff00; font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
+    .blur-loader-percent { color: #00ffff; font-size: 26px; font-weight: 900; }
 
     .app-viewport { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
@@ -385,6 +400,15 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
+  <!-- FULL SCREEN BLUR LOADING OVERLAY WITH PERCENTAGE -->
+  <div id="globalBlurLoader">
+    <div class="blur-loader-box">
+      <div class="blur-loader-title">⏳ SYNCHRONIZING PORTAL...</div>
+      <div class="blur-loader-percent" id="blurLoaderPercent">0%</div>
+      <p style="color: #38bdf8; font-size: 11px;">Please wait while loading data...</p>
+    </div>
+  </div>
+
   <!-- WHATSAPP CHOICE MODAL -->
   <div id="whatsappChoiceModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #25D366; background: #07142b; max-width: 330px;">
@@ -484,7 +508,7 @@
       <img src="icon.png" alt="Logo" class="splash-app-icon">
     </div>
     <div class="splash-progress-wrapper">
-      <div class="splash-load-text" id="splashStatusText">⚡ INSTANT PORTAL SYNC...</div>
+      <div class="splash-load-text" id="splashStatusText">⚡ FAST SYNCING PORTAL...</div>
       <div class="splash-progress-bar-container">
         <div id="splashProgressFill" class="splash-progress-bar-fill"></div>
       </div>
@@ -1052,7 +1076,6 @@
     const STORAGE_KEY = "r3_operator_user";
     const CACHED_OPS_KEY = "r3_cached_operators_list";
 
-    // Fallback static list so dropdown is instant (0 seconds delay)
     const DEFAULT_OPERATORS = [
       { name: "Ashok" }, { name: "Goutam" }, { name: "Santu" }, 
       { name: "Koushik" }, { name: "Sudhansu" }, { name: "Kamal" }, 
@@ -1070,12 +1093,40 @@
     let myAssignedPositionName = "";
     let currentLookupResultData = null;
     let pendingWithdrawRowIndex = null;
+    let blurInterval = null;
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
       document.getElementById('toastMsg').innerText = msg;
       t.classList.add('show');
       setTimeout(() => { t.classList.remove('show'); }, 2000);
+    }
+
+    function showBlurLoader(show, startPercent = 10, maxPercent = 90) {
+      const loader = document.getElementById('globalBlurLoader');
+      const percentEl = document.getElementById('blurLoaderPercent');
+      if (!loader) return;
+
+      if (show) {
+        loader.style.display = 'flex';
+        let current = startPercent;
+        percentEl.innerText = current + "%";
+        if (blurInterval) clearInterval(blurInterval);
+        
+        blurInterval = setInterval(() => {
+          if (current < maxPercent) {
+            current += Math.floor(Math.random() * 5) + 2;
+            if (current > maxPercent) current = maxPercent;
+            percentEl.innerText = current + "%";
+          }
+        }, 300);
+      } else {
+        if (blurInterval) clearInterval(blurInterval);
+        percentEl.innerText = "100%";
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 200);
+      }
     }
 
     function showPage(pageId) {
@@ -1100,7 +1151,7 @@
 
     function triggerGlobalRefresh(btnEl, context) {
       if (btnEl) btnEl.classList.add('spinning');
-      showToast("Refreshing...");
+      showBlurLoader(true, 20, 85);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleGlobalRefreshResponse&ctx=${encodeURIComponent(context)}&t=` + Date.now();
@@ -1108,6 +1159,7 @@
     }
 
     window.handleGlobalRefreshResponse = function(data) {
+      showBlurLoader(false);
       if (data) {
         portalData = data;
         checkAndShowStatusWarning(data);
@@ -1169,7 +1221,6 @@
           startPresenceHeartbeat();
           startSupervisorMsgPolling();
         } else {
-          // Instantly load operators from localStorage cache or fallback default list
           let opsList = DEFAULT_OPERATORS;
           const cachedOps = localStorage.getItem(CACHED_OPS_KEY);
           if (cachedOps) {
@@ -1217,7 +1268,6 @@
       stopSupervisorMsgPolling();
       localStorage.removeItem(STORAGE_KEY);
       
-      // Instantly populate dropdown on logout so it appears immediately
       let opsList = DEFAULT_OPERATORS;
       const cachedOps = localStorage.getItem(CACHED_OPS_KEY);
       if (cachedOps) {
@@ -1398,7 +1448,7 @@
       if (!msg) { showCustomAlert("Please type a message."); return; }
 
       closeOperatorSendMessageModal();
-      showToast("Broadcasting message...");
+      showBlurLoader(true, 30, 80);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=sendOperatorMessage&name=${encodeURIComponent(myName)}&message=${encodeURIComponent(msg)}&callback=handleOpMsgResponse&t=` + Date.now();
@@ -1406,6 +1456,7 @@
     }
 
     window.handleOpMsgResponse = function(res) {
+      showBlurLoader(false);
       if (res && res.status === "success") {
         showToast("Message broadcasted! ✅");
         triggerGlobalRefresh(null, 'MsgSent');
@@ -1450,7 +1501,7 @@
 
     function openMenuAction(type) {
       if (!portalData) {
-        showToast("Synchronizing data, please wait 1 sec...");
+        showToast("Synchronizing data, please wait...");
         return;
       }
 
@@ -1503,12 +1554,7 @@
       const parts = val.split('-');
       const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
 
-      const barContainer = document.getElementById('lookupProgressBarContainer');
-      const barFill = document.getElementById('lookupProgressBarFill');
-      barContainer.style.display = 'block';
-      barFill.style.width = '50%';
-
-      setTimeout(() => { barFill.style.width = '90%'; }, 100);
+      showBlurLoader(true, 20, 80);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDutyByDate&date=${encodeURIComponent(formatted)}&callback=handleDutyLookupResponse&t=${Date.now()}`;
@@ -1516,43 +1562,35 @@
     }
 
     window.handleDutyLookupResponse = function(res) {
-      const barFill = document.getElementById('lookupProgressBarFill');
-      if (barFill) barFill.style.width = '100%';
+      showBlurLoader(false);
+      if (!res || res.status !== "success") {
+        document.getElementById('uiLookupTbody').innerHTML = `<tr><td colspan="4" style="padding:15px; color:#ef4444;">Failed to fetch duty records.</td></tr>`;
+        return;
+      }
 
-      setTimeout(() => {
-        const barContainer = document.getElementById('lookupProgressBarContainer');
-        if (barContainer) barContainer.style.display = 'none';
-        if (barFill) barFill.style.width = '0%';
+      currentLookupResultData = res;
+      document.getElementById('uiLookupDateBanner').innerText = `${res.date} (${res.day})`;
+      let tbodyHtml = '';
 
-        if (!res || res.status !== "success") {
-          document.getElementById('uiLookupTbody').innerHTML = `<tr><td colspan="4" style="padding:15px; color:#ef4444;">Failed to fetch duty records.</td></tr>`;
-          return;
-        }
-
-        currentLookupResultData = res;
-        document.getElementById('uiLookupDateBanner').innerText = `${res.date} (${res.day})`;
-        let tbodyHtml = '';
-
-        if (res.dutyRows && res.dutyRows.length > 0) {
-          res.dutyRows.forEach(r => {
-            tbodyHtml += `<tr>
-              <td class="cyan-cell align-left">${r.position}</td>
-              <td class="name-cell" style="color:#ffff00; font-weight:bold;">${r.operator}</td>
-              <td class="due-cell">${r.due}</td>
-              <td style="font-size:10px; color:#38bdf8;">${r.lastDate}</td>
-            </tr>`;
-          });
-
+      if (res.dutyRows && res.dutyRows.length > 0) {
+        res.dutyRows.forEach(r => {
           tbodyHtml += `<tr>
-            <td colspan="4" style="background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; text-align: center !important; padding: 6px 4px !important;">🙏 Thank You</td>
+            <td class="cyan-cell align-left">${r.position}</td>
+            <td class="name-cell" style="color:#ffff00; font-weight:bold;">${r.operator}</td>
+            <td class="due-cell">${r.due}</td>
+            <td style="font-size:10px; color:#38bdf8;">${r.lastDate}</td>
           </tr>`;
-        } else {
-          tbodyHtml = `<tr><td colspan="4" style="padding:15px; color:#ef4444;">No duty records found for this date.</td></tr>`;
-        }
+        });
 
-        document.getElementById('uiLookupTbody').innerHTML = tbodyHtml;
-        showToast("Fetched! ✅");
-      }, 200);
+        tbodyHtml += `<tr>
+          <td colspan="4" style="background-color: #00ffff !important; color: #000000 !important; font-weight: 900 !important; text-align: center !important; padding: 6px 4px !important;">🙏 Thank You</td>
+        </tr>`;
+      } else {
+        tbodyHtml = `<tr><td colspan="4" style="padding:15px; color:#ef4444;">No duty records found for this date.</td></tr>`;
+      }
+
+      document.getElementById('uiLookupTbody').innerHTML = tbodyHtml;
+      showToast("Fetched! ✅");
     };
 
     function shareDutyLookupWhatsApp() {
@@ -1829,13 +1867,7 @@
       const btn = document.getElementById('btnConfirmMyDuty');
       btn.innerText = "Submitting...";
       btn.disabled = true;
-
-      const barContainer = document.getElementById('dutyProgressBarContainer');
-      const barFill = document.getElementById('dutyProgressBarFill');
-      if (barContainer) barContainer.style.display = 'block';
-      if (barFill) barFill.style.width = '50%';
-
-      setTimeout(() => { if (barFill) barFill.style.width = '90%'; }, 150);
+      showBlurLoader(true, 40, 90);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=submitMyDuty&name=${encodeURIComponent(name)}&position=${encodeURIComponent(myAssignedPositionName)}&callback=handleDutySubmitResult&t=${Date.now()}`;
@@ -1843,27 +1875,19 @@
     }
 
     window.handleDutySubmitResult = function(res) {
+      showBlurLoader(false);
       const btn = document.getElementById('btnConfirmMyDuty');
-      const barFill = document.getElementById('dutyProgressBarFill');
-      if (barFill) barFill.style.width = '100%';
-
-      setTimeout(() => {
-        const barContainer = document.getElementById('dutyProgressBarContainer');
-        if (barContainer) barContainer.style.display = 'none';
-        if (barFill) barFill.style.width = '0%';
-
-        if (res && res.status === "success") {
-          showToast("Duty submitted successfully!");
-          fetchDutySubmissionStatus();
-        } else {
-          const errorMsg = (res && res.message) ? res.message : "Submission failed";
-          showCustomAlert(errorMsg);
-          if (btn) {
-            btn.innerText = "Confirm & Submit My Duty ✅";
-            btn.disabled = false;
-          }
+      if (res && res.status === "success") {
+        showToast("Duty submitted successfully!");
+        fetchDutySubmissionStatus();
+      } else {
+        const errorMsg = (res && res.message) ? res.message : "Submission failed";
+        showCustomAlert(errorMsg);
+        if (btn) {
+          btn.innerText = "Confirm & Submit My Duty ✅";
+          btn.disabled = false;
         }
-      }, 200);
+      }
     };
 
     function renderDueHistory() {
@@ -1930,13 +1954,7 @@
       const tDate = document.getElementById('uiRepToDate').value;
 
       document.getElementById('uiMonthlyResultArea').innerHTML = '';
-
-      const barContainer = document.getElementById('reportProgressBarContainer');
-      const barFill = document.getElementById('reportProgressBarFill');
-      barContainer.style.display = 'block';
-      barFill.style.width = '50%';
-
-      setTimeout(() => { barFill.style.width = '90%'; }, 100);
+      showBlurLoader(true, 30, 85);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getMonthlyReport&name=${encodeURIComponent(op)}&fromDate=${fDate}&toDate=${tDate}&callback=handleMonthlyReport&t=${Date.now()}`;
@@ -1944,22 +1962,13 @@
     }
 
     window.handleMonthlyReport = function(res) {
-      const barFill = document.getElementById('reportProgressBarFill');
-      barFill.style.width = '100%';
-
-      setTimeout(() => {
-        if (!res || res.status !== "success") {
-          document.getElementById('uiMonthlyResultArea').innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
-          document.getElementById('reportProgressBarContainer').style.display = 'none';
-          barFill.style.width = '0%';
-          return;
-        }
-        currentReportResult = res;
-        renderMonthlyReportHTML(res);
-
-        document.getElementById('reportProgressBarContainer').style.display = 'none';
-        barFill.style.width = '0%';
-      }, 200);
+      showBlurLoader(false);
+      if (!res || res.status !== "success") {
+        document.getElementById('uiMonthlyResultArea').innerHTML = '<div style="color:#ef4444;">Failed to calculate report.</div>';
+        return;
+      }
+      currentReportResult = res;
+      renderMonthlyReportHTML(res);
     };
 
     function renderMonthlyReportHTML(res) {
@@ -2205,13 +2214,7 @@
       const btn = document.getElementById('btnSubmitLeave');
       btn.innerText = "Submitting...";
       btn.disabled = true;
-
-      const barContainer = document.getElementById('leaveProgressBarContainer');
-      const barFill = document.getElementById('leaveProgressBarFill');
-      barContainer.style.display = 'block';
-      barFill.style.width = '50%';
-
-      setTimeout(() => { barFill.style.width = '90%'; }, 100);
+      showBlurLoader(true, 40, 90);
 
       lastSubmittedLeave = { name, type, fromDate, toDate, days: calcDays, reason };
 
@@ -2221,29 +2224,23 @@
     }
 
     window.handleLeaveResponse = function(res) {
+      showBlurLoader(false);
       const btn = document.getElementById('btnSubmitLeave');
-      const barFill = document.getElementById('leaveProgressBarFill');
-      barFill.style.width = '100%';
-
-      setTimeout(() => {
-        btn.innerText = "Submit Leave Request";
-        if (res && res.status === "success") {
-          document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
-          fetchedWhatsAppContacts = res.contacts || [];
-          loadOperatorLeaveHistory();
-          const myName = localStorage.getItem(STORAGE_KEY) || "";
-          loadOperatorLeaveBalance(myName);
-          
-          setTimeout(() => {
-            openWhatsAppChoiceModal();
-          }, 300);
-        } else {
-          showCustomAlert(res ? res.message : "Submission failed");
-          btn.disabled = false;
-        }
-        document.getElementById('leaveProgressBarContainer').style.display = 'none';
-        barFill.style.width = '0%';
-      }, 200);
+      btn.innerText = "Submit Leave Request";
+      if (res && res.status === "success") {
+        document.getElementById('uiLeaveSuccessBox').style.display = 'flex';
+        fetchedWhatsAppContacts = res.contacts || [];
+        loadOperatorLeaveHistory();
+        const myName = localStorage.getItem(STORAGE_KEY) || "";
+        loadOperatorLeaveBalance(myName);
+        
+        setTimeout(() => {
+          openWhatsAppChoiceModal();
+        }, 300);
+      } else {
+        showCustomAlert(res ? res.message : "Submission failed");
+        btn.disabled = false;
+      }
     };
 
     function openWhatsAppChoiceModal() {
@@ -2483,7 +2480,7 @@
       });
 
       if (matchCount === 0) {
-        container.innerHTML = `<div style="padding:15px; text-align:center; color:#ef4444; font-weight:bold;">No local festivals found for ${selectedYear}.</div>`;
+        container.innerHTML = `<div style="padding:15px; text-align:center; color:#ef4444; font-weight:bold;">No local festivals found for selected year.</div>`;
       }
     }
 
@@ -2512,6 +2509,7 @@
     }
 
     window.handleInitialData = function(data) {
+      showBlurLoader(false);
       if (!data) return;
       portalData = data;
       
@@ -2563,7 +2561,7 @@
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '80%';
 
-      // Instantly populate dropdown from cache or default list on app startup (0s delay)
+      // Instantly populate dropdown from cache or default list on startup (0s delay)
       let opsList = DEFAULT_OPERATORS;
       const cachedOps = localStorage.getItem(CACHED_OPS_KEY);
       if (cachedOps) {
@@ -2571,11 +2569,17 @@
       }
       populateOperatorDropdown(opsList);
 
+      // Show blur loader if server takes more than 300ms
+      const blurTimer = setTimeout(() => {
+        showBlurLoader(true, 15, 80);
+      }, 300);
+
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
       document.head.appendChild(s);
 
       setTimeout(() => {
+        clearTimeout(blurTimer);
         const splash = document.getElementById('splashScreen');
         if (splash && splash.style.display !== 'none') {
           splash.style.opacity = '0';
@@ -2584,7 +2588,7 @@
           if (dash) dash.classList.add('fully-loaded');
           initUser();
         }
-      }, 2000);
+      }, 2500);
     };
   </script>
 </body>
