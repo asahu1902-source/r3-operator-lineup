@@ -21,7 +21,7 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background-color: #07142b; z-index: 99999; display: flex;
       flex-direction: column; align-items: center; justify-content: center;
-      transition: opacity 0.4s ease-out;
+      transition: opacity 0.3s ease-out;
     }
     .splash-logo-container { position: relative; width: 210px; height: 210px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
     .splash-app-icon { width: 200px; height: 200px; border-radius: 28px; object-fit: cover; border: 3.5px solid #38bdf8; box-shadow: 0 0 40px rgba(56, 189, 248, 0.6); }
@@ -33,22 +33,22 @@
       overflow: hidden; border: 1.5px solid #38bdf8; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.4);
     }
     .splash-progress-bar-fill {
-      width: 35%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
-      border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.3s ease-in-out;
+      width: 60%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
+      border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.2s ease-in-out;
     }
 
     .app-viewport { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
 
-    #pageDashboard:not(.fully-loaded) .menu-item-btn { display: none !important; }
+    #pageDashboard:not(.fully-loaded) .menu-item-btn { display: flex !important; }
 
     #customToast {
       position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
       background: linear-gradient(135deg, #059669, #10b981); color: #ffffff;
       padding: 12px 20px; border-radius: 30px; font-weight: 900; font-size: 13.5px;
       z-index: 999999; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-      display: flex; align-items: center; gap: 8px; transition: transform 0.3s ease-in-out;
+      display: flex; align-items: center; gap: 8px; transition: transform 0.2s ease-in-out;
     }
     #customToast.show { transform: translateX(-50%) translateY(0); }
 
@@ -291,7 +291,7 @@
     }
     #leaveProgressBarFill, #reportProgressBarFill, #lookupProgressBarFill {
       width: 0%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
-      transition: width 0.4s ease-in-out;
+      transition: width 0.2s ease-in-out;
     }
 
     @keyframes zoomPulse {
@@ -434,7 +434,7 @@
       <img src="icon.png" alt="Logo" class="splash-app-icon">
     </div>
     <div class="splash-progress-wrapper">
-      <div class="splash-load-text" id="splashStatusText">⚡ SYNCHRONIZING DUTY PORTAL...</div>
+      <div class="splash-load-text" id="splashStatusText">⚡ FAST SYNCING PORTAL...</div>
       <div class="splash-progress-bar-container">
         <div id="splashProgressFill" class="splash-progress-bar-fill"></div>
       </div>
@@ -582,7 +582,7 @@
         <p id="uiMyAssignedText" style="font-size:14px; color:#ffff00; font-weight:bold;">Loading your duty...</p>
         
         <div id="dutyProgressBarContainer" style="width:100%; height:8px; background:#1e293b; border-radius:4px; overflow:hidden; display:none; border:1px solid #38bdf8;">
-          <div id="dutyProgressBarFill" style="width:0%; height:100%; background:linear-gradient(90deg, #38bdf8, #10b981); transition:width 0.3s ease-in-out;"></div>
+          <div id="dutyProgressBarFill" style="width:0%; height:100%; background:linear-gradient(90deg, #38bdf8, #10b981); transition:width 0.2s ease-in-out;"></div>
         </div>
 
         <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
@@ -1017,7 +1017,7 @@
       const t = document.getElementById('customToast');
       document.getElementById('toastMsg').innerText = msg;
       t.classList.add('show');
-      setTimeout(() => { t.classList.remove('show'); }, 3000);
+      setTimeout(() => { t.classList.remove('show'); }, 2000);
     }
 
     function showPage(pageId) {
@@ -1042,7 +1042,7 @@
 
     function triggerGlobalRefresh(btnEl, context) {
       if (btnEl) btnEl.classList.add('spinning');
-      showToast("Refreshing data...");
+      showToast("Refreshing...");
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleGlobalRefreshResponse&ctx=${encodeURIComponent(context)}&t=` + Date.now();
@@ -1061,7 +1061,7 @@
 
       setTimeout(() => {
         document.querySelectorAll('.refresh-icon-btn').forEach(b => b.classList.remove('spinning'));
-        showToast("Refreshed successfully! ✅");
+        showToast("Updated! ✅");
         
         const activePage = document.querySelector('.screen-page.active');
         if (activePage) {
@@ -1071,7 +1071,7 @@
           else if (activePage.id === 'pageHolidayList') renderHolidayList();
           else if (activePage.id === 'pageGroupChat') loadChatMessages();
         }
-      }, 700);
+      }, 300);
     };
 
     function initUser() {
@@ -1175,7 +1175,7 @@
     function startSupervisorMsgPolling() {
       checkSupervisorMessages();
       if (supervisorMsgInterval) clearInterval(supervisorMsgInterval);
-      supervisorMsgInterval = setInterval(checkSupervisorMessages, 5000);
+      supervisorMsgInterval = setInterval(checkSupervisorMessages, 6000);
     }
 
     function stopSupervisorMsgPolling() {
@@ -1309,7 +1309,7 @@
 
     window.handleOpMsgResponse = function(res) {
       if (res && res.status === "success") {
-        showToast("Message broadcasted successfully! ✅");
+        showToast("Message broadcasted! ✅");
         triggerGlobalRefresh(null, 'MsgSent');
       } else {
         alert("Failed to send message.");
@@ -1403,9 +1403,9 @@
       const barContainer = document.getElementById('lookupProgressBarContainer');
       const barFill = document.getElementById('lookupProgressBarFill');
       barContainer.style.display = 'block';
-      barFill.style.width = '40%';
+      barFill.style.width = '50%';
 
-      setTimeout(() => { barFill.style.width = '80%'; }, 200);
+      setTimeout(() => { barFill.style.width = '90%'; }, 100);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDutyByDate&date=${encodeURIComponent(formatted)}&callback=handleDutyLookupResponse&t=${Date.now()}`;
@@ -1448,8 +1448,8 @@
         }
 
         document.getElementById('uiLookupTbody').innerHTML = tbodyHtml;
-        showToast("Data fetched successfully! ✅");
-      }, 400);
+        showToast("Fetched! ✅");
+      }, 200);
     };
 
     function shareDutyLookupWhatsApp() {
@@ -1730,9 +1730,9 @@
       const barContainer = document.getElementById('dutyProgressBarContainer');
       const barFill = document.getElementById('dutyProgressBarFill');
       if (barContainer) barContainer.style.display = 'block';
-      if (barFill) barFill.style.width = '40%';
+      if (barFill) barFill.style.width = '50%';
 
-      setTimeout(() => { if (barFill) barFill.style.width = '80%'; }, 300);
+      setTimeout(() => { if (barFill) barFill.style.width = '90%'; }, 150);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=submitMyDuty&name=${encodeURIComponent(name)}&position=${encodeURIComponent(myAssignedPositionName)}&callback=handleDutySubmitResult&t=${Date.now()}`;
@@ -1760,7 +1760,7 @@
             btn.disabled = false;
           }
         }
-      }, 400);
+      }, 200);
     };
 
     function renderDueHistory() {
@@ -1831,9 +1831,9 @@
       const barContainer = document.getElementById('reportProgressBarContainer');
       const barFill = document.getElementById('reportProgressBarFill');
       barContainer.style.display = 'block';
-      barFill.style.width = '35%';
+      barFill.style.width = '50%';
 
-      setTimeout(() => { barFill.style.width = '75%'; }, 200);
+      setTimeout(() => { barFill.style.width = '90%'; }, 100);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getMonthlyReport&name=${encodeURIComponent(op)}&fromDate=${fDate}&toDate=${tDate}&callback=handleMonthlyReport&t=${Date.now()}`;
@@ -1856,7 +1856,7 @@
 
         document.getElementById('reportProgressBarContainer').style.display = 'none';
         barFill.style.width = '0%';
-      }, 350);
+      }, 200);
     };
 
     function renderMonthlyReportHTML(res) {
@@ -1908,7 +1908,7 @@
           html += '</tbody></table>';
         } else {
           html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE (DAY-WISE SCROLL VIEW)</div>';
-          html += '<div style="width:100%; overflow-x:auto;"><table class="standard-table" style="min-width:900px;><thead><tr>';
+          html += '<div style="width:100%; overflow-x:auto;"><table class="standard-table" style="min-width:900px;"><thead><tr>';
           html += '<th style="width:120px;">Position</th><th style="width:60px;">Times</th><th style="width:70px;">Alloc %</th>';
           
           let maxDays = 1;
@@ -1969,7 +1969,7 @@
 
     function refreshLeavePage(btnEl) {
       if (btnEl) btnEl.classList.add('spinning');
-      showToast("Refreshing leave status & balance...");
+      showToast("Refreshing...");
       
       const myName = localStorage.getItem(STORAGE_KEY) || "";
       loadOperatorLeaveBalance(myName);
@@ -1978,7 +1978,7 @@
       setTimeout(() => {
         if (btnEl) btnEl.classList.remove('spinning');
         showToast("Refreshed! ✅");
-      }, 700);
+      }, 400);
     }
 
     function loadOperatorLeaveBalance(name) {
@@ -2050,7 +2050,7 @@
       const rowIndex = pendingWithdrawRowIndex;
       closeCustomWithdrawModal();
 
-      showToast("Withdrawing leave...");
+      showToast("Withdrawing...");
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=withdrawLeave&rowIndex=${rowIndex}&callback=handleWithdrawResponse&t=${Date.now()}`;
       document.head.appendChild(s);
@@ -2058,7 +2058,7 @@
 
     window.handleWithdrawResponse = function(res) {
       if (res && res.status === "success") {
-        showToast("Leave withdrawn successfully!");
+        showToast("Withdrawn successfully!");
         loadOperatorLeaveHistory();
         const myName = localStorage.getItem(STORAGE_KEY) || "";
         loadOperatorLeaveBalance(myName);
@@ -2100,15 +2100,15 @@
       const toDate = formatDateToDDMMYYYY(toDateVal);
 
       const btn = document.getElementById('btnSubmitLeave');
-      btn.innerText = "Submitting Leave...";
+      btn.innerText = "Submitting...";
       btn.disabled = true;
 
       const barContainer = document.getElementById('leaveProgressBarContainer');
       const barFill = document.getElementById('leaveProgressBarFill');
       barContainer.style.display = 'block';
-      barFill.style.width = '30%';
+      barFill.style.width = '50%';
 
-      setTimeout(() => { barFill.style.width = '70%'; }, 200);
+      setTimeout(() => { barFill.style.width = '90%'; }, 100);
 
       lastSubmittedLeave = { name, type, fromDate, toDate, days: calcDays, reason };
 
@@ -2133,14 +2133,14 @@
           
           setTimeout(() => {
             openWhatsAppChoiceModal();
-          }, 400);
+          }, 300);
         } else {
           showCustomAlert(res ? res.message : "Submission failed");
           btn.disabled = false;
         }
         document.getElementById('leaveProgressBarContainer').style.display = 'none';
         barFill.style.width = '0%';
-      }, 400);
+      }, 200);
     };
 
     function openWhatsAppChoiceModal() {
@@ -2342,7 +2342,7 @@
       const splash = document.getElementById('splashScreen');
       if (splash) {
         splash.style.opacity = '0';
-        setTimeout(() => { splash.style.display = 'none'; }, 200);
+        setTimeout(() => { splash.style.display = 'none'; }, 150);
       }
       const dash = document.getElementById('pageDashboard');
       if (dash) dash.classList.add('fully-loaded');
@@ -2368,7 +2368,7 @@
 
     window.onload = function() {
       const fill = document.getElementById('splashProgressFill');
-      if (fill) fill.style.width = '60%';
+      if (fill) fill.style.width = '80%';
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
@@ -2378,12 +2378,12 @@
         const splash = document.getElementById('splashScreen');
         if (splash && splash.style.display !== 'none') {
           splash.style.opacity = '0';
-          setTimeout(() => { splash.style.display = 'none'; }, 300);
+          setTimeout(() => { splash.style.display = 'none'; }, 200);
           const dash = document.getElementById('pageDashboard');
           if (dash) dash.classList.add('fully-loaded');
           initUser();
         }
-      }, 4000);
+      }, 2500);
     };
   </script>
 </body>
