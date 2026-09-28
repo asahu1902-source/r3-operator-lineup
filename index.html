@@ -33,7 +33,7 @@
       overflow: hidden; border: 1.5px solid #38bdf8; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.4);
     }
     .splash-progress-bar-fill {
-      width: 40%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
+      width: 50%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
       border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.2s ease-in-out;
     }
 
@@ -1523,18 +1523,16 @@
     }
 
     function openMenuAction(type) {
-      const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
-      if (!portalData && cachedDash) {
-        try { portalData = JSON.parse(cachedDash); } catch(e) {}
-      }
-
+      // Instantly load from cache if portalData is missing
       if (!portalData) {
-        showToast("Synchronizing data, please wait...");
-        return;
+        const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
+        if (cachedDash) {
+          try { portalData = JSON.parse(cachedDash); } catch(e) {}
+        }
       }
 
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
-      const activeSec = (currentUser.toLowerCase() === "guest") ? portalData.guestSecurity : portalData.security;
+      const activeSec = portalData ? ((currentUser.toLowerCase() === "guest") ? portalData.guestSecurity : portalData.security) : { checkPosition: true, message: true, dutyDateLookup: true, myDueHistory: true, monthlyReport: true, leaveEntry: true, holidayList: true, shiftSchedule: true, localFestival: true, groupChat: true, dutySubmission: true };
 
       if (activeSec && activeSec[type] === false) {
         showCustomAlert("This section is currently disabled.");
@@ -1553,9 +1551,6 @@
         openOperatorSendMessageModal();
       }
       else if (type === "checkPosition") {
-        if (activeSec.dutySubmission === false) {
-          document.getElementById('myDutyActionCard').style.display = 'none';
-        }
         renderPositionBoard();
       }
       else if (type === "dutyLookup") {
@@ -1753,7 +1748,15 @@
     };
 
     function renderPositionBoard() {
-      if (!portalData || !portalData.board) return;
+      if (!portalData) {
+        const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
+        if (cachedDash) { try { portalData = JSON.parse(cachedDash); } catch(e){} }
+      }
+      if (!portalData || !portalData.board) {
+        showToast("Loading lineup data...");
+        return;
+      }
+
       const b = portalData.board;
       document.getElementById('uiBoardDate').innerText = b.dateBanner || 'Daily Lineup';
       const myName = (localStorage.getItem(STORAGE_KEY) || "").toLowerCase().trim();
@@ -1770,7 +1773,7 @@
       const card = document.getElementById('myDutyActionCard');
       const txt = document.getElementById('uiMyAssignedText');
       const currentUser = currentUserType();
-      const activeSec = (currentUser === "guest") ? portalData.guestSecurity : portalData.security;
+      const activeSec = portalData ? ((currentUser === "guest") ? portalData.guestSecurity : portalData.security) : { dutySubmission: true };
 
       if (myAssignedPositionName && activeSec.dutySubmission !== false) {
         card.style.display = 'block';
@@ -1919,6 +1922,11 @@
     };
 
     function renderDueHistory() {
+      if (!portalData) {
+        const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
+        if (cachedDash) { try { portalData = JSON.parse(cachedDash); } catch(e){} }
+      }
+
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim();
       document.getElementById('uiDueOperatorTitle').innerText = myName + " - Due History";
       
@@ -2513,6 +2521,10 @@
     }
 
     function sharePositionWhatsApp() {
+      if (!portalData) {
+        const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
+        if (cachedDash) { try { portalData = JSON.parse(cachedDash); } catch(e){} }
+      }
       if (!portalData || !portalData.board) return;
       const b = portalData.board;
       let text = `*R3 DUTY LINEUP*\n📅 ${b.dateBanner}\n\n`;
@@ -2522,6 +2534,10 @@
 
     function shareDueWhatsApp() {
       const myName = localStorage.getItem(STORAGE_KEY) || "";
+      if (!portalData) {
+        const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
+        if (cachedDash) { try { portalData = JSON.parse(cachedDash); } catch(e){} }
+      }
       const recs = (portalData && portalData.dueMatrix && portalData.dueMatrix[myName]) ? portalData.dueMatrix[myName] : [];
       let text = `*DUE MATRIX - ${myName}*\n\n`;
       recs.forEach(r => { text += `• ${r.pos} ➔ Due: ${r.due}\n`; });
