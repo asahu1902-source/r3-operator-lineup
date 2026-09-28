@@ -33,15 +33,13 @@
       overflow: hidden; border: 1.5px solid #38bdf8; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.4);
     }
     .splash-progress-bar-fill {
-      width: 60%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
+      width: 80%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
       border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.2s ease-in-out;
     }
 
     .app-viewport { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
     .screen-page { display: none; width: 100%; flex-direction: column; gap: 12px; }
     .screen-page.active { display: flex; }
-
-    #pageDashboard:not(.fully-loaded) .menu-item-btn { display: flex !important; }
 
     #customToast {
       position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -1052,6 +1050,7 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHQ5BMKG-IHIGMCqL4N2efVOshdsP34EY3Gu054YwmhC5qYZBNyEkRvW0_3SAOmMK8fA/exec";
     const STORAGE_KEY = "r3_operator_user";
+    const CACHED_OPS_KEY = "r3_cached_operators_list";
 
     let portalData = null;
     let lastSubmittedLeave = null;
@@ -1059,6 +1058,7 @@
     let currentReportResult = null;
     let chatInterval = null;
     let presenceInterval = null;
+    let supervisorMsgInterval = null;
     let isScrollableReportMode = false;
     let myAssignedPositionName = "";
     let currentLookupResultData = null;
@@ -1082,8 +1082,13 @@
         stopChatPolling();
       }
 
-      if (pageId === 'pageDashboard') startPresenceHeartbeat();
-      else stopPresenceHeartbeat();
+      if (pageId === 'pageDashboard') {
+        startPresenceHeartbeat();
+        startSupervisorMsgPolling();
+      } else {
+        stopPresenceHeartbeat();
+        stopSupervisorMsgPolling();
+      }
     }
 
     function triggerGlobalRefresh(btnEl, context) {
@@ -1103,6 +1108,9 @@
           document.getElementById('uiDashboardDate').innerText = data.board.dateBanner;
         }
         applySecurity(data.security, data.guestSecurity);
+        if (data.operators && data.operators.length > 0) {
+          localStorage.setItem(CACHED_OPS_KEY, JSON.stringify(data.operators));
+        }
       }
 
       setTimeout(() => {
@@ -1120,6 +1128,26 @@
       }, 300);
     };
 
+    function populateOperatorDropdown(operators) {
+      const sel = document.getElementById('loginSelect');
+      if (!sel) return;
+      
+      let currentVal = sel.value;
+      sel.innerHTML = '<option value="">-- Choose Name --</option>';
+      const guestOpt = document.createElement('option');
+      guestOpt.value = "Guest";
+      guestOpt.innerText = "Guest";
+      sel.appendChild(guestOpt);
+
+      (operators || []).forEach(op => {
+        const opt = document.createElement('option');
+        opt.value = op.name;
+        opt.innerText = op.name;
+        sel.appendChild(opt);
+      });
+      if (currentVal) sel.value = currentVal;
+    }
+
     function initUser() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -1132,7 +1160,13 @@
           }
           showPage('pageDashboard');
           startPresenceHeartbeat();
+          startSupervisorMsgPolling();
         } else {
+          // Instant load cached operators to prevent dropdown delay
+          const cachedOps = localStorage.getItem(CACHED_OPS_KEY);
+          if (cachedOps) {
+            try { populateOperatorDropdown(JSON.parse(cachedOps)); } catch(e){}
+          }
           showPage('pageLogin');
         }
       } catch(e) {
@@ -1157,6 +1191,7 @@
 
       showPage('pageDashboard');
       startPresenceHeartbeat();
+      startSupervisorMsgPolling();
     }
 
     function performLogout() {
@@ -1169,6 +1204,7 @@
 
     function confirmLogout() {
       stopPresenceHeartbeat();
+      stopSupervisorMsgPolling();
       localStorage.removeItem(STORAGE_KEY);
       showPage('pageLogin');
       closeCustomLogout();
@@ -1214,6 +1250,40 @@
         presenceInterval = null;
       }
     }
+
+    function startSupervisorMsgPolling() {
+      checkSupervisorMessages();
+      if (supervisorMsgInterval) clearInterval(supervisorMsgInterval);
+      supervisorMsgInterval = setInterval(checkSupervisorMessages, 6000);
+    }
+
+    function stopSupervisorMsgPolling() {
+      if (supervisorMsgInterval) {
+        clearInterval(supervisorMsgInterval);
+        supervisorMsgInterval = null;
+      }
+    }
+
+    function checkSupervisorMessages() {
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=getOperatorMessages&callback=handleSupervisorMessagesPoll&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleSupervisorMessagesPoll = function(res) {
+      if (!res || res.status !== "success" || !res.supervisorMessages) return;
+      const msgs = res.supervisorMessages;
+      if (msgs.length === 0) return;
+
+      const latestMsg = msgs[msgs.length - 1];
+      const dismissedKey = "dismissed_sup_msg";
+      const lastDismissed = localStorage.getItem(dismissedKey) || "";
+
+      if (latestMsg && latestMsg !== lastDismissed) {
+        localStorage.setItem(dismissedKey, latestMsg);
+        openBroadcastMessageModal(latestMsg);
+      }
+    };
 
     function sendPresencePing() {
       const currentOp = localStorage.getItem(STORAGE_KEY);
@@ -1285,6 +1355,15 @@
       });
     }
 
+    function openBroadcastMessageModal(text) {
+      document.getElementById('broadcastMessageText').innerText = text || "";
+      document.getElementById('broadcastMessageModal').style.display = 'flex';
+    }
+
+    function closeBroadcastMessageModal() {
+      document.getElementById('broadcastMessageModal').style.display = 'none';
+    }
+
     function openOperatorSendMessageModal() {
       document.getElementById('operatorMessageInputBox').value = '';
       document.getElementById('operatorSendMessageModal').style.display = 'flex';
@@ -1351,6 +1430,11 @@
     }
 
     function openMenuAction(type) {
+      if (!portalData) {
+        showToast("Synchronizing data, please wait 1 sec...");
+        return;
+      }
+
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       const activeSec = (currentUser.toLowerCase() === "guest") ? portalData.guestSecurity : portalData.security;
 
@@ -2448,20 +2532,9 @@
       const dash = document.getElementById('pageDashboard');
       if (dash) dash.classList.add('fully-loaded');
 
-      const sel = document.getElementById('loginSelect');
-      if (sel) {
-        sel.innerHTML = '<option value="">-- Choose Name --</option>';
-        const guestOpt = document.createElement('option');
-        guestOpt.value = "Guest";
-        guestOpt.innerText = "Guest";
-        sel.appendChild(guestOpt);
-
-        (data.operators || []).forEach(op => {
-          const opt = document.createElement('option');
-          opt.value = op.name;
-          opt.innerText = op.name;
-          sel.appendChild(opt);
-        });
+      if (data.operators && data.operators.length > 0) {
+        localStorage.setItem(CACHED_OPS_KEY, JSON.stringify(data.operators));
+        populateOperatorDropdown(data.operators);
       }
 
       initUser();
@@ -2470,6 +2543,12 @@
     window.onload = function() {
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '80%';
+
+      // Instant populate from cache if available so dropdown is never blank or delayed
+      const cachedOps = localStorage.getItem(CACHED_OPS_KEY);
+      if (cachedOps) {
+        try { populateOperatorDropdown(JSON.parse(cachedOps)); } catch(e){}
+      }
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
@@ -2484,7 +2563,7 @@
           if (dash) dash.classList.add('fully-loaded');
           initUser();
         }
-      }, 2500);
+      }, 2000);
     };
   </script>
 </body>
