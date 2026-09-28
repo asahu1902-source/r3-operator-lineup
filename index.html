@@ -33,11 +33,10 @@
       overflow: hidden; border: 1.5px solid #38bdf8; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.4);
     }
     .splash-progress-bar-fill {
-      width: 30%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
+      width: 40%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
       border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.2s ease-in-out;
     }
 
-    /* FULL SCREEN BLUR LOADING OVERLAY */
     #globalBlurLoader {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(8px);
@@ -400,7 +399,6 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <!-- FULL SCREEN BLUR LOADING OVERLAY WITH PERCENTAGE -->
   <div id="globalBlurLoader">
     <div class="blur-loader-box">
       <div class="blur-loader-title">⏳ SYNCHRONIZING PORTAL...</div>
@@ -409,7 +407,6 @@
     </div>
   </div>
 
-  <!-- WHATSAPP CHOICE MODAL -->
   <div id="whatsappChoiceModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #25D366; background: #07142b; max-width: 330px;">
       <h4 style="color: #25D366; font-size: 16px; font-weight: 900;">💬 WHATSAPP NOTIFICATION</h4>
@@ -422,7 +419,6 @@
     </div>
   </div>
 
-  <!-- WHATSAPP FOLLOWUP MODAL -->
   <div id="whatsappFollowupModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #25D366; background: #07142b; max-width: 330px;">
       <h4 id="followupTitle" style="color: #25D366; font-size: 16px; font-weight: 900;">💬 NEXT NOTIFICATION</h4>
@@ -540,7 +536,7 @@
           <div class="photo-edit-badge-big">📷</div>
         </div>
         <h3 id="uiWelcomeName" class="hero-welcome-text">Welcome, Operator!</h3>
-        <p id="uiDashboardDate" class="hero-date-text">Loading...</p>
+        <p id="uiDashboardDate" class="hero-date-text">Ready</p>
       </div>
 
       <div id="uiDashboardNoticeBox" style="display:none; flex-direction:column; gap:8px;"></div>
@@ -1075,6 +1071,7 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyHQ5BMKG-IHIGMCqL4N2efVOshdsP34EY3Gu054YwmhC5qYZBNyEkRvW0_3SAOmMK8fA/exec";
     const STORAGE_KEY = "r3_operator_user";
     const CACHED_OPS_KEY = "r3_cached_operators_list";
+    const CACHED_DASH_KEY = "r3_cached_dashboard_data";
 
     const DEFAULT_OPERATORS = [
       { name: "Ashok" }, { name: "Goutam" }, { name: "Santu" }, 
@@ -1123,7 +1120,6 @@
           }
         }, 200);
 
-        // Auto-dismiss safety timer (never let it stuck at 80% for long)
         maxWaitTimer = setTimeout(() => {
           showBlurLoader(false);
         }, 4000);
@@ -1179,6 +1175,7 @@
         if (data.operators && data.operators.length > 0) {
           localStorage.setItem(CACHED_OPS_KEY, JSON.stringify(data.operators));
         }
+        localStorage.setItem(CACHED_DASH_KEY, JSON.stringify(data));
       }
 
       setTimeout(() => {
@@ -1222,6 +1219,19 @@
         if (saved) {
           document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
           loadProfilePhoto(saved);
+          
+          // INSTANTLY render cached dashboard data so zero loading delay occurs on dashboard!
+          const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
+          if (cachedDash && !portalData) {
+            try {
+              portalData = JSON.parse(cachedDash);
+              if (portalData.board && portalData.board.dateBanner) {
+                document.getElementById('uiDashboardDate').innerText = portalData.board.dateBanner;
+              }
+              applySecurity(portalData.security, portalData.guestSecurity);
+            } catch(e) {}
+          }
+
           if (portalData) {
             checkAndShowStatusWarning(portalData);
             applySecurity(portalData.security, portalData.guestSecurity);
@@ -1253,6 +1263,11 @@
       localStorage.setItem(STORAGE_KEY, sel);
       document.getElementById('uiWelcomeName').innerText = "Welcome, " + sel + "!";
       loadProfilePhoto(sel);
+
+      const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
+      if (cachedDash && !portalData) {
+        try { portalData = JSON.parse(cachedDash); } catch(e){}
+      }
 
       if (portalData) {
         checkAndShowStatusWarning(portalData);
@@ -1509,6 +1524,11 @@
     }
 
     function openMenuAction(type) {
+      const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
+      if (!portalData && cachedDash) {
+        try { portalData = JSON.parse(cachedDash); } catch(e) {}
+      }
+
       if (!portalData) {
         showToast("Synchronizing data, please wait...");
         return;
@@ -2521,6 +2541,7 @@
       showBlurLoader(false);
       if (!data) return;
       portalData = data;
+      localStorage.setItem(CACHED_DASH_KEY, JSON.stringify(data));
       
       const currentUser = (localStorage.getItem(STORAGE_KEY) || "").trim();
       if (currentUser) {
@@ -2577,17 +2598,30 @@
       }
       populateOperatorDropdown(opsList);
 
-      const blurTimer = setTimeout(() => {
-        showBlurLoader(true, 15, 80);
-      }, 300);
+      // Instantly load cached dashboard data if available so dashboard appears immediately without waiting
+      const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
+      if (cachedDash) {
+        try {
+          portalData = JSON.parse(cachedDash);
+          if (portalData.board && portalData.board.dateBanner) {
+            document.getElementById('uiDashboardDate').innerText = portalData.board.dateBanner;
+          }
+          const splash = document.getElementById('splashScreen');
+          if (splash) {
+            splash.style.opacity = '0';
+            setTimeout(() => { splash.style.display = 'none'; }, 150);
+          }
+          const dash = document.getElementById('pageDashboard');
+          if (dash) dash.classList.add('fully-loaded');
+          initUser();
+        } catch(e) {}
+      }
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
       document.head.appendChild(s);
 
-      // SAFETY TIMEOUT: Force remove loader after 3.5 seconds so it NEVER gets stuck at 80%!
       setTimeout(() => {
-        clearTimeout(blurTimer);
         showBlurLoader(false);
         const splash = document.getElementById('splashScreen');
         if (splash && splash.style.display !== 'none') {
@@ -2597,7 +2631,7 @@
           if (dash) dash.classList.add('fully-loaded');
           initUser();
         }
-      }, 3500);
+      }, 1500);
     };
   </script>
 </body>
