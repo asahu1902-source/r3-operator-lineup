@@ -387,26 +387,6 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <div id="supervisorMessageModal" class="custom-modal-backdrop" style="display:none;">
-    <div class="custom-modal-box info-box" style="border: 3px solid #facc15; background: #07142b; max-width: 340px;">
-      <h4 style="color: #facc15; font-size: 17px; font-weight: 900;">📢 IMPORTANT MESSAGE</h4>
-      <p id="supervisorMessageText" style="color: #ffffff; font-size: 14.5px; font-weight: bold; line-height: 1.5; word-break: break-word;">Loading message...</p>
-      <button class="btn-modal-primary" style="background: #10b981; font-weight: 900; font-size: 14px; padding: 12px;" onclick="closeSupervisorMessageModal()">OK ✅</button>
-    </div>
-  </div>
-
-  <div id="operatorSendMessageModal" class="custom-modal-backdrop" style="display:none;">
-    <div class="custom-modal-box info-box" style="border: 3px solid #38bdf8; background: #07142b; max-width: 340px;">
-      <h4 style="color: #38bdf8; font-size: 16px; font-weight: 900;">✍️ SEND BROADCAST MESSAGE</h4>
-      <p style="color: #ffff00; font-size: 12px;">Type your message to broadcast to all operators:</p>
-      <textarea id="operatorMessageInputBox" class="form-input" rows="3" placeholder="Type here anything..." style="resize:none;"></textarea>
-      <div class="modal-btn-row">
-        <button class="btn-modal-secondary" onclick="closeOperatorSendMessageModal()">Cancel</button>
-        <button class="btn-modal-primary" onclick="submitOperatorBroadcastMessage()">Send ➔</button>
-      </div>
-    </div>
-  </div>
-
   <div id="statusWarningModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box" style="border: 3px solid #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); background: #07142b;">
       <h4 style="color: #ef4444; font-size: 17px; font-weight: 900;">⚠️ NOTICE</h4>
@@ -490,11 +470,11 @@
           </div>
         </div>
 
-        <div id="btnMessage" class="menu-item-btn" onclick="openOperatorSendMessageModal()">
+        <div id="btnMessage" class="menu-item-btn" onclick="openMenuAction('message')">
           <div class="menu-item-icon">📢</div>
           <div class="menu-item-info">
             <h4>Message</h4>
-            <p>Send broadcast message to all operators</p>
+            <p>Supervisor notifications & notices</p>
           </div>
         </div>
 
@@ -557,7 +537,7 @@
         <div id="btnGroupChat" class="menu-item-btn" onclick="openMenuAction('groupChat')">
           <div class="menu-item-icon">💬</div>
           <div class="menu-item-info">
-            <h4>Live Group Chat <span id="uiChatBadgeSpan"></span></h4>
+            <h4>Live Group Chat</h4>
             <p>Chat with operators & supervisor in real-time</p>
           </div>
         </div>
@@ -965,17 +945,13 @@
       </div>
     </div>
 
+    <!-- PAGE 10: LIVE GROUP CHAT -->
     <div id="pageGroupChat" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
         <div style="display:flex; gap:8px; align-items:center;">
           <button class="refresh-icon-btn" onclick="triggerGlobalRefresh(this, 'Chat')"><span class="ref-symbol">🔄</span></button>
-          <div style="position: relative;">
-            <button class="whatsapp-btn" style="padding: 6px 10px; font-size:16px;" onclick="toggleChatMenu(event)">⋮</button>
-            <div id="chatDropdownMenu" style="display:none; position:absolute; right:0; top:35px; background:#07142b; border:1.5px solid #38bdf8; border-radius:6px; z-index:99; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
-              <div onclick="openClearChatModal()" style="padding: 10px 14px; font-size:12px; font-weight:bold; color:#ef4444; cursor:pointer; white-space:nowrap;">🗑️ Clear Chat</div>
-            </div>
-          </div>
+          <button class="whatsapp-btn" style="padding:6px 12px; font-size:12px;" onclick="openClearChatModal()">🗑️ Clear</button>
         </div>
       </div>
       <div class="form-card">
@@ -1008,7 +984,6 @@
     let portalData = null;
     let lastSubmittedLeave = null;
     let fetchedWhatsAppContacts = [];
-    let currentFirstChoice = "";
     let currentReportResult = null;
     let chatInterval = null;
     let presenceInterval = null;
@@ -1238,37 +1213,6 @@
       });
     }
 
-    function openOperatorSendMessageModal() {
-      document.getElementById('operatorMessageInputBox').value = '';
-      document.getElementById('operatorSendMessageModal').style.display = 'flex';
-    }
-
-    function closeOperatorSendMessageModal() {
-      document.getElementById('operatorSendMessageModal').style.display = 'none';
-    }
-
-    function submitOperatorBroadcastMessage() {
-      const msg = document.getElementById('operatorMessageInputBox').value.trim();
-      const myName = localStorage.getItem(STORAGE_KEY) || "Operator";
-      if (!msg) { alert("Please type a message."); return; }
-
-      closeOperatorSendMessageModal();
-      showToast("Broadcasting message...");
-
-      const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=sendOperatorMessage&name=${encodeURIComponent(myName)}&message=${encodeURIComponent(msg)}&callback=handleOpMsgResponse&t=` + Date.now();
-      document.head.appendChild(s);
-    }
-
-    window.handleOpMsgResponse = function(res) {
-      if (res && res.status === "success") {
-        showToast("Message broadcasted successfully! ✅");
-        triggerGlobalRefresh(null, 'MsgSent');
-      } else {
-        alert("Failed to send message.");
-      }
-    };
-
     function showCustomAlert(msg) {
       document.getElementById('customAlertMsg').innerText = msg;
       document.getElementById('customAlertModal').style.display = 'flex';
@@ -1321,7 +1265,11 @@
       }
 
       if (type === "message") {
-        openOperatorSendMessageModal();
+        if (portalData && portalData.security && portalData.security.noticeMessage) {
+          showCustomAlert(portalData.security.noticeMessage);
+        } else {
+          showCustomAlert("No supervisor notice available.");
+        }
       }
       else if (type === "checkPosition") {
         if (activeSec.dutySubmission === false) {
@@ -1419,20 +1367,8 @@
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
-    function toggleChatMenu(e) {
-      e.stopPropagation();
-      const menu = document.getElementById('chatDropdownMenu');
-      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-
-    window.onclick = function() {
-      const menu = document.getElementById('chatDropdownMenu');
-      if (menu) menu.style.display = 'none';
-    };
-
     function openClearChatModal() {
       document.getElementById('customClearChatModal').style.display = 'flex';
-      document.getElementById('chatDropdownMenu').style.display = 'none';
     }
 
     function closeClearChatModal() {
@@ -2118,108 +2054,6 @@
       if (modal) modal.style.display = 'none';
     }
 
-    function chooseWhatsAppFirst(choice) {
-      closeWhatsAppChoiceModal();
-      currentFirstChoice = choice;
-      
-      const msg = buildLeaveMessage();
-      let targetLink = getContactLink(choice);
-
-      if (choice === 'group') {
-        copyToClipboard(msg);
-      }
-
-      if (targetLink) {
-        if (targetLink.startsWith("http://") || targetLink.startsWith("https://")) {
-          window.open(targetLink, "_blank");
-        } else {
-          window.location.href = targetLink;
-        }
-      }
-
-      setTimeout(() => {
-        openFollowupModal(choice === 'supervisor' ? 'group' : 'supervisor');
-      }, 1500);
-    }
-
-    function openFollowupModal(remainingChoice) {
-      const modal = document.getElementById('whatsappFollowupModal');
-      const titleEl = document.getElementById('followupTitle');
-      const textEl = document.getElementById('followupText');
-      
-      modal.dataset.remaining = remainingChoice;
-      if (remainingChoice === 'group') {
-        titleEl.innerText = "💬 RELAY GROUP NOTIFICATION";
-        textEl.innerText = "Do you also want to send this leave to your Relay Group?";
-      } else {
-        titleEl.innerText = "💬 SUPERVISOR NOTIFICATION";
-        textEl.innerText = "Do you also want to send this leave to your Supervisor?";
-      }
-      modal.style.display = 'flex';
-    }
-
-    function closeFollowupModal(shouldSend) {
-      const modal = document.getElementById('whatsappFollowupModal');
-      const remainingChoice = modal.dataset.remaining;
-      modal.style.display = 'none';
-
-      if (shouldSend) {
-        const msg = buildLeaveMessage();
-        let targetLink = getContactLink(remainingChoice);
-
-        if (remainingChoice === 'group') {
-          copyToClipboard(msg);
-        }
-
-        if (targetLink) {
-          if (targetLink.startsWith("http://") || targetLink.startsWith("https://")) {
-            window.open(targetLink, "_blank");
-          } else {
-            window.location.href = targetLink;
-          }
-        }
-      }
-    }
-
-    function buildLeaveMessage() {
-      if (!lastSubmittedLeave) return "";
-      return `*LEAVE APPLICATION (PENDING)*\n` +
-        `• Operator: ${lastSubmittedLeave.name}\n` +
-        `• Type: ${lastSubmittedLeave.type}\n` +
-        `• Period: ${lastSubmittedLeave.fromDate} to ${lastSubmittedLeave.toDate} (${lastSubmittedLeave.days} Days)\n` +
-        `• Reason: ${lastSubmittedLeave.reason || 'Personal'}`;
-    }
-
-    function getContactLink(type) {
-      const msg = buildLeaveMessage();
-      let supContact = "";
-      let groupContact = "";
-
-      if (fetchedWhatsAppContacts && fetchedWhatsAppContacts.length > 0) {
-        const groupObj = fetchedWhatsAppContacts.find(c => c.role.toLowerCase().includes("group") || c.name.toLowerCase().includes("relay") || c.contact.includes("chat.whatsapp.com"));
-        const supObj = fetchedWhatsAppContacts.find(c => c.role.toLowerCase().includes("supervisor") || (!c.contact.includes("chat.whatsapp.com") && c.contact.length >= 10));
-        
-        if (supObj && supObj.contact) supContact = supObj.contact.replace(/[^0-9]/g, "");
-        if (groupObj && groupObj.contact) groupContact = groupObj.contact;
-      }
-
-      if (type === 'supervisor') {
-        if (supContact) return `https://wa.me/${supContact}?text=` + encodeURIComponent(msg);
-        return "whatsapp://send?text=" + encodeURIComponent(msg);
-      } else {
-        if (groupContact) return groupContact;
-        return "whatsapp://send?text=" + encodeURIComponent(msg);
-      }
-    }
-
-    function copyToClipboard(text) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast("Leave message copied! Paste it in the group.");
-        }).catch(() => {});
-      }
-    }
-
     function renderHolidayList() {
       const container = document.getElementById('uiHolidayContainer');
       container.innerHTML = '';
@@ -2388,6 +2222,22 @@
       const dateBannerEl = document.getElementById('uiDashboardDate');
       if (dateBannerEl) {
         dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
+      }
+
+      const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
+      if (dashNoticeBox && data.security && data.security.noticeMessage) {
+        dashNoticeBox.style.display = 'flex';
+        dashNoticeBox.innerHTML = `
+          <div class="ticker-container">
+            <div class="ticker-text">🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🚨 PLEASE READ SUPERVISOR MESSAGE CAREFULLY BELOW! 🚨</div>
+          </div>
+          <div class="supervisor-notice-card">
+            <div class="notice-title">📢 SUPERVISOR NOTICE</div>
+            <div class="notice-body">${data.security.noticeMessage}</div>
+          </div>
+        `;
+      } else {
+        if (dashNoticeBox) dashNoticeBox.style.display = 'none';
       }
 
       const splash = document.getElementById('splashScreen');
