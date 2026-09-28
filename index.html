@@ -536,7 +536,7 @@
           <div class="photo-edit-badge-big">📷</div>
         </div>
         <h3 id="uiWelcomeName" class="hero-welcome-text">Welcome, Operator!</h3>
-        <p id="uiDashboardDate" class="hero-date-text">Ready</p>
+        <p id="uiDashboardDate" class="hero-date-text">Live Portal Active</p>
       </div>
 
       <div id="uiDashboardNoticeBox" style="display:none; flex-direction:column; gap:8px;"></div>
@@ -1122,7 +1122,7 @@
 
         maxWaitTimer = setTimeout(() => {
           showBlurLoader(false);
-        }, 4000);
+        }, 3000);
 
       } else {
         if (blurInterval) clearInterval(blurInterval);
@@ -1220,7 +1220,6 @@
           document.getElementById('uiWelcomeName').innerText = "Welcome, " + saved + "!";
           loadProfilePhoto(saved);
           
-          // INSTANTLY render cached dashboard data so zero loading delay occurs on dashboard!
           const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
           if (cachedDash && !portalData) {
             try {
@@ -2552,7 +2551,7 @@
 
       const dateBannerEl = document.getElementById('uiDashboardDate');
       if (dateBannerEl) {
-        dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Ready";
+        dateBannerEl.innerText = (data.board && data.board.dateBanner) ? data.board.dateBanner : "Live Portal Active";
       }
 
       const dashNoticeBox = document.getElementById('uiDashboardNoticeBox');
@@ -2598,7 +2597,6 @@
       }
       populateOperatorDropdown(opsList);
 
-      // Instantly load cached dashboard data if available so dashboard appears immediately without waiting
       const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
       if (cachedDash) {
         try {
