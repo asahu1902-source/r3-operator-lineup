@@ -450,7 +450,7 @@
   <div id="customLogoutModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
   <div id="customClearChatModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
 
-  <!-- SPLASH SCREEN (ROUND SPIN REMOVED, BADGE LOGO DISPLAYED) -->
+  <!-- SPLASH SCREEN -->
   <div id="splashScreen">
     <div class="splash-logo-container">
       <img src="icon.png" alt="Logo" class="splash-app-icon">
@@ -1047,10 +1047,43 @@
     let presenceInterval = null;
     let globalChatWatcherInterval = null;
     let lastKnownChatCount = -1;
+    let lastKnownSupervisorMsg = "";
     let isScrollableReportMode = false;
     let myAssignedPositionName = "";
     let currentLookupResultData = null;
     let pendingWithdrawRowIndex = null;
+
+    // AUDIO NOTIFICATION (WhatsApp-style Digital Chime Tone)
+    function playNotificationSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+
+        // Frequency for pleasant double-beep chime (e.g. 880Hz / 1200Hz)
+        osc1.frequency.setValueAtTime(880, ctx.currentTime);
+        osc2.frequency.setValueAtTime(1200, ctx.currentTime);
+
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc1.start();
+        osc2.start();
+        osc1.stop(ctx.currentTime + 0.35);
+        osc2.stop(ctx.currentTime + 0.35);
+      } catch (e) {}
+    }
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
@@ -1252,8 +1285,8 @@
 
     function startGlobalChatWatcher() {
       if (globalChatWatcherInterval) clearInterval(globalChatWatcherInterval);
-      checkNewChatMessagesBackground();
-      globalChatWatcherInterval = setInterval(checkNewChatMessagesBackground, 6000);
+      checkNewMessagesBackground();
+      globalChatWatcherInterval = setInterval(checkNewMessagesBackground, 6000);
     }
 
     function stopGlobalChatWatcher() {
@@ -1263,14 +1296,33 @@
       }
     }
 
-    function checkNewChatMessagesBackground() {
+    function checkNewMessagesBackground() {
+      const s = document.createElement('script');
+      s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleGlobalWatcherResponse&t=${Date.now()}`;
+      document.head.appendChild(s);
+    }
+
+    window.handleGlobalWatcherResponse = function(res) {
+      if (!res) return;
+      
+      // Check Supervisor / Broadcast Messages
+      if (res.supervisorMessages && res.supervisorMessages.length > 0) {
+        const latestMsg = res.supervisorMessages[res.supervisorMessages.length - 1];
+        if (lastKnownSupervisorMsg && latestMsg !== lastKnownSupervisorMsg) {
+          playNotificationSound();
+          showToast("📢 New Supervisor/Broadcast Message!");
+        }
+        lastKnownSupervisorMsg = latestMsg;
+      }
+
+      // Check Group Chat Messages
       const chatPage = document.getElementById('pageGroupChat');
       if (chatPage && chatPage.classList.contains('active')) return;
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getChat&callback=handleGlobalChatCheckResponse&t=${Date.now()}`;
       document.head.appendChild(s);
-    }
+    };
 
     window.handleGlobalChatCheckResponse = function(res) {
       if (!res || res.status !== "success") return;
@@ -1284,6 +1336,7 @@
         lastKnownChatCount = currentCount;
       } else if (currentCount > lastKnownChatCount) {
         badgeSpan.innerHTML = '<span class="chat-unread-badge">NEW 💬</span>';
+        playNotificationSound();
         showToast("💬 New message in Live Group Chat!");
         lastKnownChatCount = currentCount;
       }
@@ -1323,8 +1376,10 @@
     function checkAndShowSupervisorMessages(data) {
       if (data && data.supervisorMessages && data.supervisorMessages.length > 0) {
         const latestMsg = data.supervisorMessages[data.supervisorMessages.length - 1];
+        lastKnownSupervisorMsg = latestMsg;
         const lastSeen = localStorage.getItem('last_seen_sup_msg') || "";
         if (lastSeen !== latestMsg) {
+          playNotificationSound();
           document.getElementById('supervisorMessageText').innerText = latestMsg;
           document.getElementById('supervisorMessageModal').dataset.msg = latestMsg;
           document.getElementById('supervisorMessageModal').style.display = 'flex';
