@@ -248,7 +248,6 @@
     .form-input { width: 100%; background: #000000; color: #ffff00; border: 1.5px solid #38bdf8; padding: 10px; font-size: 14px; border-radius: 6px; outline: none; }
     .form-input:disabled { opacity: 0.6; color: #94a3b8; }
 
-    /* LAPTOP & MOBILE CALENDAR PICKER FIX */
     input[type="date"]::-webkit-calendar-picker-indicator {
       cursor: pointer;
       filter: invert(1);
@@ -361,7 +360,6 @@
     .date-pill-container { display: flex; flex-wrap: wrap; gap: 4px; padding: 3px; }
     .date-pill { background: #0f172a; border: 1px solid #38bdf8; color: #38bdf8; font-size: 9.5px; font-weight: 800; border-radius: 3px; padding: 2px 5px; }
 
-    /* CUSTOM MODAL POPUPS */
     .custom-modal-backdrop {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.85); z-index: 999999;
@@ -406,7 +404,6 @@
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
 
-  <!-- SUPERVISOR MESSAGE POPUP MODAL -->
   <div id="supervisorMessageModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #facc15; background: #07142b; max-width: 340px;">
       <h4 style="color: #facc15; font-size: 17px; font-weight: 900;">📢 IMPORTANT MESSAGE</h4>
@@ -415,7 +412,6 @@
     </div>
   </div>
 
-  <!-- OPERATOR SEND MESSAGE INPUT MODAL -->
   <div id="operatorSendMessageModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #38bdf8; background: #07142b; max-width: 340px;">
       <h4 style="color: #38bdf8; font-size: 16px; font-weight: 900;">✍️ SEND BROADCAST MESSAGE</h4>
@@ -450,7 +446,6 @@
   <div id="customLogoutModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
   <div id="customClearChatModal" class="custom-modal-backdrop"><div class="custom-modal-box info-box"></div></div>
 
-  <!-- SPLASH SCREEN -->
   <div id="splashScreen">
     <div class="splash-logo-container">
       <img src="icon.png" alt="Logo" class="splash-app-icon">
@@ -465,7 +460,6 @@
 
   <div class="app-viewport">
 
-    <!-- PAGE 1: LOGIN -->
     <div id="pageLogin" class="screen-page">
       <div class="login-card">
         <img src="icon.png" alt="R3 Logo">
@@ -478,7 +472,6 @@
       </div>
     </div>
 
-    <!-- PAGE 2: DASHBOARD MENU -->
     <div id="pageDashboard" class="screen-page">
       <div class="profile-hero-card">
         <div class="dashboard-top-btns">
@@ -588,7 +581,6 @@
       </div>
     </div>
 
-    <!-- PAGE 3: CHECK POSITION & CONFIRM DUTY -->
     <div id="pagePosition" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -650,7 +642,6 @@
       <div id="uiSupervisorNoticeBox" style="display:none;"></div>
     </div>
 
-    <!-- PAGE: DUTY DATE LOOKUP -->
     <div id="pageDutyLookup" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -698,7 +689,6 @@
       </div>
     </div>
 
-    <!-- PAGE 4: MY DUE HISTORY -->
     <div id="pageDueHistory" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -723,7 +713,6 @@
       </div>
     </div>
 
-    <!-- PAGE 5: MONTHLY REPORT -->
     <div id="pageMonthlyReport" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -792,7 +781,6 @@
       </div>
     </div>
 
-    <!-- PAGE 6: LEAVE ENTRY & STATUS TRACKER -->
     <div id="pageLeaveEntry" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -889,7 +877,6 @@
       </div>
     </div>
 
-    <!-- PAGE 7: COMPANY HOLIDAY -->
     <div id="pageHolidayList" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -909,7 +896,6 @@
       </div>
     </div>
 
-    <!-- PAGE 8: CHECK SHIFT SCHEDULE -->
     <div id="pageShiftSchedule" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -939,7 +925,6 @@
       </div>
     </div>
 
-    <!-- PAGE 9: LOCAL FESTIVAL -->
     <div id="pageLocalFestival" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -997,7 +982,6 @@
       </div>
     </div>
 
-    <!-- PAGE 10: LIVE GROUP CHAT WITH ONLINE FOOTER -->
     <div id="pageGroupChat" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
@@ -1053,7 +1037,6 @@
     let currentLookupResultData = null;
     let pendingWithdrawRowIndex = null;
 
-    // AUDIO NOTIFICATION (WhatsApp-style Digital Chime Tone)
     function playNotificationSound() {
       try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -1067,7 +1050,6 @@
         osc1.type = 'sine';
         osc2.type = 'triangle';
 
-        // Frequency for pleasant double-beep chime (e.g. 880Hz / 1200Hz)
         osc1.frequency.setValueAtTime(880, ctx.currentTime);
         osc2.frequency.setValueAtTime(1200, ctx.currentTime);
 
@@ -1286,7 +1268,7 @@
     function startGlobalChatWatcher() {
       if (globalChatWatcherInterval) clearInterval(globalChatWatcherInterval);
       checkNewMessagesBackground();
-      globalChatWatcherInterval = setInterval(checkNewMessagesBackground, 6000);
+      globalChatWatcherInterval = setInterval(checkNewMessagesBackground, 2000);
     }
 
     function stopGlobalChatWatcher() {
@@ -1305,7 +1287,6 @@
     window.handleGlobalWatcherResponse = function(res) {
       if (!res) return;
       
-      // Check Supervisor / Broadcast Messages
       if (res.supervisorMessages && res.supervisorMessages.length > 0) {
         const latestMsg = res.supervisorMessages[res.supervisorMessages.length - 1];
         if (lastKnownSupervisorMsg && latestMsg !== lastKnownSupervisorMsg) {
@@ -1315,7 +1296,6 @@
         lastKnownSupervisorMsg = latestMsg;
       }
 
-      // Check Group Chat Messages
       const chatPage = document.getElementById('pageGroupChat');
       if (chatPage && chatPage.classList.contains('active')) return;
 
@@ -1609,7 +1589,7 @@
 
     function startChatPolling() {
       if (chatInterval) clearInterval(chatInterval);
-      chatInterval = setInterval(loadChatMessages, 2500);
+      chatInterval = setInterval(loadChatMessages, 1500);
     }
 
     function stopChatPolling() {
