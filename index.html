@@ -33,7 +33,7 @@
       overflow: hidden; border: 1.5px solid #38bdf8; box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 15px rgba(56, 189, 248, 0.4);
     }
     .splash-progress-bar-fill {
-      width: 80%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
+      width: 90%; height: 100%; background: linear-gradient(90deg, #38bdf8, #10b981);
       border-radius: 4px; box-shadow: 0 0 10px #10b981; transition: width 0.2s ease-in-out;
     }
 
@@ -484,7 +484,7 @@
       <img src="icon.png" alt="Logo" class="splash-app-icon">
     </div>
     <div class="splash-progress-wrapper">
-      <div class="splash-load-text" id="splashStatusText">⚡ FAST SYNCING PORTAL...</div>
+      <div class="splash-load-text" id="splashStatusText">⚡ INSTANT PORTAL SYNC...</div>
       <div class="splash-progress-bar-container">
         <div id="splashProgressFill" class="splash-progress-bar-fill"></div>
       </div>
@@ -1052,6 +1052,13 @@
     const STORAGE_KEY = "r3_operator_user";
     const CACHED_OPS_KEY = "r3_cached_operators_list";
 
+    // Fallback static list so dropdown is instant (0 seconds delay)
+    const DEFAULT_OPERATORS = [
+      { name: "Ashok" }, { name: "Goutam" }, { name: "Santu" }, 
+      { name: "Koushik" }, { name: "Sudhansu" }, { name: "Kamal" }, 
+      { name: "Tarun" }, { name: "Sougata" }, { name: "Prakash" }, { name: "Rintu" }
+    ];
+
     let portalData = null;
     let lastSubmittedLeave = null;
     let fetchedWhatsAppContacts = [];
@@ -1162,14 +1169,17 @@
           startPresenceHeartbeat();
           startSupervisorMsgPolling();
         } else {
-          // Instant load cached operators to prevent dropdown delay
+          // Instantly load operators from localStorage cache or fallback default list
+          let opsList = DEFAULT_OPERATORS;
           const cachedOps = localStorage.getItem(CACHED_OPS_KEY);
           if (cachedOps) {
-            try { populateOperatorDropdown(JSON.parse(cachedOps)); } catch(e){}
+            try { opsList = JSON.parse(cachedOps); } catch(e){}
           }
+          populateOperatorDropdown(opsList);
           showPage('pageLogin');
         }
       } catch(e) {
+        populateOperatorDropdown(DEFAULT_OPERATORS);
         showPage('pageLogin');
       }
     }
@@ -1177,7 +1187,7 @@
     function proceedLogin() {
       const sel = document.getElementById('loginSelect').value;
       if (!sel) {
-        alert("Please select your name.");
+        showCustomAlert("Please select your name.");
         return;
       }
       localStorage.setItem(STORAGE_KEY, sel);
@@ -1206,6 +1216,15 @@
       stopPresenceHeartbeat();
       stopSupervisorMsgPolling();
       localStorage.removeItem(STORAGE_KEY);
+      
+      // Instantly populate dropdown on logout so it appears immediately
+      let opsList = DEFAULT_OPERATORS;
+      const cachedOps = localStorage.getItem(CACHED_OPS_KEY);
+      if (cachedOps) {
+        try { opsList = JSON.parse(cachedOps); } catch(e){}
+      }
+      populateOperatorDropdown(opsList);
+
       showPage('pageLogin');
       closeCustomLogout();
     }
@@ -1376,7 +1395,7 @@
     function submitOperatorBroadcastMessage() {
       const msg = document.getElementById('operatorMessageInputBox').value.trim();
       const myName = localStorage.getItem(STORAGE_KEY) || "Operator";
-      if (!msg) { alert("Please type a message."); return; }
+      if (!msg) { showCustomAlert("Please type a message."); return; }
 
       closeOperatorSendMessageModal();
       showToast("Broadcasting message...");
@@ -1391,7 +1410,7 @@
         showToast("Message broadcasted! ✅");
         triggerGlobalRefresh(null, 'MsgSent');
       } else {
-        alert("Failed to send message.");
+        showCustomAlert("Failed to send message.");
       }
     };
 
@@ -1478,7 +1497,7 @@
     function lookupDutyByDate() {
       const val = document.getElementById('uiLookupDateInput').value;
       if (!val) {
-        alert("Please select a date first.");
+        showCustomAlert("Please select a date first.");
         return;
       }
       const parts = val.split('-');
@@ -1538,7 +1557,7 @@
 
     function shareDutyLookupWhatsApp() {
       if (!currentLookupResultData || !currentLookupResultData.dutyRows) {
-        alert("Please search a date first.");
+        showCustomAlert("Please search a date first.");
         return;
       }
       const res = currentLookupResultData;
@@ -1803,7 +1822,7 @@
     function submitMyDutyConfirmation() {
       const name = localStorage.getItem(STORAGE_KEY) || "";
       if (!myAssignedPositionName) {
-        alert("No position assigned to you in today's lineup.");
+        showCustomAlert("No position assigned to you in today's lineup.");
         return;
       }
 
@@ -2147,7 +2166,7 @@
         const myName = localStorage.getItem(STORAGE_KEY) || "";
         loadOperatorLeaveBalance(myName);
       } else {
-        alert("Error: " + (res ? res.message : "Failed to withdraw"));
+        showCustomAlert("Error: " + (res ? res.message : "Failed to withdraw"));
       }
     };
 
@@ -2166,14 +2185,14 @@
       const reason = document.getElementById('uiLeaveReason').value;
 
       if (!fromDateVal || !toDateVal) {
-        alert("Please select both From and To dates.");
+        showCustomAlert("Please select both From and To dates.");
         return;
       }
 
       const d1 = new Date(fromDateVal + "T00:00:00");
       const d2 = new Date(toDateVal + "T00:00:00");
       if (d2 < d1) {
-        alert("To Date cannot be earlier than From Date.");
+        showCustomAlert("To Date cannot be earlier than From Date.");
         return;
       }
 
@@ -2406,7 +2425,7 @@
         document.getElementById('uiSchedR1').innerText = sched.r1;
         resBox.style.display = 'block';
       } else {
-        alert("Date " + formatted + " not found in Shift Schedule sheet.");
+        showCustomAlert("Date " + formatted + " not found in Shift Schedule sheet.");
         resBox.style.display = 'none';
       }
     }
@@ -2486,7 +2505,7 @@
 
     function shareMonthlyWhatsApp() {
       const op = localStorage.getItem(STORAGE_KEY) || "Operator";
-      if (!currentReportResult) { alert("Please generate report first."); return; }
+      if (!currentReportResult) { showCustomAlert("Please generate report first."); return; }
       let text = `*MONTHLY REPORT - ${op}*\n\n*ATTENDANCE:*\n`;
       (currentReportResult.attendance || []).forEach(a => { text += `• ${a.label}: ${a.val}\n`; });
       window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
@@ -2544,11 +2563,13 @@
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '80%';
 
-      // Instant populate from cache if available so dropdown is never blank or delayed
+      // Instantly populate dropdown from cache or default list on app startup (0s delay)
+      let opsList = DEFAULT_OPERATORS;
       const cachedOps = localStorage.getItem(CACHED_OPS_KEY);
       if (cachedOps) {
-        try { populateOperatorDropdown(JSON.parse(cachedOps)); } catch(e){}
+        try { opsList = JSON.parse(cachedOps); } catch(e){}
       }
+      populateOperatorDropdown(opsList);
 
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getDashboardData&callback=handleInitialData&t=` + Date.now();
