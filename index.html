@@ -2412,7 +2412,7 @@
       if (!val) return;
       const parts = val.split('-');
       const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
-      const sched = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup[formatted] : null;
+      const sched = (portalData && portalData.scheduleLookup) ? portalData.scheduleLookup[val] : null;
 
       const resBox = document.getElementById('uiScheduleResult');
       if (sched) {
@@ -2561,7 +2561,6 @@
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '80%';
 
-      // Instantly populate dropdown from cache or default list on startup (0s delay)
       let opsList = DEFAULT_OPERATORS;
       const cachedOps = localStorage.getItem(CACHED_OPS_KEY);
       if (cachedOps) {
@@ -2569,7 +2568,6 @@
       }
       populateOperatorDropdown(opsList);
 
-      // Show blur loader if server takes more than 300ms
       const blurTimer = setTimeout(() => {
         showBlurLoader(true, 15, 80);
       }, 300);
