@@ -23,8 +23,8 @@
       flex-direction: column; align-items: center; justify-content: center;
       transition: opacity 0.4s ease-out;
     }
-    .splash-logo-container { position: relative; width: 140px; height: 140px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
-    .splash-app-icon { width: 130px; height: 130px; border-radius: 20px; object-fit: cover; border: 3px solid #38bdf8; box-shadow: 0 0 30px rgba(56, 189, 248, 0.5); }
+    .splash-logo-container { position: relative; width: 210px; height: 210px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+    .splash-app-icon { width: 200px; height: 200px; border-radius: 28px; object-fit: cover; border: 3.5px solid #38bdf8; box-shadow: 0 0 40px rgba(56, 189, 248, 0.6); }
     
     .splash-progress-wrapper { width: 220px; display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; }
     .splash-load-text { color: #00ffff; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
@@ -1012,7 +1012,6 @@
     let myAssignedPositionName = "";
     let currentLookupResultData = null;
     let pendingWithdrawRowIndex = null;
-    let lastSeenSupervisorMsg = "";
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
@@ -1909,7 +1908,7 @@
           html += '</tbody></table>';
         } else {
           html += '<div class="date-banner" style="margin-top:14px;">POSITION PERFORMANCE (DAY-WISE SCROLL VIEW)</div>';
-          html += '<div style="width:100%; overflow-x:auto;"><table class="standard-table" style="min-width:900px;"><thead><tr>';
+          html += '<div style="width:100%; overflow-x:auto;"><table class="standard-table" style="min-width:900px;><thead><tr>';
           html += '<th style="width:120px;">Position</th><th style="width:60px;">Times</th><th style="width:70px;">Alloc %</th>';
           
           let maxDays = 1;
