@@ -1,4 +1,4 @@
-const CACHE_NAME = 'r3-operator-v8';
+const CACHE_NAME = 'r3-operator-v9';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.json',
