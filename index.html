@@ -407,6 +407,19 @@
     </div>
   </div>
 
+  <!-- CHAT POPUP NOTIFICATION MODAL -->
+  <div id="chatPopupModal" class="custom-modal-backdrop" style="display:none;">
+    <div class="custom-modal-box info-box" style="border: 3px solid #10b981; background: #07142b; max-width: 330px;">
+      <h4 style="color: #10b981; font-size: 16px; font-weight: 900;">💬 NEW CHAT MESSAGE</h4>
+      <p id="chatPopupSender" style="color: #facc15; font-size: 14px; font-weight: bold; margin-top: 2px;">Sender Name</p>
+      <p id="chatPopupText" style="color: #ffffff; font-size: 13.5px; font-weight: normal; word-break: break-word; background: #000; padding: 8px; border-radius: 6px; border: 1px solid #38bdf8;">Message text...</p>
+      <div class="modal-btn-row" style="margin-top: 4px;">
+        <button class="btn-modal-secondary" onclick="closeChatPopupModal()">Close</button>
+        <button class="btn-modal-primary" style="background: #10b981;" onclick="goToGroupChatFromPopup()">View Chat ➔</button>
+      </div>
+    </div>
+  </div>
+
   <div id="whatsappChoiceModal" class="custom-modal-backdrop" style="display:none;">
     <div class="custom-modal-box info-box" style="border: 3px solid #25D366; background: #07142b; max-width: 330px;">
       <h4 style="color: #25D366; font-size: 16px; font-weight: 900;">💬 WHATSAPP NOTIFICATION</h4>
@@ -658,7 +671,6 @@
         <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
       </div>
 
-      <!-- NEXT ASSIGNMENT NOTICE BANNER (Dynamic) -->
       <div id="uiNextAssignmentNotice" style="display:none; background: linear-gradient(135deg, #7f1d1d, #450a0a); border: 2.5px solid #ef4444; border-radius: 10px; padding: 14px; text-align: center; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);">
         <h4 style="color: #f87171; font-size: 15px; font-weight: 900; text-transform: uppercase; margin-bottom: 4px;">⏳ All Duties Submitted!</h4>
         <p style="color: #ffffff; font-size: 13.5px; font-weight: bold;">Please wait for next assignment...</p>
@@ -1098,6 +1110,7 @@
     let pendingWithdrawRowIndex = null;
     let blurInterval = null;
     let maxWaitTimer = null;
+    let lastKnownChatCount = -1;
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
@@ -1145,11 +1158,8 @@
       const activeEl = document.getElementById(pageId);
       if (activeEl) activeEl.classList.add('active');
 
-      if (pageId === 'pageGroupChat') {
-        startChatPolling();
-      } else {
-        stopChatPolling();
-      }
+      // Keep background chat polling active everywhere to catch new messages for popup
+      startChatPolling();
 
       if (pageId === 'pageDashboard') {
         startPresenceHeartbeat();
@@ -1529,7 +1539,6 @@
     }
 
     function openMenuAction(type) {
-      // Instantly load from cache if portalData is missing
       if (!portalData) {
         const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
         if (cachedDash) {
@@ -1661,13 +1670,6 @@
       chatInterval = setInterval(loadChatMessages, 2500);
     }
 
-    function stopChatPolling() {
-      if (chatInterval) {
-        clearInterval(chatInterval);
-        chatInterval = null;
-      }
-    }
-
     function loadChatMessages() {
       const s = document.createElement('script');
       s.src = `${SCRIPT_URL}?action=getChat&callback=handleChatMessagesResponse&t=${Date.now()}`;
@@ -1675,8 +1677,28 @@
     }
 
     window.handleChatMessagesResponse = function(res) {
-      const container = document.getElementById('chatMessagesContainer');
       if (!res || res.status !== "success") return;
+      const messages = res.messages || [];
+      const currentTotal = messages.length;
+
+      // Check if new message arrived while NOT on group chat page
+      if (lastKnownChatCount !== -1 && currentTotal > lastKnownChatCount) {
+        const latestMsg = messages[messages.length - 1];
+        const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
+        const senderName = (latestMsg.name || "").trim();
+
+        // Show popup only if the message is from someone else and user is NOT currently on pageGroupChat
+        const activePage = document.querySelector('.screen-page.active');
+        const isNotOnChatPage = !activePage || activePage.id !== 'pageGroupChat';
+
+        if (isNotOnChatPage && senderName.toLowerCase() !== myName) {
+          showChatPopup(senderName, latestMsg.message || latestMsg.text || "");
+        }
+      }
+      lastKnownChatCount = currentTotal;
+
+      const container = document.getElementById('chatMessagesContainer');
+      if (!container) return;
 
       const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
       const clearKey = 'clear_ch_time_' + myName;
@@ -1685,7 +1707,7 @@
       let html = '';
       let displayedCount = 0;
 
-      (res.messages || []).forEach(m => {
+      messages.forEach(m => {
         let msgEpoch = new Date().getTime();
         const msgTime = m.timestamp || m.time || "";
         const msgText = m.message || m.text || "";
@@ -1719,6 +1741,21 @@
       container.innerHTML = html;
       if (isAtBottom) container.scrollTop = container.scrollHeight;
     };
+
+    function showChatPopup(sender, text) {
+      document.getElementById('chatPopupSender').innerText = `👤 ${sender}`;
+      document.getElementById('chatPopupText').innerText = text;
+      document.getElementById('chatPopupModal').style.display = 'flex';
+    }
+
+    function closeChatPopupModal() {
+      document.getElementById('chatPopupModal').style.display = 'none';
+    }
+
+    function goToGroupChatFromPopup() {
+      closeChatPopupModal();
+      openGroupChat();
+    }
 
     function sendChatMessage() {
       const input = document.getElementById('chatMessageInput');
@@ -2148,9 +2185,9 @@
     window.handleLeaveBalanceResponse = function(res) {
       if (!res || res.status !== "success") return;
       const b = res.balance || {};
-      document.getElementById('balPL').innerText = b.pl !== undefined ? b.pl : 15;
-      document.getElementById('balSL').innerText = b.sl !== undefined ? b.sl : 7;
-      document.getElementById('balCL').innerText = b.cl !== undefined ? b.cl : 8;
+      document.getElementById('balPL').innerText = b.pl !== undefined ? b.pl : 0;
+      document.getElementById('balSL').innerText = b.sl !== undefined ? b.sl : 0;
+      document.getElementById('balCL').innerText = b.cl !== undefined ? b.cl : 0;
       document.getElementById('balCOff').innerText = b.coff !== undefined ? b.coff : 0;
     };
 
