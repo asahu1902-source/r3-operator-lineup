@@ -1110,7 +1110,7 @@
     let pendingWithdrawRowIndex = null;
     let blurInterval = null;
     let maxWaitTimer = null;
-    let lastKnownChatCount = -1;
+    let lastKnownLatestMsgSignature = "";
 
     function showToast(msg) {
       const t = document.getElementById('customToast');
@@ -1158,7 +1158,6 @@
       const activeEl = document.getElementById(pageId);
       if (activeEl) activeEl.classList.add('active');
 
-      // Keep background chat polling active everywhere to catch new messages for popup
       startChatPolling();
 
       if (pageId === 'pageDashboard') {
@@ -1667,7 +1666,7 @@
 
     function startChatPolling() {
       if (chatInterval) clearInterval(chatInterval);
-      chatInterval = setInterval(loadChatMessages, 2500);
+      chatInterval = setInterval(loadChatMessages, 2000);
     }
 
     function loadChatMessages() {
@@ -1679,23 +1678,25 @@
     window.handleChatMessagesResponse = function(res) {
       if (!res || res.status !== "success") return;
       const messages = res.messages || [];
-      const currentTotal = messages.length;
+      if (messages.length === 0) return;
+
+      const latestMsg = messages[messages.length - 1];
+      const msgText = latestMsg.message || latestMsg.text || "";
+      const msgTime = latestMsg.timestamp || latestMsg.time || "";
+      const senderName = (latestMsg.name || "").trim();
+      const currentSignature = `${senderName}_${msgTime}_${msgText}`;
 
       // Check if new message arrived while NOT on group chat page
-      if (lastKnownChatCount !== -1 && currentTotal > lastKnownChatCount) {
-        const latestMsg = messages[messages.length - 1];
+      if (lastKnownLatestMsgSignature !== "" && currentSignature !== lastKnownLatestMsgSignature) {
         const myName = (localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
-        const senderName = (latestMsg.name || "").trim();
-
-        // Show popup only if the message is from someone else and user is NOT currently on pageGroupChat
         const activePage = document.querySelector('.screen-page.active');
         const isNotOnChatPage = !activePage || activePage.id !== 'pageGroupChat';
 
         if (isNotOnChatPage && senderName.toLowerCase() !== myName) {
-          showChatPopup(senderName, latestMsg.message || latestMsg.text || "");
+          showChatPopup(senderName, msgText);
         }
       }
-      lastKnownChatCount = currentTotal;
+      lastKnownLatestMsgSignature = currentSignature;
 
       const container = document.getElementById('chatMessagesContainer');
       if (!container) return;
@@ -1709,11 +1710,11 @@
 
       messages.forEach(m => {
         let msgEpoch = new Date().getTime();
-        const msgTime = m.timestamp || m.time || "";
-        const msgText = m.message || m.text || "";
+        const mTime = m.timestamp || m.time || "";
+        const mText = m.message || m.text || "";
 
         try {
-          const parts = msgTime.split(' ');
+          const parts = mTime.split(' ');
           const dParts = parts[0].split('/');
           if (dParts.length === 3) {
             const isoStr = `${dParts[2]}-${dParts[1]}-${dParts[0]}T${parts[1] || '00:00:00'}`;
@@ -1727,8 +1728,8 @@
         const isMe = (m.name || "").toLowerCase() === myName;
         const cls = isMe ? "chat-bubble my-msg" : "chat-bubble";
         html += `<div class="${cls}">
-          <div class="chat-meta"><span>${m.name || 'Anonymous'}</span><span>${msgTime}</span></div>
-          <div class="chat-text">${msgText}</div>
+          <div class="chat-meta"><span>${m.name || 'Anonymous'}</span><span>${mTime}</span></div>
+          <div class="chat-text">${mText}</div>
         </div>`;
       });
 
