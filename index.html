@@ -658,6 +658,12 @@
         <button id="btnConfirmMyDuty" class="btn-action-main" onclick="submitMyDutyConfirmation()">Confirm & Submit My Duty ✅</button>
       </div>
 
+      <!-- NEXT ASSIGNMENT NOTICE BANNER (Dynamic) -->
+      <div id="uiNextAssignmentNotice" style="display:none; background: linear-gradient(135deg, #7f1d1d, #450a0a); border: 2.5px solid #ef4444; border-radius: 10px; padding: 14px; text-align: center; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);">
+        <h4 style="color: #f87171; font-size: 15px; font-weight: 900; text-transform: uppercase; margin-bottom: 4px;">⏳ All Duties Submitted!</h4>
+        <p style="color: #ffffff; font-size: 13.5px; font-weight: bold;">Please wait for next assignment...</p>
+      </div>
+
       <div class="form-card" style="background:#07142b; border:2px solid #38bdf8;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 style="color:#ffff00; font-size:15px;">📊 Live Duty Submission Status</h3>
@@ -1880,11 +1886,15 @@
       }
 
       const notice = document.getElementById('uiRemainingNotice');
+      const nextAssignBanner = document.getElementById('uiNextAssignmentNotice');
+
       if (unsubmittedArr.length > 0) {
         notice.innerText = `Remaining (${unsubmittedArr.length}): ${unsubmittedArr.join(', ')} not submitted duty yet.`;
+        if (nextAssignBanner) nextAssignBanner.style.display = 'none';
       } else {
         notice.style.color = '#4ade80';
         notice.innerText = `🎉 All assigned operators have successfully submitted their duty!`;
+        if (nextAssignBanner) nextAssignBanner.style.display = 'block';
       }
     };
 
