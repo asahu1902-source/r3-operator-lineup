@@ -565,15 +565,6 @@
       </div>
     </div>
 
-    <div id="pageStartupError" class="screen-page" style="display:none;">
-      <div class="form-card" style="margin-top:30vh; text-align:center; background:#07142b; border:2px solid #ef4444;">
-        <div style="font-size:42px; margin-bottom:10px;">⚠️</div>
-        <h2 style="color:#f87171; margin:0 0 10px;">Portal Connection Problem</h2>
-        <p id="startupErrorMessage" style="color:#cbd5e1; font-size:13px; line-height:1.5;">Unable to contact the portal server.</p>
-        <button class="btn-action-main" onclick="retryStartupConnection()" style="margin-top:12px;">🔄 Retry</button>
-      </div>
-    </div>
-
     <div id="pageDashboard" class="screen-page">
       <div class="profile-hero-card">
         <div class="dashboard-top-btns">
@@ -681,11 +672,11 @@
           </div>
         </div>
 
-        <div id="btnAdminPortal" class="menu-item-btn" onclick="openMenuAction('adminPortal')" style="display:none; border:1px solid #f59e0b; background:linear-gradient(135deg,#111827,#1f2937);">
+        <div id="btnAdminPortal" class="menu-item-btn" style="display:none; border:2px solid #f59e0b; background:linear-gradient(135deg,#17100a,#07142b);" onclick="openAdminPortal()">
           <div class="menu-item-icon">🔐</div>
           <div class="menu-item-info">
             <h4>Admin Portal</h4>
-            <p>Ashok control panel — manage duty & system settings</p>
+            <p>Ashok only — manage duty & system settings</p>
           </div>
         </div>
       </div>
@@ -694,52 +685,21 @@
     <div id="pageAdminPortal" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageDashboard')">◀ Dashboard</button>
-        <div class="tools-group">
-          <button class="refresh-icon-btn" onclick="openAdminPortal()"><span class="ref-symbol">🔄</span></button>
-        </div>
+        <div style="font-weight:900;color:#f59e0b;">🔐 ADMIN PORTAL</div>
       </div>
-
-      <div class="form-card" style="background:linear-gradient(135deg,#07142b,#111827); border:2px solid #f59e0b;">
-        <h2 style="margin:0 0 6px; color:#f59e0b;">🔐 Admin Portal</h2>
-        <p style="margin:0; color:#cbd5e1; font-size:12px;">Ashok-only control panel. Existing operator menus remain unchanged.</p>
-      </div>
-
-      <div class="dashboard-menu" style="margin-top:12px;">
-        <div class="menu-item-btn" onclick="adminPortalComingSoon('Duty Register')">
-          <div class="menu-item-icon">📋</div>
-          <div class="menu-item-info"><h4>Duty Register</h4><p>View / edit duty board from the app</p></div>
-        </div>
-        <div class="menu-item-btn" onclick="adminPortalComingSoon('Leave Register')">
-          <div class="menu-item-icon">📝</div>
-          <div class="menu-item-info"><h4>Leave Register</h4><p>Admin leave register control</p></div>
-        </div>
-        <div class="menu-item-btn" onclick="adminPortalComingSoon('Special Rules')">
-          <div class="menu-item-icon">⚙️</div>
-          <div class="menu-item-info"><h4>Special Rules</h4><p>Manage special duty rules</p></div>
-        </div>
-        <div class="menu-item-btn" onclick="adminPortalComingSoon('Auto Duty Config')">
-          <div class="menu-item-icon">🤖</div>
-          <div class="menu-item-info"><h4>Auto Duty Config</h4><p>Auto Mode & release settings</p></div>
-        </div>
-        <div class="menu-item-btn" onclick="adminPortalComingSoon('Advance Distribution')">
-          <div class="menu-item-icon">🚀</div>
-          <div class="menu-item-info"><h4>Advance Distribution</h4><p>Prepare next-day assignments</p></div>
-        </div>
-        <div class="menu-item-btn" onclick="adminPortalComingSoon('Supervisor OT Selection')">
-          <div class="menu-item-icon">👷</div>
-          <div class="menu-item-info"><h4>Supervisor OT Selection</h4><p>Manage OT selection</p></div>
-        </div>
-        <div class="menu-item-btn" onclick="adminPortalComingSoon('Maintenance Mode')">
-          <div class="menu-item-icon">🛠️</div>
-          <div class="menu-item-info"><h4>Maintenance Mode</h4><p>App maintenance control</p></div>
-        </div>
-        <div class="menu-item-btn" onclick="adminPortalComingSoon('Supervisor Message')">
-          <div class="menu-item-icon">📢</div>
-          <div class="menu-item-info"><h4>Supervisor Message</h4><p>Manage supervisor messages</p></div>
-        </div>
-        <div class="menu-item-btn" onclick="adminPortalComingSoon('Submitted Duty Log')">
-          <div class="menu-item-icon">✅</div>
-          <div class="menu-item-info"><h4>Submitted Duty Log</h4><p>Review operator confirmations</p></div>
+      <div class="form-card" style="margin-top:18px;">
+        <h3 style="color:#f59e0b;text-align:center;margin-bottom:6px;">Ashok Admin Control Panel</h3>
+        <p style="text-align:center;color:#94a3b8;font-size:12px;margin-bottom:16px;">Step 1 — Portal created. Modules will be connected one by one.</p>
+        <div class="dashboard-menu">
+          <div class="menu-item-btn" onclick="adminPortalComingSoon('Duty Register')"><div class="menu-item-icon">📋</div><div class="menu-item-info"><h4>Duty Register</h4><p>View / edit daily operator duty</p></div></div>
+          <div class="menu-item-btn" onclick="adminPortalComingSoon('Leave Register')"><div class="menu-item-icon">📝</div><div class="menu-item-info"><h4>Leave Register</h4><p>Manage leave entries</p></div></div>
+          <div class="menu-item-btn" onclick="adminPortalComingSoon('Special Rules')"><div class="menu-item-icon">⚙️</div><div class="menu-item-info"><h4>Special Rules</h4><p>Manage special distribution rules</p></div></div>
+          <div class="menu-item-btn" onclick="adminPortalComingSoon('Auto Duty Config')"><div class="menu-item-icon">🤖</div><div class="menu-item-info"><h4>Auto Duty Config</h4><p>Auto mode & release settings</p></div></div>
+          <div class="menu-item-btn" onclick="adminPortalComingSoon('Advance Distribution')"><div class="menu-item-icon">📅</div><div class="menu-item-info"><h4>Advance Distribution</h4><p>Prepare next-day assignments</p></div></div>
+          <div class="menu-item-btn" onclick="adminPortalComingSoon('Supervisor OT Selection')"><div class="menu-item-icon">🕘</div><div class="menu-item-info"><h4>Supervisor OT Selection</h4><p>Manage OT positions</p></div></div>
+          <div class="menu-item-btn" onclick="adminPortalComingSoon('Maintenance Mode')"><div class="menu-item-icon">🔧</div><div class="menu-item-info"><h4>Maintenance Mode</h4><p>App maintenance control</p></div></div>
+          <div class="menu-item-btn" onclick="adminPortalComingSoon('Supervisor Message')"><div class="menu-item-icon">📢</div><div class="menu-item-info"><h4>Supervisor Message</h4><p>Manage broadcast message</p></div></div>
+          <div class="menu-item-btn" onclick="adminPortalComingSoon('Submitted Duty Log')"><div class="menu-item-icon">✅</div><div class="menu-item-info"><h4>Submitted Duty Log</h4><p>View duty confirmations</p></div></div>
         </div>
       </div>
     </div>
@@ -1213,71 +1173,15 @@
     const ASHOK_AUTH_TOKEN_KEY = "r3_ashok_auth_token";
     const ASHOK_PIN_SESSION_KEY = "r3_ashok_pin_authenticated";
 
-    let maintenanceStatusTimeout = null;
-    let maintenanceStatusScript = null;
-
     function loadMaintenanceStatus(callback) {
-      if (maintenanceStatusTimeout) clearTimeout(maintenanceStatusTimeout);
-      window._maintenanceStatusCallback = callback || null;
-      maintenanceCheckComplete = false;
-
       const s = document.createElement('script');
-      maintenanceStatusScript = s;
       s.src = `${SCRIPT_URL}?action=getMaintenanceStatus&name=${encodeURIComponent(localStorage.getItem(STORAGE_KEY) || "")}&callback=handleMaintenanceStatus&t=${Date.now()}`;
-      s.onerror = function() {
-        if (maintenanceCheckComplete) return;
-        maintenanceCheckComplete = true;
-        if (maintenanceStatusTimeout) clearTimeout(maintenanceStatusTimeout);
-        window._maintenanceStatusCallback = null;
-        showStartupConnectionError('Unable to contact the portal server. Please check your internet connection and retry.');
-      };
+      window._maintenanceStatusCallback = callback || null;
       document.head.appendChild(s);
-
-      // Never leave the splash screen hanging forever if JSONP is blocked or the
-      // Apps Script response does not return. This does NOT bypass Maintenance Mode.
-      maintenanceStatusTimeout = setTimeout(() => {
-        if (maintenanceCheckComplete) return;
-        maintenanceCheckComplete = true;
-        window._maintenanceStatusCallback = null;
-        showStartupConnectionError('Portal server response timed out. Please retry.');
-      }, 12000);
-    }
-
-    function showStartupConnectionError(message) {
-      showBlurLoader(false);
-      const splash = document.getElementById('splashScreen');
-      if (splash) {
-        splash.style.opacity = '0';
-        setTimeout(() => { splash.style.display = 'none'; }, 150);
-      }
-      const existing = document.getElementById('pageStartupError');
-      if (existing) {
-        const msg = document.getElementById('startupErrorMessage');
-        if (msg) msg.innerText = message;
-        showPage('pageStartupError');
-      }
-    }
-
-    function retryStartupConnection() {
-      const errPage = document.getElementById('pageStartupError');
-      if (errPage) errPage.style.display = 'none';
-      const splash = document.getElementById('splashScreen');
-      if (splash) {
-        splash.style.display = 'flex';
-        splash.style.opacity = '1';
-      }
-      const fill = document.getElementById('splashProgressFill');
-      if (fill) fill.style.width = '20%';
-      loadMaintenanceStatus(() => {
-        continueStartupAfterMaintenanceCheck();
-        if (!maintenanceState.enabled) requestInitialDashboardSync();
-      });
     }
 
     window.handleMaintenanceStatus = function(res) {
-      if (maintenanceCheckComplete) return;
       maintenanceCheckComplete = true;
-      if (maintenanceStatusTimeout) { clearTimeout(maintenanceStatusTimeout); maintenanceStatusTimeout = null; }
       if (res && res.status === "success") {
         maintenanceState = {
           enabled: res.maintenanceMode === true,
@@ -1599,7 +1503,6 @@
     }
 
     function performLogout() {
-      setAdminPortalVisibility('');
       document.getElementById('customLogoutModal').style.display = 'flex';
     }
 
@@ -1873,6 +1776,26 @@
       showPage('pageDashboard');
     }
 
+    function setAdminPortalVisibility(name) {
+      const card = document.getElementById('btnAdminPortal');
+      if (!card) return;
+      const isAshok = (name || '').trim().toLowerCase() === 'ashok';
+      card.style.display = isAshok ? 'flex' : 'none';
+    }
+
+    function openAdminPortal() {
+      const currentUser = (localStorage.getItem(STORAGE_KEY) || '').trim().toLowerCase();
+      if (currentUser !== 'ashok') {
+        showCustomAlert('Admin Portal is available only for Ashok.');
+        return;
+      }
+      showPage('pageAdminPortal');
+    }
+
+    function adminPortalComingSoon(sectionName) {
+      showCustomAlert(sectionName + ' module will be connected in the next step.');
+    }
+
     function openMenuAction(type) {
       if (!portalData) {
         const cachedDash = localStorage.getItem(CACHED_DASH_KEY);
@@ -1899,10 +1822,7 @@
         }
       }
 
-      if (type === "adminPortal") {
-        openAdminPortal();
-      }
-      else if (type === "message") {
+      if (type === "message") {
         openOperatorSendMessageModal();
       }
       else if (type === "checkPosition") {
@@ -1921,27 +1841,6 @@
       else if (type === "shiftSchedule") openShiftSchedule();
       else if (type === "localFestival") renderLocalFestival();
       else if (type === "groupChat") openGroupChat();
-    }
-
-    function setAdminPortalVisibility(name) {
-      const btn = document.getElementById('btnAdminPortal');
-      if (!btn) return;
-      const isAshok = String(name || '').trim().toLowerCase() === String(maintenanceState.allowedUser || 'Ashok').trim().toLowerCase();
-      btn.style.display = isAshok ? 'flex' : 'none';
-    }
-
-    function openAdminPortal() {
-      const currentUser = (localStorage.getItem(STORAGE_KEY) || '').trim();
-      const allowed = String(maintenanceState.allowedUser || 'Ashok').trim().toLowerCase();
-      if (currentUser.toLowerCase() !== allowed) {
-        showCustomAlert('Admin Portal is available only for Ashok.');
-        return;
-      }
-      showPage('pageAdminPortal');
-    }
-
-    function adminPortalComingSoon(sectionName) {
-      showCustomAlert(sectionName + ' module will be connected in the next step.');
     }
 
     function lookupDutyByDate() {
@@ -3069,7 +2968,7 @@
       initUser();
     };
 
-    window.onload = function() {
+    function startPortalStartup() {
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '80%';
 
@@ -3080,12 +2979,9 @@
       }
       populateOperatorDropdown(opsList);
 
-      // Maintenance check is the first gate. Cached dashboard data is never allowed
-      // to bypass it.
+      // Maintenance check remains the first security gate.
       loadMaintenanceStatus(() => {
         continueStartupAfterMaintenanceCheck();
-        // Full dashboard synchronization remains a background task. During maintenance
-        // it is requested only after Ashok has passed PIN/session verification.
         if (!maintenanceState.enabled) requestInitialDashboardSync();
       });
 
@@ -3098,7 +2994,15 @@
           setTimeout(() => { splash.style.display = 'none'; }, 200);
         }
       }, 1500);
-    };
+    }
+
+    // Start as soon as the HTML is parsed. Do not wait for icon.png or another
+    // page resource to finish loading.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startPortalStartup, { once: true });
+    } else {
+      startPortalStartup();
+    }
   </script>
 </body>
 </html>
