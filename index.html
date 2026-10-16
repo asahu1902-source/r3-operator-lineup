@@ -1771,6 +1771,7 @@
       window.adminDutyLoadPercent = 3;
       const box = document.getElementById('adminDutyConfirmMessage');
       if (box) {
+        box.style.display = 'block';
         box.innerHTML = '<div class="admin-duty-loading"><div class="admin-load-ring" id="adminDutyLoadRing" role="progressbar" aria-label="Loading duty data" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3" style="--load-progress:3%"><i class="admin-load-orbit"></i><span id="adminDutyLoadPercent">3%</span></div><div class="admin-duty-loading-copy"><div class="admin-duty-loading-title">Loading duty data</div><div class="admin-duty-loading-sub">Checking assigned operators and confirmation status...</div><div class="admin-duty-loading-hint">Connecting to live duty records</div></div></div>';
       }
       window.adminDutyLoadTimer = setInterval(() => {
@@ -1849,11 +1850,7 @@
       list.innerHTML = html || '<div class="admin-module-status">No assigned operators found.</div>';
 
       const box = document.getElementById('adminDutyConfirmMessage');
-      if (pending === 0 && total > 0) {
-        box.innerHTML = '<strong style="color:#4ade80;">🎉 All assigned operators have confirmed their duty.</strong>';
-      } else {
-        box.innerHTML = `<strong>${pending} operator(s) pending.</strong><br><span style="color:#94a3b8;">Ashok can confirm the pending duty from this admin page.</span>`;
-      }
+      if (box) box.style.display = 'none';
 
       const dateText = document.getElementById('adminDutyDateText');
       if (dateText) dateText.innerText = 'Live duty confirmation status · Today';
