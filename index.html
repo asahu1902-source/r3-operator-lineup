@@ -182,6 +182,18 @@
     .admin-duty-row.pending{border-color:rgba(251,113,133,.65)}.admin-duty-row.submitted{border-color:rgba(52,211,153,.6)}
     .admin-duty-row-info{flex:1;min-width:0}.admin-duty-pos{color:#67e8f9;font-size:13px;font-weight:900}.admin-duty-name{color:#fff;font-size:16px;font-weight:900;margin-top:3px}.admin-duty-status{font-size:12px;margin-top:4px;font-weight:800}
     .admin-duty-confirm-btn{background:#064e3b;color:#a7f3d0;border:1px solid #34d399;border-radius:9px;padding:10px 13px;font-size:12px;font-weight:900;cursor:pointer}.admin-duty-confirm-btn:disabled{opacity:.55;cursor:not-allowed}
+    .admin-module-status{background:#0b1729;border:1px solid #263c58;border-radius:13px;padding:14px;color:#cbd5e1;font-size:14px;line-height:1.5}
+    .admin-duty-loading{min-height:118px;display:flex;align-items:center;justify-content:center;gap:17px;background:linear-gradient(135deg,rgba(8,47,73,.62),rgba(11,23,41,.96));border:1px solid rgba(34,211,238,.26);border-radius:14px;padding:17px}
+    .admin-load-ring{width:68px;height:68px;flex:0 0 68px;position:relative;display:grid;place-items:center;border-radius:50%;background:conic-gradient(#22d3ee var(--load-progress),#1e293b var(--load-progress))}
+    .admin-load-ring:before{content:'';position:absolute;inset:6px;border-radius:50%;background:#0b1729}
+    .admin-load-ring>span{position:relative;color:#cffafe;font-size:14px;font-weight:900}
+    .admin-load-orbit{position:absolute;inset:0;border-radius:50%;animation:adminLoadSpin 1s linear infinite}
+    .admin-load-orbit:before{content:'';position:absolute;top:-2px;left:50%;width:10px;height:10px;border-radius:50%;background:#a5f3fc;box-shadow:0 0 12px rgba(34,211,238,.9);transform:translateX(-50%)}
+    @keyframes adminLoadSpin{to{transform:rotate(360deg)}}
+    .admin-duty-loading-copy{min-width:0}.admin-duty-loading-title{color:#e2e8f0;font-size:16px;font-weight:900}
+    .admin-duty-loading-sub{color:#94a3b8;font-size:12px;line-height:1.45;margin-top:4px}
+    .admin-duty-loading-hint{color:#67e8f9;font-size:11px;font-weight:800;margin-top:6px}
+    @media(max-width:520px){.admin-duty-loading{min-height:108px;gap:13px;padding:14px}.admin-load-ring{width:60px;height:60px;flex-basis:60px}.admin-duty-loading-title{font-size:15px}}
     .admin-page-title{color:#e2e8f0;font-size:24px;font-weight:900;margin:0}#pageAdminPortal{gap:18px}#pageAdminPortal>.top-actions-bar{min-height:38px}
     .admin-menu-grid{display:grid;grid-template-columns:1fr;gap:13px}
     .admin-menu-item{width:100%;min-height:94px;border:1px solid #253a55;background:linear-gradient(145deg,#101e33,#0b1525);color:#fff;border-radius:16px;padding:17px;display:flex;align-items:center;gap:13px;text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
@@ -1746,16 +1758,64 @@
       }
       const btn = document.getElementById('adminDutyRefreshBtn');
       if (btn) btn.classList.add('spinning');
-      const box = document.getElementById('adminDutyConfirmMessage');
-      if (box) box.innerHTML = '<strong>Checking duty confirmations...</strong>';
+      startAdminDutyLoading_();
       const s = document.createElement('script');
-      s.src = `${SCRIPT_URL}?action=getDutyStatus&callback=handleAdminDutyStatusResponse&t=${Date.now()}`;
+      s.src = SCRIPT_URL + '?action=getDutyStatus&callback=handleAdminDutyStatusResponse&t=' + Date.now();
+      s.onerror = failAdminDutyLoading_;
       document.head.appendChild(s);
     }
 
-    window.handleAdminDutyStatusResponse = function(res) {
+    function startAdminDutyLoading_() {
+      if (window.adminDutyLoadTimer) clearInterval(window.adminDutyLoadTimer);
+      if (window.adminDutyLoadTimeout) clearTimeout(window.adminDutyLoadTimeout);
+      window.adminDutyLoadPercent = 3;
+      const box = document.getElementById('adminDutyConfirmMessage');
+      if (box) {
+        box.innerHTML = '<div class="admin-duty-loading"><div class="admin-load-ring" id="adminDutyLoadRing" role="progressbar" aria-label="Loading duty data" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3" style="--load-progress:3%"><i class="admin-load-orbit"></i><span id="adminDutyLoadPercent">3%</span></div><div class="admin-duty-loading-copy"><div class="admin-duty-loading-title">Loading duty data</div><div class="admin-duty-loading-sub">Checking assigned operators and confirmation status...</div><div class="admin-duty-loading-hint">Connecting to live duty records</div></div></div>';
+      }
+      window.adminDutyLoadTimer = setInterval(() => {
+        const current = Number(window.adminDutyLoadPercent || 3);
+        const next = Math.min(92, current + (current < 68 ? 7 : 3));
+        window.adminDutyLoadPercent = next;
+        const ring = document.getElementById('adminDutyLoadRing');
+        const label = document.getElementById('adminDutyLoadPercent');
+        if (ring) {
+          ring.style.setProperty('--load-progress', next + '%');
+          ring.setAttribute('aria-valuenow', String(next));
+        }
+        if (label) label.textContent = next + '%';
+        const hint = document.querySelector('.admin-duty-loading-hint');
+        if (hint && next >= 92) hint.textContent = 'Almost ready · waiting for duty records';
+      }, 350);
+      window.adminDutyLoadTimeout = setTimeout(failAdminDutyLoading_, 30000);
+    }
+
+    function failAdminDutyLoading_() {
+      if (window.adminDutyLoadTimer) clearInterval(window.adminDutyLoadTimer);
+      if (window.adminDutyLoadTimeout) clearTimeout(window.adminDutyLoadTimeout);
+      window.adminDutyLoadTimer = null;
+      window.adminDutyLoadTimeout = null;
       const btn = document.getElementById('adminDutyRefreshBtn');
       if (btn) btn.classList.remove('spinning');
+      const box = document.getElementById('adminDutyConfirmMessage');
+      if (box) box.innerHTML = '<strong style="color:#fca5a5;">Could not load duty data. Please check your connection and tap Refresh.</strong>';
+    }
+
+    window.handleAdminDutyStatusResponse = function(res) {
+      if (window.adminDutyLoadTimer) clearInterval(window.adminDutyLoadTimer);
+      if (window.adminDutyLoadTimeout) clearTimeout(window.adminDutyLoadTimeout);
+      window.adminDutyLoadTimer = null;
+      window.adminDutyLoadTimeout = null;
+      const btn = document.getElementById('adminDutyRefreshBtn');
+      if (btn) btn.classList.remove('spinning');
+      const ring = document.getElementById('adminDutyLoadRing');
+      const label = document.getElementById('adminDutyLoadPercent');
+      if (ring) { ring.style.setProperty('--load-progress', '100%'); ring.setAttribute('aria-valuenow', '100'); }
+      if (label) label.textContent = '100%';
+      setTimeout(() => renderAdminDutyStatus_(res), 300);
+    };
+
+    function renderAdminDutyStatus_(res) {
       if (!res || res.status !== 'success') {
         const box = document.getElementById('adminDutyConfirmMessage');
         if (box) box.innerHTML = '<strong style="color:#f87171;">Unable to load duty confirmation status.</strong>';
@@ -1797,7 +1857,7 @@
 
       const dateText = document.getElementById('adminDutyDateText');
       if (dateText) dateText.innerText = 'Live duty confirmation status · Today';
-    };
+    }
 
     function adminConfirmDuty(name, position, btn) {
       if (!isAshokAdminSession_()) {
