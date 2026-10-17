@@ -189,6 +189,7 @@
     .admin-duty-confirm-btn{background:#064e3b;color:#a7f3d0;border:1px solid #34d399;border-radius:9px;padding:10px 13px;font-size:12px;font-weight:900;cursor:pointer}.admin-duty-confirm-btn:disabled{opacity:.55;cursor:not-allowed}
     .admin-module-status{background:#0b1729;border:1px solid #263c58;border-radius:13px;padding:14px;color:#cbd5e1;font-size:14px;line-height:1.5}
     .admin-duty-loading{min-height:118px;display:flex;align-items:center;justify-content:center;gap:17px;background:linear-gradient(135deg,rgba(8,47,73,.62),rgba(11,23,41,.96));border:1px solid rgba(34,211,238,.26);border-radius:14px;padding:17px}
+    #adminRegisterLoading{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,8,18,.78);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}#adminRegisterLoading .admin-duty-loading{width:min(520px,100%);min-height:140px;box-shadow:0 20px 70px rgba(0,0,0,.55);border-color:rgba(34,211,238,.5)}
     .admin-load-ring{width:68px;height:68px;flex:0 0 68px;position:relative;display:grid;place-items:center;border-radius:50%;background:conic-gradient(#22d3ee var(--load-progress),#1e293b var(--load-progress))}
     .admin-load-ring:before{content:'';position:absolute;inset:6px;border-radius:50%;background:#0b1729}
     .admin-load-ring>span{position:relative;color:#cffafe;font-size:14px;font-weight:900}
@@ -1572,7 +1573,7 @@
       });
       html += '</tbody></table>';
       content.innerHTML = html;
-      box.style.display = 'block';
+      box.style.display = 'flex';
 
       if (note) {
         const d = data.displayDate || maintenanceState.maintenanceLineupDate || '';
@@ -2025,7 +2026,7 @@
         window.adminRegisterLoadTimer = null;
         const btn = document.getElementById('adminRegisterRefreshBtn');
         if (btn) btn.classList.remove('spinning');
-        box.innerHTML = '<strong style="color:#fca5a5;">' + (saving ? 'Saving is taking longer than expected. Please wait and check the sheet before trying again.' : 'Duty Register is taking longer to load. Please tap Refresh.') + '</strong>';
+        box.innerHTML = '<div class="admin-duty-loading-copy"><strong style="color:#fca5a5;">' + (saving ? 'Saving is taking longer than expected. Please wait and check the sheet before trying again.' : 'Duty Register is taking longer to load. Please retry.') + '</strong><div style="margin-top:12px"><button type="button" class="admin-reg-edit-btn" onclick="document.getElementById(\'adminRegisterLoading\').style.display=\'none\'">Close</button></div></div>';
       }, 30000);
     }
 
