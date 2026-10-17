@@ -886,7 +886,7 @@
         <div class="admin-reg-dateinfo" id="adminRegisterDateInfo"></div>
       </div>
       <section class="admin-reg-section">
-        <div class="admin-reg-section-head"><h2>Current Position Lineup</h2><span id="adminRegisterLineupDate">Position · operator</span></div>
+        <div class="admin-reg-section-head"><h2>Position details for selected date</h2><span id="adminRegisterLineupDate">Position · operator</span></div>
         <div class="admin-reg-lineup-wrap"><table class="admin-reg-lineup"><thead><tr><th>Position</th><th>Name</th><th>Due</th><th>Last Date</th><th>Day</th><th>Shift</th></tr></thead><tbody id="adminRegisterLineup"><tr><td colspan="6">Loading lineup…</td></tr></tbody></table></div>
       </section>
       <section class="admin-reg-section">
@@ -1994,7 +1994,7 @@
           dateInput.value = res.date || '';
           window.adminDutyRegisterEditing = !(res.entries || []).some(x => x.savedValue);
           document.getElementById('adminRegisterTableTitle').textContent = 'Duty Register · ' + (res.dateText || res.date);
-          document.getElementById('adminRegisterLineupDate').textContent = res.lineupDateText ? 'Position details · ' + res.lineupDateText : 'Position details';
+          document.getElementById('adminRegisterLineupDate').textContent = res.dateText || res.date || '';
           const dateMeta = [res.dateText || res.date, res.day, res.shift ? 'Shift ' + res.shift : ''].filter(Boolean).join(' · ');
           document.getElementById('adminRegisterDateInfo').textContent = dateMeta;
           renderAdminDutyRegister_(res);
@@ -2006,11 +2006,12 @@
     function startAdminDutyRegisterLoading_(title, subtitle) {
       if (window.adminRegisterLoadTimer) clearInterval(window.adminRegisterLoadTimer);
       if (window.adminRegisterLoadTimeout) clearTimeout(window.adminRegisterLoadTimeout);
+      const saving = String(title || '').toLowerCase().includes('saving');
       window.adminRegisterLoadPercent = 3;
       const box = document.getElementById('adminRegisterLoading');
       if (!box) return;
       box.style.display = 'block';
-      box.innerHTML = '<div class="admin-duty-loading"><div class="admin-load-ring" id="adminRegisterLoadRing" role="progressbar" aria-label="Loading Duty Register" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3" style="--load-progress:3%"><i class="admin-load-orbit"></i><span id="adminRegisterLoadPercent">3%</span></div><div class="admin-duty-loading-copy"><div class="admin-duty-loading-title">' + escapeAdminDutyText_(title) + '</div><div class="admin-duty-loading-sub">' + escapeAdminDutyText_(subtitle) + '</div><div class="admin-duty-loading-hint">Please wait while data is synchronized</div></div></div>';
+      box.innerHTML = '<div class="admin-duty-loading"><div class="admin-load-ring" id="adminRegisterLoadRing" role="progressbar" aria-label="' + (saving ? 'Saving Duty Register' : 'Loading Duty Register') + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3" style="--load-progress:3%"><i class="admin-load-orbit"></i><span id="adminRegisterLoadPercent">3%</span></div><div class="admin-duty-loading-copy"><div class="admin-duty-loading-title">' + escapeAdminDutyText_(title) + '</div><div class="admin-duty-loading-sub">' + escapeAdminDutyText_(subtitle) + '</div><div class="admin-duty-loading-hint">' + (saving ? 'Saving assignments to Duty Register…' : 'Please wait while data is synchronized') + '</div></div></div>';
       window.adminRegisterLoadTimer = setInterval(() => {
         const next = Math.min(92, Number(window.adminRegisterLoadPercent || 3) + (window.adminRegisterLoadPercent < 68 ? 7 : 3));
         window.adminRegisterLoadPercent = next;
@@ -2024,7 +2025,7 @@
         window.adminRegisterLoadTimer = null;
         const btn = document.getElementById('adminRegisterRefreshBtn');
         if (btn) btn.classList.remove('spinning');
-        box.innerHTML = '<strong style="color:#fca5a5;">Duty Register is taking longer to load. Please tap Refresh.</strong>';
+        box.innerHTML = '<strong style="color:#fca5a5;">' + (saving ? 'Saving is taking longer than expected. Please wait and check the sheet before trying again.' : 'Duty Register is taking longer to load. Please tap Refresh.') + '</strong>';
       }, 30000);
     }
 
