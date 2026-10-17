@@ -516,6 +516,18 @@
       #pwaInstallCard .pwa-install-subtitle { font-size: 10px; }
       #pwaInstallButton { padding: 9px 10px; font-size: 11px; }
     }
+    .admin-duty-register-card { max-width: 760px; margin: 12px auto; padding: 16px; background:#0b1729; border:1px solid #334155; border-radius:14px; }
+    .admin-duty-register-controls { display:flex; gap:10px; align-items:end; flex-wrap:wrap; }
+    .admin-duty-register-controls label { flex:1; min-width:180px; color:#cbd5e1; font-size:12px; font-weight:800; }
+    .admin-duty-register-controls input { display:block; width:100%; margin-top:6px; }
+    .admin-duty-register-grid { display:grid; grid-template-columns:1fr; gap:9px; margin-top:14px; }
+    .admin-duty-register-row { display:grid; grid-template-columns:minmax(120px, .8fr) minmax(160px, 1.2fr); gap:10px; align-items:center; padding:9px 10px; border:1px solid #26364d; border-radius:10px; background:#101d30; }
+    .admin-duty-register-position { color:#e2e8f0; font-weight:800; font-size:13px; }
+    .admin-duty-register-input { width:100%; min-width:0; padding:10px; border-radius:8px; border:1px solid #475569; background:#07111f; color:#fff; font-size:14px; }
+    .admin-duty-register-status { margin-top:12px; min-height:20px; font-size:13px; font-weight:700; }
+    .admin-duty-register-status.ok { color:#86efac; } .admin-duty-register-status.error { color:#fca5a5; }
+    .admin-duty-register-save { margin-top:14px; }
+    @media(max-width:480px) { .admin-duty-register-card { padding:12px; } .admin-duty-register-row { grid-template-columns:1fr; gap:6px; } }
   </style>
 </head>
 <body>
@@ -900,6 +912,24 @@
         <button class="admin-menu-item" onclick="selectAdminModule(this,22,'Preview','👁️')"><span class="admin-menu-num">22</span><span class="admin-menu-icon">👁️</span><span class="admin-menu-text"><span class="admin-menu-title">Preview</span><span class="admin-menu-desc">Second preview entry (kept as requested)</span></span><span class="admin-menu-arrow">›</span></button>
         <button class="admin-menu-item" onclick="selectAdminModule(this,23,'Maintenance Day Lineup','🛠️')"><span class="admin-menu-num">23</span><span class="admin-menu-icon">🛠️</span><span class="admin-menu-text"><span class="admin-menu-title">Maintenance Day Lineup</span><span class="admin-menu-desc">Maintenance-day duty lineup</span></span><span class="admin-menu-arrow">›</span></button>
         <button class="admin-menu-item" onclick="selectAdminModule(this,24,'Position Lineup','📍')"><span class="admin-menu-num">24</span><span class="admin-menu-icon">📍</span><span class="admin-menu-text"><span class="admin-menu-title">Position Lineup</span><span class="admin-menu-desc">Position distribution and lineup</span></span><span class="admin-menu-arrow">›</span></button>
+      </div>
+    </div>
+
+    <div id="pageAdminDutyRegister" class="screen-page">
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageAdminPortal')">◀ Admin Portal</button>
+        <button class="refresh-icon-btn" onclick="loadAdminDutyRegister()">🔄 Load date</button>
+      </div>
+      <div class="admin-duty-register-card">
+        <div class="admin-page-title">📋 DUTY REGISTER</div>
+        <div class="admin-page-subtitle">Edit the selected date in the existing Duty Register sheet.</div>
+        <div class="admin-duty-register-controls">
+          <label for="adminDutyRegisterDate">Duty date<input class="admin-duty-register-input" type="date" id="adminDutyRegisterDate" onchange="loadAdminDutyRegister()"></label>
+          <div><div class="admin-page-subtitle">Day</div><strong id="adminDutyRegisterDay">—</strong></div>
+        </div>
+        <div id="adminDutyRegisterStatus" class="admin-duty-register-status" role="status" aria-live="polite">Select a date and load its Duty Register row.</div>
+        <div id="adminDutyRegisterFields" class="admin-duty-register-grid"></div>
+        <button id="adminDutyRegisterSave" class="btn-action-main admin-duty-register-save" onclick="saveAdminDutyRegister()" disabled>Save Duty</button>
       </div>
     </div>
 
@@ -1901,7 +1931,91 @@
         btn.classList.add('selected');
         btn.setAttribute('aria-pressed', 'true');
       }
+      if (number === 2) {
+        showPage('pageAdminDutyRegister');
+        const dateInput = document.getElementById('adminDutyRegisterDate');
+        if (dateInput && !dateInput.value) {
+          const now = new Date();
+          dateInput.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+        }
+        loadAdminDutyRegister();
+      }
     }
+
+    function adminDutyRegisterRequest_(action, extra) {
+      const name = (localStorage.getItem(STORAGE_KEY) || '').trim();
+      const token = sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '';
+      const params = Object.assign({ action, adminName:name, authToken:token, callback: action === 'saveAdminDutyRegister' ? 'handleAdminDutyRegisterSave' : 'handleAdminDutyRegisterLoad', t:Date.now() }, extra || {});
+      const query = Object.keys(params).map(k => encodeURIComponent(k)+'='+encodeURIComponent(params[k])).join('&');
+      const script = document.createElement('script');
+      script.src = SCRIPT_URL + '?' + query;
+      script.onerror = () => {
+        const saveButton = document.getElementById('adminDutyRegisterSave');
+        if (saveButton && action === 'saveAdminDutyRegister') saveButton.disabled = false;
+        setAdminDutyRegisterStatus_('Could not reach the Duty Register. Check your connection and retry.', false);
+      };
+      document.head.appendChild(script);
+    }
+
+    function setAdminDutyRegisterStatus_(message, ok) {
+      const el = document.getElementById('adminDutyRegisterStatus');
+      if (!el) return;
+      el.textContent = message;
+      el.className = 'admin-duty-register-status' + (ok === true ? ' ok' : ok === false ? ' error' : '');
+    }
+
+    function loadAdminDutyRegister() {
+      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
+      const date = document.getElementById('adminDutyRegisterDate').value;
+      if (!date) { setAdminDutyRegisterStatus_('Choose a duty date first.', false); return; }
+      document.getElementById('adminDutyRegisterFields').innerHTML = '';
+      document.getElementById('adminDutyRegisterSave').disabled = true;
+      setAdminDutyRegisterStatus_('Loading Duty Register row…');
+      adminDutyRegisterRequest_('getAdminDutyRegister', { date });
+    }
+
+    window.handleAdminDutyRegisterLoad = function(res) {
+      if (!res || res.status !== 'success') { setAdminDutyRegisterStatus_((res && res.message) || 'Could not load this Duty Register row.', false); return; }
+      document.getElementById('adminDutyRegisterDay').textContent = res.day || '—';
+      const box = document.getElementById('adminDutyRegisterFields');
+      box.innerHTML = '';
+      (res.positions || []).forEach((item, i) => {
+        const row = document.createElement('div'); row.className = 'admin-duty-register-row';
+        const label = document.createElement('label'); label.className = 'admin-duty-register-position'; label.textContent = item.position;
+        const input = document.createElement('input'); input.className = 'admin-duty-register-input'; input.type = 'text'; input.autocomplete = 'off'; input.dataset.position = item.position; input.value = item.operator || ''; input.setAttribute('aria-label', item.position + ' operator');
+        row.append(label, input); box.appendChild(row);
+      });
+      document.getElementById('adminDutyRegisterSave').disabled = false;
+      setAdminDutyRegisterStatus_('Loaded ' + res.displayDate + '. Make corrections and save when ready.');
+    };
+
+    function saveAdminDutyRegister() {
+      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
+      const date = document.getElementById('adminDutyRegisterDate').value;
+      const assignments = {};
+      document.querySelectorAll('#adminDutyRegisterFields input[data-position]').forEach(input => assignments[input.dataset.position] = input.value.trim());
+      const seen = {};
+      for (const position in assignments) {
+        const key = assignments[position].toLocaleLowerCase();
+        if (!key) continue;
+        if (seen[key]) { setAdminDutyRegisterStatus_(`${assignments[position]} appears in both ${seen[key]} and ${position}. Each operator can be assigned once.`, false); return; }
+        seen[key] = position;
+      }
+      const button = document.getElementById('adminDutyRegisterSave'); button.disabled = true;
+      setAdminDutyRegisterStatus_('Saving and verifying against Google Sheets…');
+      adminDutyRegisterRequest_('saveAdminDutyRegister', { date, assignments:JSON.stringify(assignments) });
+    }
+
+    window.handleAdminDutyRegisterSave = function(res) {
+      document.getElementById('adminDutyRegisterSave').disabled = false;
+      if (!res || res.status !== 'success' || !res.verified) {
+        setAdminDutyRegisterStatus_((res && res.message) || 'Save could not be verified. Review the row and try again.', false);
+        if (res && res.positions) window.handleAdminDutyRegisterLoad(Object.assign({}, res, { status:'success' }));
+        return;
+      }
+      window.handleAdminDutyRegisterLoad(Object.assign({}, res, { status:'success' }));
+      setAdminDutyRegisterStatus_('✅ Saved & Verified for ' + res.displayDate + '. Values below were read back from Google Sheets. You can edit and save corrections anytime.', true);
+    };
 
     function showPage(pageId) {
       refreshAdminPortalVisibility_();
