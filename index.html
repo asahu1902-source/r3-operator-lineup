@@ -49,6 +49,11 @@
       box-shadow: 0 0 35px rgba(56, 189, 248, 0.5);
     }
     .blur-loader-title { color: #ffff00; font-size: 15px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
+    .blur-loader-ring{width:82px;height:82px;position:relative;display:grid;place-items:center;border-radius:50%;background:conic-gradient(#22d3ee var(--load-progress,0%),#1e293b var(--load-progress,0%));box-shadow:0 0 22px rgba(34,211,238,.24)}
+    .blur-loader-ring:before{content:'';position:absolute;inset:7px;border-radius:50%;background:#07142b}
+    .blur-loader-ring>span{position:relative;color:#cffafe;font-size:17px;font-weight:900}
+    .blur-loader-orbit{position:absolute;inset:0;border-radius:50%;animation:adminLoadSpin 1s linear infinite}
+    .blur-loader-orbit:before{content:'';position:absolute;top:-2px;left:50%;width:11px;height:11px;border-radius:50%;background:#a5f3fc;box-shadow:0 0 13px rgba(34,211,238,.95);transform:translateX(-50%)}
     .blur-loader-percent { color: #00ffff; font-size: 26px; font-weight: 900; }
 
     .app-viewport { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
@@ -167,7 +172,7 @@
     .dashboard-menu { display: flex; flex-direction: column; gap: 10px; }
 
     /* Responsive Ashok Admin Portal shell, scoped to admin screens. */
-    .app-viewport:has(#pageAdminPortal.active),.app-viewport:has(#pageAdminDutyConfirm.active){max-width:1200px}
+    .app-viewport:has(#pageAdminPortal.active),.app-viewport:has(#pageAdminDutyConfirm.active),.app-viewport:has(#pageAdminDutyRegister.active){max-width:1200px}
     #adminPortalCard{display:none;background:linear-gradient(135deg,#10233f,#091426 72%);border:1px solid rgba(56,189,248,.58);box-shadow:0 12px 36px rgba(2,8,23,.38),0 0 22px rgba(56,189,248,.12)}
     .admin-portal-badge{display:inline-flex;align-items:center;gap:7px;color:#a5f3fc;font-size:13px;font-weight:900;letter-spacing:.08em;border:1px solid rgba(34,211,238,.5);border-radius:999px;padding:8px 13px;background:rgba(8,145,178,.13)}
     .admin-duty-priority-card{width:100%;border:1px solid #22d3ee;background:radial-gradient(ellipse at 90% 0%,rgba(34,211,238,.18),transparent 48%),linear-gradient(120deg,#0b2638,#111827 72%);border-radius:18px;padding:20px 22px;display:flex;align-items:center;gap:17px;text-align:left;cursor:pointer;box-shadow:0 12px 32px rgba(34,211,238,.12);transition:transform .18s ease,border-color .18s ease}
@@ -204,6 +209,8 @@
     @media(min-width:680px){.admin-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}}
     @media(min-width:1024px){.admin-menu-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.admin-menu-item{min-height:106px;padding:19px}#pageAdminPortal{gap:21px}}
     @media(max-width:520px){#pageAdminPortal{gap:14px}.admin-duty-priority-card{padding:15px 14px;gap:12px;border-radius:15px}.admin-duty-priority-icon{width:46px;min-width:46px;height:46px;font-size:25px}.admin-duty-priority-title{font-size:16px}.admin-duty-priority-sub{font-size:13px}.admin-duty-priority-arrow{font-size:29px}.admin-menu-grid{grid-template-columns:1fr;gap:10px}.admin-menu-item{min-height:78px;border-radius:14px;padding:13px 14px;gap:11px}.admin-menu-title{font-size:16px}.admin-menu-num{width:34px;min-width:34px;height:34px;font-size:12px}.admin-menu-icon{width:30px;min-width:30px;font-size:23px}}
+    #pageAdminDutyRegister{gap:14px;color:#eaf4ff}.admin-reg-head{background:linear-gradient(130deg,#10243a,#0b1727);border:1px solid #28435e;border-radius:15px;padding:17px}.admin-reg-title{font-size:clamp(22px,3vw,30px);font-weight:900;margin:0}.admin-reg-sub{font-size:14px;color:#a9bed2;margin-top:5px}.admin-reg-datebar{display:flex;align-items:end;gap:12px;background:#0d1b2d;border:1px solid #203954;border-radius:13px;padding:14px}.admin-reg-datefield{display:grid;gap:6px;flex:0 1 260px}.admin-reg-datefield label{color:#a9bed2;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.admin-reg-datefield input{background:#071424;color:#f2f8ff;border:1px solid #34516c;border-radius:9px;padding:10px 12px;font:inherit}.admin-reg-datebar .btn{border:1px solid #31506d;background:#142942;color:#eaf6ff;border-radius:10px;padding:10px 14px;font-weight:800}.admin-reg-datehint{color:#94a9bd;font-size:12px;margin-left:auto}.admin-reg-section{display:grid;gap:10px}.admin-reg-section-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.admin-reg-section-head h2{font-size:18px;margin:0;color:#f4f8ff}.admin-reg-section-head span{font-size:12px;color:#91a9c0}.admin-reg-lineup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.admin-reg-lineup-card{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#0c1929;border:1px solid #1d354e;border-radius:10px;padding:10px 12px}.admin-reg-lineup-card strong{color:#63dced;font-size:13px}.admin-reg-lineup-card span{color:#f1f7ff;font-weight:750;font-size:14px;text-align:right}.admin-reg-panel{background:#0b1727;border:1px solid #203954;border-radius:14px;overflow:hidden}.admin-reg-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;background:#0e1c2e;border-bottom:1px solid #203954}.admin-reg-panel-head strong{font-size:15px}.admin-reg-count{color:#94edda;background:#0d382f;border:1px solid #1e6958;border-radius:99px;padding:4px 9px;font-size:11px;font-weight:900}.admin-reg-table{width:100%;border-collapse:collapse}.admin-reg-table th{text-align:left;padding:10px 13px;background:#11253b;color:#9eb7cd;font-size:11px;text-transform:uppercase;letter-spacing:.06em}.admin-reg-table td{padding:9px 13px;border-top:1px solid #1a2d41}.admin-reg-position{color:#66d9ee;font-weight:850;white-space:nowrap}.admin-reg-table select{width:100%;background:#071424;color:#f4f8ff;border:1px solid #2b435c;border-radius:8px;padding:9px 10px;font:inherit}.admin-reg-table select:disabled{opacity:.82;color:#dbeafe}.admin-reg-entry-state{font-size:11px;color:#8299b0}.admin-reg-error{display:none;color:#ffc1c7;background:#381923;border-top:1px solid #682f3a;padding:11px 14px;font-size:13px}.admin-reg-error.show{display:block}.admin-reg-savebar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;background:#0d1b2d;border-top:1px solid #203954}.admin-reg-savebar .admin-reg-save-note{color:#92a9bf;font-size:12px}.admin-reg-actions{display:flex;gap:8px}.admin-reg-actions button{border-radius:9px;padding:10px 13px;font-weight:850}.admin-reg-edit-btn{border:1px solid #31506d;background:#142942;color:#dff6ff}.admin-reg-save-btn{border:0;background:linear-gradient(100deg,#13b9d2,#127ad1);color:#fff}.admin-reg-status{color:#a7f3d0;font-size:12px;min-height:17px}.admin-reg-submit-lineup{border:1px solid #28c8a0!important;background:#0b352e!important;color:#a7f3d0!important;border-radius:9px!important;padding:9px 12px!important;font-weight:900!important}
+    @media(max-width:640px){#pageAdminDutyRegister{gap:11px}.admin-reg-head{padding:14px}.admin-reg-sub{font-size:13px}.admin-reg-datebar{display:grid;grid-template-columns:1fr auto;gap:9px;padding:12px}.admin-reg-datefield{grid-column:1/-1;min-width:0}.admin-reg-datebar .btn{min-height:42px}.admin-reg-datehint{grid-column:1/-1;margin:0}.admin-reg-section-head h2{font-size:16px}.admin-reg-lineup{grid-template-columns:1fr;gap:7px}.admin-reg-lineup-card{padding:10px 12px}.admin-reg-table thead{display:none}.admin-reg-table,.admin-reg-table tbody,.admin-reg-table tr,.admin-reg-table td{display:block;width:100%}.admin-reg-table tr{padding:10px 12px;border-top:1px solid #1a2d41}.admin-reg-table td{padding:3px 0;border:0}.admin-reg-table .admin-reg-position{font-size:14px;margin-bottom:5px}.admin-reg-table td:last-child{padding-top:5px}.admin-reg-entry-state{display:block;padding-top:4px}.admin-reg-savebar{align-items:stretch;flex-direction:column;padding:12px}.admin-reg-actions button{flex:1}.admin-reg-save-note{line-height:1.4}}
     .menu-item-btn {
       background: #0a192f;
       border: 2px solid #facc15;
@@ -516,18 +523,6 @@
       #pwaInstallCard .pwa-install-subtitle { font-size: 10px; }
       #pwaInstallButton { padding: 9px 10px; font-size: 11px; }
     }
-    .admin-duty-register-card { max-width: 760px; margin: 12px auto; padding: 16px; background:#0b1729; border:1px solid #334155; border-radius:14px; }
-    .admin-duty-register-controls { display:flex; gap:10px; align-items:end; flex-wrap:wrap; }
-    .admin-duty-register-controls label { flex:1; min-width:180px; color:#cbd5e1; font-size:12px; font-weight:800; }
-    .admin-duty-register-controls input { display:block; width:100%; margin-top:6px; }
-    .admin-duty-register-grid { display:grid; grid-template-columns:1fr; gap:9px; margin-top:14px; }
-    .admin-duty-register-row { display:grid; grid-template-columns:minmax(120px, .8fr) minmax(160px, 1.2fr); gap:10px; align-items:center; padding:9px 10px; border:1px solid #26364d; border-radius:10px; background:#101d30; }
-    .admin-duty-register-position { color:#e2e8f0; font-weight:800; font-size:13px; }
-    .admin-duty-register-input { width:100%; min-width:0; padding:10px; border-radius:8px; border:1px solid #475569; background:#07111f; color:#fff; font-size:14px; }
-    .admin-duty-register-status { margin-top:12px; min-height:20px; font-size:13px; font-weight:700; }
-    .admin-duty-register-status.ok { color:#86efac; } .admin-duty-register-status.error { color:#fca5a5; }
-    .admin-duty-register-save { margin-top:14px; }
-    @media(max-width:480px) { .admin-duty-register-card { padding:12px; } .admin-duty-register-row { grid-template-columns:1fr; gap:6px; } }
   </style>
 </head>
 <body>
@@ -563,7 +558,7 @@
   <div id="globalBlurLoader">
     <div class="blur-loader-box">
       <div class="blur-loader-title">⏳ SYNCHRONIZING PORTAL...</div>
-      <div class="blur-loader-percent" id="blurLoaderPercent">0%</div>
+      <div class="blur-loader-ring" id="blurLoaderRing" role="progressbar" aria-label="Loading portal data" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="--load-progress:0%"><i class="blur-loader-orbit"></i><span class="blur-loader-percent" id="blurLoaderPercent">0%</span></div>
       <p style="color: #38bdf8; font-size: 11px;">Please wait while loading data...</p>
     </div>
   </div>
@@ -852,11 +847,12 @@
       </div>
     </div>
 
-    <!-- ASHOK ADMIN PORTAL: menu shell only. Individual modules will be connected one by one. -->
+    <!-- ASHOK ADMIN PORTAL: Duty Register and duty confirmation are connected; remaining modules stay unchanged. -->
     <div id="pageAdminDutyConfirm" class="screen-page">
       <div class="top-actions-bar">
         <button class="btn-back" onclick="showPage('pageAdminPortal')">◀ Admin Portal</button>
         <button class="refresh-icon-btn" id="adminDutyRefreshBtn" onclick="loadAdminDutyConfirm()"><span class="ref-symbol">🔄</span> Refresh</button>
+        <button class="admin-reg-submit-lineup" onclick="adminSubmitPositionLineupToRegister()">⬇ Submit Duty</button>
       </div>
 
       <div class="admin-duty-head">
@@ -872,6 +868,39 @@
 
       <div id="adminDutyConfirmMessage" class="admin-module-status">Loading...</div>
       <div id="adminDutyList" class="admin-duty-list"></div>
+    </div>
+
+    <div id="pageAdminDutyRegister" class="screen-page">
+      <div class="top-actions-bar">
+        <button class="btn-back" onclick="showPage('pageAdminPortal')">◀ Admin Portal</button>
+        <button class="refresh-icon-btn" id="adminRegisterRefreshBtn" onclick="loadAdminDutyRegister()"><span class="ref-symbol">🔄</span> Refresh</button>
+      </div>
+      <div class="admin-reg-head">
+        <h1 class="admin-reg-title">📋 Duty Register</h1>
+        <div class="admin-reg-sub">Review the position lineup, enter the duty assignments, and update the selected date.</div>
+      </div>
+      <div id="adminRegisterLoading" class="admin-module-status" style="display:none"></div>
+      <div class="admin-reg-datebar">
+        <div class="admin-reg-datefield"><label for="adminRegisterDate">Duty entry date</label><input id="adminRegisterDate" type="date"></div>
+        <button class="btn" type="button" onclick="loadAdminDutyRegister()">Load date</button>
+        <div class="admin-reg-datehint">This date selects the row in Duty Register. The next day’s Position Lineup will recalculate from the sheet formulas.</div>
+      </div>
+      <section class="admin-reg-section">
+        <div class="admin-reg-section-head"><h2>Current Position Lineup</h2><span id="adminRegisterLineupDate">Position · operator</span></div>
+        <div id="adminRegisterLineup" class="admin-reg-lineup"><div class="admin-module-status">Loading lineup…</div></div>
+      </section>
+      <section class="admin-reg-section">
+        <div class="admin-reg-section-head"><h2>Duty assignments</h2><span>Operator names cannot be duplicated</span></div>
+        <div class="admin-reg-panel">
+          <div class="admin-reg-panel-head"><strong id="adminRegisterTableTitle">Duty Register</strong><span id="adminRegisterCount" class="admin-reg-count">0 filled</span></div>
+          <div style="overflow-x:auto"><table class="admin-reg-table"><thead><tr><th>Position</th><th>Operator / OT / H / M</th><th>Sheet value</th></tr></thead><tbody id="adminRegisterRows"></tbody></table></div>
+          <div id="adminRegisterError" class="admin-reg-error" role="alert"></div>
+          <div class="admin-reg-savebar">
+            <div><div class="admin-reg-save-note">Date and day formula columns are preserved.</div><div id="adminRegisterStatus" class="admin-reg-status" aria-live="polite"></div></div>
+            <div class="admin-reg-actions"><button id="adminRegisterEditBtn" class="admin-reg-edit-btn" type="button" onclick="editAdminDutyRegister()" style="display:none">Edit entries</button><button id="adminRegisterSaveBtn" class="admin-reg-save-btn" type="button" onclick="saveAdminDutyRegister()">Save assignments</button></div>
+          </div>
+        </div>
+      </section>
     </div>
 
     <div id="pageAdminPortal" class="screen-page">
@@ -912,24 +941,6 @@
         <button class="admin-menu-item" onclick="selectAdminModule(this,22,'Preview','👁️')"><span class="admin-menu-num">22</span><span class="admin-menu-icon">👁️</span><span class="admin-menu-text"><span class="admin-menu-title">Preview</span><span class="admin-menu-desc">Second preview entry (kept as requested)</span></span><span class="admin-menu-arrow">›</span></button>
         <button class="admin-menu-item" onclick="selectAdminModule(this,23,'Maintenance Day Lineup','🛠️')"><span class="admin-menu-num">23</span><span class="admin-menu-icon">🛠️</span><span class="admin-menu-text"><span class="admin-menu-title">Maintenance Day Lineup</span><span class="admin-menu-desc">Maintenance-day duty lineup</span></span><span class="admin-menu-arrow">›</span></button>
         <button class="admin-menu-item" onclick="selectAdminModule(this,24,'Position Lineup','📍')"><span class="admin-menu-num">24</span><span class="admin-menu-icon">📍</span><span class="admin-menu-text"><span class="admin-menu-title">Position Lineup</span><span class="admin-menu-desc">Position distribution and lineup</span></span><span class="admin-menu-arrow">›</span></button>
-      </div>
-    </div>
-
-    <div id="pageAdminDutyRegister" class="screen-page">
-      <div class="top-actions-bar">
-        <button class="btn-back" onclick="showPage('pageAdminPortal')">◀ Admin Portal</button>
-        <button class="refresh-icon-btn" onclick="loadAdminDutyRegister()">🔄 Load date</button>
-      </div>
-      <div class="admin-duty-register-card">
-        <div class="admin-page-title">📋 DUTY REGISTER</div>
-        <div class="admin-page-subtitle">Edit the selected date in the existing Duty Register sheet.</div>
-        <div class="admin-duty-register-controls">
-          <label for="adminDutyRegisterDate">Duty date<input class="admin-duty-register-input" type="date" id="adminDutyRegisterDate" onchange="loadAdminDutyRegister()"></label>
-          <div><div class="admin-page-subtitle">Day</div><strong id="adminDutyRegisterDay">—</strong></div>
-        </div>
-        <div id="adminDutyRegisterStatus" class="admin-duty-register-status" role="status" aria-live="polite">Select a date and load its Duty Register row.</div>
-        <div id="adminDutyRegisterFields" class="admin-duty-register-grid"></div>
-        <button id="adminDutyRegisterSave" class="btn-action-main admin-duty-register-save" onclick="saveAdminDutyRegister()" disabled>Save Duty</button>
       </div>
     </div>
 
@@ -1723,12 +1734,23 @@
     function showBlurLoader(show, startPercent = 10, maxPercent = 95) {
       const loader = document.getElementById('globalBlurLoader');
       const percentEl = document.getElementById('blurLoaderPercent');
+      const ringEl = document.getElementById('blurLoaderRing');
       if (!loader) return;
 
+      const updateRing = value => {
+        const percent = Math.max(0, Math.min(100, Number(value) || 0));
+        if (percentEl) percentEl.innerText = percent + '%';
+        if (ringEl) {
+          ringEl.style.setProperty('--load-progress', percent + '%');
+          ringEl.setAttribute('aria-valuenow', String(percent));
+        }
+      };
+
       if (show) {
+        window.blurLoaderGeneration = Number(window.blurLoaderGeneration || 0) + 1;
         loader.style.display = 'flex';
         let current = startPercent;
-        percentEl.innerText = current + "%";
+        updateRing(current);
         if (blurInterval) clearInterval(blurInterval);
         if (maxWaitTimer) clearTimeout(maxWaitTimer);
         
@@ -1736,7 +1758,7 @@
           if (current < maxPercent) {
             current += Math.floor(Math.random() * 4) + 2;
             if (current > maxPercent) current = maxPercent;
-            percentEl.innerText = current + "%";
+            updateRing(current);
           }
         }, 200);
 
@@ -1747,9 +1769,10 @@
       } else {
         if (blurInterval) clearInterval(blurInterval);
         if (maxWaitTimer) clearTimeout(maxWaitTimer);
-        percentEl.innerText = "100%";
+        const hideGeneration = Number(window.blurLoaderGeneration || 0);
+        updateRing(100);
         setTimeout(() => {
-          loader.style.display = 'none';
+          if (Number(window.blurLoaderGeneration || 0) === hideGeneration) loader.style.display = 'none';
         }, 150);
       }
     }
@@ -1910,6 +1933,231 @@
       }
     };
 
+    function requestAdminDutyRegister_(action, extraParams, handler) {
+      if (!isAshokAdminSession_()) {
+        showCustomAlert('Admin session expired. Please login again.');
+        return;
+      }
+      const params = Object.assign({}, extraParams || {});
+      params.action = action;
+      params.adminName = localStorage.getItem(STORAGE_KEY) || '';
+      params.authToken = sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '';
+      const callbackName = 'adminDutyRegisterCb_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+      params.callback = callbackName;
+      const query = Object.keys(params).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(String(params[k]))).join('&');
+      const script = document.createElement('script');
+      window[callbackName] = function(res) {
+        try { handler(res || { status: 'error', message: 'No response received from the duty register.' }); }
+        finally { delete window[callbackName]; script.remove(); }
+      };
+      script.onerror = function() {
+        delete window[callbackName];
+        script.remove();
+        handler({ status: 'error', message: 'Could not connect to Duty Register. Please check the connection and try again.' });
+      };
+      script.src = SCRIPT_URL + '?' + query + '&t=' + Date.now();
+      document.head.appendChild(script);
+    }
+
+    function openAdminDutyRegister(btn) {
+      if (!isAshokAdminSession_()) {
+        showCustomAlert('Admin Portal is available only for Ashok.');
+        return;
+      }
+      document.querySelectorAll('#adminMenuGrid .admin-menu-item').forEach(el => el.classList.remove('selected'));
+      if (btn) btn.classList.add('selected');
+      showPage('pageAdminDutyRegister');
+      loadAdminDutyRegister();
+    }
+
+    function loadAdminDutyRegister() {
+      if (!isAshokAdminSession_()) {
+        showCustomAlert('Admin session expired. Please login again.');
+        return;
+      }
+      startAdminDutyRegisterLoading_('Loading duty data', 'Reading the selected date, position lineup, and saved entries…');
+      const btn = document.getElementById('adminRegisterRefreshBtn');
+      if (btn) btn.classList.add('spinning');
+      const dateInput = document.getElementById('adminRegisterDate');
+      const params = dateInput && dateInput.value ? { date: dateInput.value } : {};
+      document.getElementById('adminRegisterStatus').textContent = 'Loading Duty Register…';
+      requestAdminDutyRegister_('getAdminDutyRegister', params, function(res) {
+        if (btn) btn.classList.remove('spinning');
+        finishAdminDutyRegisterLoading_(() => {
+          if (!res || res.status !== 'success') {
+            document.getElementById('adminRegisterStatus').textContent = '';
+            document.getElementById('adminRegisterLineup').innerHTML = '<div class="admin-module-status">' + escapeAdminDutyText_((res && res.message) || 'Unable to load Duty Register.') + '</div>';
+            showCustomAlert((res && res.message) || 'Unable to load Duty Register.');
+            return;
+          }
+          window.adminDutyRegisterData = res;
+          dateInput.value = res.date || '';
+          window.adminDutyRegisterEditing = !(res.entries || []).some(x => x.value);
+          document.getElementById('adminRegisterTableTitle').textContent = 'Duty Register · ' + (res.dateText || res.date);
+          document.getElementById('adminRegisterLineupDate').textContent = res.lineupDateText ? 'Position · operator · ' + res.lineupDateText : 'Position · operator';
+          renderAdminDutyRegister_(res);
+          document.getElementById('adminRegisterStatus').textContent = res.day ? 'Sheet day: ' + res.day : '';
+        });
+      });
+    }
+
+    function startAdminDutyRegisterLoading_(title, subtitle) {
+      if (window.adminRegisterLoadTimer) clearInterval(window.adminRegisterLoadTimer);
+      if (window.adminRegisterLoadTimeout) clearTimeout(window.adminRegisterLoadTimeout);
+      window.adminRegisterLoadPercent = 3;
+      const box = document.getElementById('adminRegisterLoading');
+      if (!box) return;
+      box.style.display = 'block';
+      box.innerHTML = '<div class="admin-duty-loading"><div class="admin-load-ring" id="adminRegisterLoadRing" role="progressbar" aria-label="Loading Duty Register" aria-valuemin="0" aria-valuemax="100" aria-valuenow="3" style="--load-progress:3%"><i class="admin-load-orbit"></i><span id="adminRegisterLoadPercent">3%</span></div><div class="admin-duty-loading-copy"><div class="admin-duty-loading-title">' + escapeAdminDutyText_(title) + '</div><div class="admin-duty-loading-sub">' + escapeAdminDutyText_(subtitle) + '</div><div class="admin-duty-loading-hint">Please wait while data is synchronized</div></div></div>';
+      window.adminRegisterLoadTimer = setInterval(() => {
+        const next = Math.min(92, Number(window.adminRegisterLoadPercent || 3) + (window.adminRegisterLoadPercent < 68 ? 7 : 3));
+        window.adminRegisterLoadPercent = next;
+        const ring = document.getElementById('adminRegisterLoadRing');
+        const label = document.getElementById('adminRegisterLoadPercent');
+        if (ring) { ring.style.setProperty('--load-progress', next + '%'); ring.setAttribute('aria-valuenow', String(next)); }
+        if (label) label.textContent = next + '%';
+      }, 350);
+      window.adminRegisterLoadTimeout = setTimeout(() => {
+        if (window.adminRegisterLoadTimer) clearInterval(window.adminRegisterLoadTimer);
+        window.adminRegisterLoadTimer = null;
+        const btn = document.getElementById('adminRegisterRefreshBtn');
+        if (btn) btn.classList.remove('spinning');
+        box.innerHTML = '<strong style="color:#fca5a5;">Duty Register is taking longer to load. Please tap Refresh.</strong>';
+      }, 30000);
+    }
+
+    function finishAdminDutyRegisterLoading_(callback) {
+      if (window.adminRegisterLoadTimer) clearInterval(window.adminRegisterLoadTimer);
+      if (window.adminRegisterLoadTimeout) clearTimeout(window.adminRegisterLoadTimeout);
+      window.adminRegisterLoadTimer = null;
+      window.adminRegisterLoadTimeout = null;
+      const ring = document.getElementById('adminRegisterLoadRing');
+      const label = document.getElementById('adminRegisterLoadPercent');
+      if (ring) { ring.style.setProperty('--load-progress', '100%'); ring.setAttribute('aria-valuenow', '100'); }
+      if (label) label.textContent = '100%';
+      setTimeout(() => {
+        const box = document.getElementById('adminRegisterLoading');
+        if (box) box.style.display = 'none';
+        if (typeof callback === 'function') callback();
+      }, 220);
+    }
+
+    function escapeAdminDutyText_(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+
+    function renderAdminDutyRegister_(res) {
+      const lineup = document.getElementById('adminRegisterLineup');
+      lineup.innerHTML = res.lineup && res.lineup.length
+        ? res.lineup.map(x => '<div class="admin-reg-lineup-card"><strong>' + escapeAdminDutyText_(x.position) + '</strong><span>' + escapeAdminDutyText_(x.operator || '—') + '</span></div>').join('')
+        : '<div class="admin-module-status">No published Position Lineup found for this date.</div>';
+      const rows = document.getElementById('adminRegisterRows');
+      const entries = res.entries || [];
+      const operators = res.operators || [];
+      const editing = !!window.adminDutyRegisterEditing;
+      rows.innerHTML = entries.map((entry, i) => {
+        const position = escapeAdminDutyText_(entry.position);
+        const value = String(entry.value || '');
+        const valueIsOption = operators.some(o => String(o).toLowerCase() === value.toLowerCase());
+        let opts = '<option value=""' + (valueIsOption ? '' : ' selected') + '>Select operator / OT / H / M</option>';
+        opts += '<option value="__CLEAR__">Clear saved assignment</option>';
+        opts += operators.map(op => '<option value="' + escapeAdminDutyText_(op) + '"' + (String(op).toLowerCase() === value.toLowerCase() ? ' selected' : '') + '>' + escapeAdminDutyText_(op) + '</option>').join('');
+        const savedLabel = value ? 'Saved: ' + escapeAdminDutyText_(value) + (valueIsOption ? '' : ' · kept unless changed') : 'Not entered';
+        return '<tr><td class="admin-reg-position">' + position + '</td><td><select data-index="' + i + '" aria-label="' + position + ' assignment" onchange="validateAdminDutyRegister_()"' + (editing ? '' : ' disabled') + '>' + opts + '</select></td><td><span class="admin-reg-entry-state">' + savedLabel + '</span></td></tr>';
+      }).join('');
+      document.getElementById('adminRegisterEditBtn').style.display = editing ? 'none' : 'inline-block';
+      document.getElementById('adminRegisterSaveBtn').style.display = editing ? 'inline-block' : 'none';
+      validateAdminDutyRegister_();
+    }
+
+    function validateAdminDutyRegister_() {
+      const data = window.adminDutyRegisterData;
+      if (!data) return false;
+      const controls = Array.from(document.querySelectorAll('#adminRegisterRows select'));
+      const seen = new Map();
+      const duplicates = [];
+      controls.forEach(el => {
+        el.style.borderColor = '';
+        const val = String(el.value || '').trim();
+        if (!val || val === '__CLEAR__' || ['ot', 'h', 'm'].includes(val.toLowerCase())) return;
+        const key = val.toLowerCase();
+        if (seen.has(key)) { duplicates.push(val); el.style.borderColor = '#fb7185'; seen.get(key).style.borderColor = '#fb7185'; }
+        else seen.set(key, el);
+      });
+      const error = document.getElementById('adminRegisterError');
+      const unique = Array.from(new Set(duplicates));
+      if (unique.length) {
+        error.textContent = 'Duplicate operator name: ' + unique.join(', ') + '. Each operator can be assigned to only one position.';
+        error.classList.add('show');
+      } else { error.textContent = ''; error.classList.remove('show'); }
+      const filled = controls.filter(el => el.value && el.value !== '__CLEAR__').length;
+      document.getElementById('adminRegisterCount').textContent = filled + ' / ' + controls.length + ' filled';
+      document.getElementById('adminRegisterSaveBtn').disabled = unique.length > 0;
+      return unique.length === 0;
+    }
+
+    function editAdminDutyRegister() {
+      window.adminDutyRegisterEditing = true;
+      document.querySelectorAll('#adminRegisterRows select').forEach(el => el.disabled = false);
+      document.getElementById('adminRegisterEditBtn').style.display = 'none';
+      document.getElementById('adminRegisterSaveBtn').style.display = 'inline-block';
+      document.getElementById('adminRegisterStatus').textContent = 'Edit assignments, then save your changes.';
+    }
+
+    function saveAdminDutyRegister() {
+      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
+      if (!validateAdminDutyRegister_()) return;
+      const date = document.getElementById('adminRegisterDate').value;
+      const entries = Array.from(document.querySelectorAll('#adminRegisterRows select')).map((el, i) => {
+        const previous = String(window.adminDutyRegisterData.entries[i].value || '');
+        const value = el.value === '__CLEAR__' ? '' : (el.value || previous);
+        return { position: window.adminDutyRegisterData.positions[i], value: value };
+      });
+      const btn = document.getElementById('adminRegisterSaveBtn');
+      btn.disabled = true; btn.textContent = 'Saving…';
+      startAdminDutyRegisterLoading_('Saving duty data', 'Writing the selected position assignments to Duty Register…');
+      document.getElementById('adminRegisterStatus').textContent = 'Saving assignments to Duty Register…';
+      requestAdminDutyRegister_('saveAdminDutyRegister', { date: date, entries: JSON.stringify(entries) }, function(res) {
+        finishAdminDutyRegisterLoading_(() => {
+          btn.disabled = false; btn.textContent = 'Save assignments';
+          if (!res || res.status !== 'success') {
+            document.getElementById('adminRegisterStatus').textContent = '';
+            showCustomAlert((res && res.message) || 'Could not save Duty Register.');
+            return;
+          }
+          window.adminDutyRegisterData.entries = res.entries || entries;
+          window.adminDutyRegisterData.day = res.day || window.adminDutyRegisterData.day;
+          window.adminDutyRegisterEditing = false;
+          renderAdminDutyRegister_(window.adminDutyRegisterData);
+          document.getElementById('adminRegisterStatus').textContent = 'Saved to sheet · ' + (res.dateText || res.date) + (res.day ? ' · ' + res.day : '');
+          showToast('Duty Register saved successfully ✅');
+        });
+      });
+    }
+
+    function adminSubmitPositionLineupToRegister() {
+      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
+      const btn = document.querySelector('.admin-reg-submit-lineup');
+      if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+      const send = overwrite => {
+        showBlurLoader(true, 5, 92);
+        requestAdminDutyRegister_('adminSubmitDutyRegister', { overwrite: overwrite ? '1' : '0' }, function(res) {
+        showBlurLoader(false);
+        if (res && res.status === 'confirm_required') {
+          const detail = (res.existing || []).map(x => x.position + ': ' + x.value).join('\n');
+          const ok = confirm('Duty Register already has entries for ' + (res.date ? res.date.split('-').reverse().join('/') : 'this date') + '.\n\n' + detail + '\n\nReplace these entries with the current Position Lineup?');
+          if (ok) send(true);
+          else if (btn) { btn.disabled = false; btn.innerHTML = '⬇ Submit Duty'; }
+          return;
+        }
+        if (btn) { btn.disabled = false; btn.innerHTML = '⬇ Submit Duty'; }
+        if (res && res.status === 'success') showToast('Current Position Lineup added to Duty Register ✅');
+        else showCustomAlert((res && res.message) || 'Could not submit the lineup to Duty Register.');
+        });
+      };
+      send(false);
+    }
+
     function openAdminPortal() {
       if (!isAshokAdminSession_()) {
         showCustomAlert('Admin Portal is available only for Ashok.');
@@ -1931,113 +2179,11 @@
         btn.classList.add('selected');
         btn.setAttribute('aria-pressed', 'true');
       }
-      if (number === 2) {
+      if (number === 2 && name === 'Duty Register') {
         showPage('pageAdminDutyRegister');
-        const dateInput = document.getElementById('adminDutyRegisterDate');
-        if (dateInput && !dateInput.value) {
-          const now = new Date();
-          dateInput.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-        }
         loadAdminDutyRegister();
       }
     }
-
-    function normalizeAdminDutyDate_(value) {
-      const raw = String(value || '').trim();
-      let match = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-      let year, month, day;
-      if (match) { year = Number(match[1]); month = Number(match[2]); day = Number(match[3]); }
-      else {
-        match = raw.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
-        if (!match) return '';
-        day = Number(match[1]); month = Number(match[2]); year = Number(match[3]);
-      }
-      const check = new Date(Date.UTC(year, month - 1, day));
-      if (check.getUTCFullYear() !== year || check.getUTCMonth() !== month - 1 || check.getUTCDate() !== day) return '';
-      return `${String(year).padStart(4,'0')}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    }
-
-    function adminDutyRegisterRequest_(action, extra) {
-      const name = (localStorage.getItem(STORAGE_KEY) || '').trim();
-      const token = sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '';
-      const params = Object.assign({ action, adminName:name, authToken:token, callback: action === 'saveAdminDutyRegister' ? 'handleAdminDutyRegisterSave' : 'handleAdminDutyRegisterLoad', t:Date.now() }, extra || {});
-      const query = Object.keys(params).map(k => encodeURIComponent(k)+'='+encodeURIComponent(params[k])).join('&');
-      const script = document.createElement('script');
-      script.src = SCRIPT_URL + '?' + query;
-      script.onerror = () => {
-        const saveButton = document.getElementById('adminDutyRegisterSave');
-        if (saveButton && action === 'saveAdminDutyRegister') saveButton.disabled = false;
-        setAdminDutyRegisterStatus_('Could not reach the Duty Register. Check your connection and retry.', false);
-      };
-      document.head.appendChild(script);
-    }
-
-    function setAdminDutyRegisterStatus_(message, ok) {
-      const el = document.getElementById('adminDutyRegisterStatus');
-      if (!el) return;
-      el.textContent = message;
-      el.className = 'admin-duty-register-status' + (ok === true ? ' ok' : ok === false ? ' error' : '');
-    }
-
-    function loadAdminDutyRegister() {
-      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
-      const date = normalizeAdminDutyDate_(document.getElementById('adminDutyRegisterDate').value);
-      if (!date) { setAdminDutyRegisterStatus_('Choose a duty date first.', false); return; }
-      document.getElementById('adminDutyRegisterFields').innerHTML = '';
-      document.getElementById('adminDutyRegisterSave').disabled = true;
-      setAdminDutyRegisterStatus_('Loading Duty Register row…');
-      adminDutyRegisterRequest_('getAdminDutyRegister', { date });
-    }
-
-    window.handleAdminDutyRegisterLoad = function(res) {
-      if (!res || res.status !== 'success') { setAdminDutyRegisterStatus_((res && res.message) || 'Could not load this Duty Register row.', false); return; }
-      document.getElementById('adminDutyRegisterDay').textContent = res.day || '—';
-      const box = document.getElementById('adminDutyRegisterFields');
-      box.innerHTML = '';
-      const operators = (res.operators || JSON.parse(localStorage.getItem(CACHED_OPS_KEY) || '[]').map(op => typeof op === 'string' ? op : op.name).filter(Boolean));
-      (res.positions || []).forEach((item, i) => {
-        const row = document.createElement('div'); row.className = 'admin-duty-register-row';
-        const label = document.createElement('label'); label.className = 'admin-duty-register-position'; label.textContent = item.position;
-        const select = document.createElement('select'); select.className = 'admin-duty-register-input'; select.dataset.position = item.position; select.setAttribute('aria-label', item.position + ' operator');
-        const blank = document.createElement('option'); blank.value = ''; blank.textContent = '— Unassigned —'; select.appendChild(blank);
-        const names = operators.slice();
-        if (item.operator && !names.some(n => String(n).toLocaleLowerCase() === String(item.operator).toLocaleLowerCase())) names.unshift(item.operator);
-        names.forEach(operator => { const option = document.createElement('option'); option.value = operator; option.textContent = operator; select.appendChild(option); });
-        select.value = item.operator || '';
-        row.append(label, select); box.appendChild(row);
-      });
-      document.getElementById('adminDutyRegisterSave').disabled = false;
-      setAdminDutyRegisterStatus_('Loaded ' + res.displayDate + '. Make corrections and save when ready.');
-    };
-
-    function saveAdminDutyRegister() {
-      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
-      const date = normalizeAdminDutyDate_(document.getElementById('adminDutyRegisterDate').value);
-      if (!date) { setAdminDutyRegisterStatus_('Choose a valid duty date first.', false); return; }
-      const assignments = {};
-      document.querySelectorAll('#adminDutyRegisterFields select[data-position]').forEach(select => assignments[select.dataset.position] = select.value.trim());
-      const seen = {};
-      for (const position in assignments) {
-        const key = assignments[position].trim().replace(/\s+/g, ' ').toLocaleLowerCase();
-        if (!key) continue;
-        if (seen[key]) { setAdminDutyRegisterStatus_(`${assignments[position]} appears in both ${seen[key]} and ${position}. Each operator can be assigned once.`, false); return; }
-        seen[key] = position;
-      }
-      const button = document.getElementById('adminDutyRegisterSave'); button.disabled = true;
-      setAdminDutyRegisterStatus_('Saving and verifying against Google Sheets…');
-      adminDutyRegisterRequest_('saveAdminDutyRegister', { date, assignments:JSON.stringify(assignments) });
-    }
-
-    window.handleAdminDutyRegisterSave = function(res) {
-      document.getElementById('adminDutyRegisterSave').disabled = false;
-      if (!res || res.status !== 'success' || !res.verified) {
-        setAdminDutyRegisterStatus_((res && res.message) || 'Save could not be verified. Review the row and try again.', false);
-        if (res && res.positions) window.handleAdminDutyRegisterLoad(Object.assign({}, res, { status:'success' }));
-        return;
-      }
-      window.handleAdminDutyRegisterLoad(Object.assign({}, res, { status:'success' }));
-      setAdminDutyRegisterStatus_('✅ Saved & Verified for ' + res.displayDate + '. Values below were read back from Google Sheets. You can edit and save corrections anytime.', true);
-    };
 
     function showPage(pageId) {
       refreshAdminPortalVisibility_();
