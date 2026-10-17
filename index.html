@@ -87,6 +87,9 @@
     .maintenance-card { background: #07142b; border: 3px solid #ef4444; border-radius: 14px; padding: 28px 18px; text-align: center; display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:40px; box-shadow:0 0 25px rgba(239,68,68,0.35); }
     .maintenance-card h2 { color:#ef4444; font-size:20px; font-weight:900; }
     .maintenance-card p { color:#ffff00; font-size:14px; font-weight:800; line-height:1.5; }
+    #maintenancePhotoBox{display:none;width:100%;margin:8px 0 2px;border:1px solid #38bdf8;border-radius:10px;background:#07142b;padding:5px;overflow:hidden}#maintenancePhotoBox img{display:block;width:100%;max-height:34vh;object-fit:contain;border-radius:6px}
+    .admin-maint-photo-panel{display:grid;gap:15px;background:#0b1727;border:1px solid #28435e;border-radius:15px;padding:16px;color:#eaf4ff}.admin-maint-photo-preview{display:grid;place-items:center;min-height:150px;background:#071424;border:1px dashed #34516c;border-radius:12px;overflow:hidden}.admin-maint-photo-preview img{display:none;width:100%;max-height:320px;object-fit:contain}.admin-maint-photo-empty{color:#91a9c0;font-size:14px;text-align:center;padding:20px}.admin-maint-photo-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.admin-maint-photo-controls input[type=file]{max-width:100%;color:#dbeafe}.admin-maint-photo-save{background:linear-gradient(100deg,#0bb48e,#07986f);border:1px solid #34d399;color:white;border-radius:10px;padding:12px 17px;font-weight:900;cursor:pointer}.admin-maint-photo-save:disabled{opacity:.55;cursor:wait}.admin-maint-photo-status{color:#a7f3d0;font-size:13px;min-height:18px}.admin-maint-photo-status.error{color:#fca5a5}.admin-maint-mode-badge{display:inline-flex;padding:5px 10px;border-radius:99px;background:#243449;color:#dbeafe;font-size:12px;font-weight:900}.admin-maint-mode-badge.on{background:#064e3b;color:#a7f3d0;border:1px solid #34d399}.admin-maint-mode-badge.off{background:#3f1d25;color:#fecaca;border:1px solid #f87171}.admin-maint-mode-toggle{border:1px solid #38bdf8;border-radius:10px;padding:10px 15px;background:#10243a;color:#e8f6ff;font-weight:900;cursor:pointer}.admin-maint-mode-toggle.turn-on{background:linear-gradient(100deg,#0bb48e,#087e63);border-color:#34d399}.admin-maint-mode-toggle.turn-off{background:linear-gradient(100deg,#ef4444,#b91c1c);border-color:#f87171}.admin-maint-mode-toggle:disabled{opacity:.6;cursor:wait}
+    .admin-maint-setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px;border:1px solid #223c56;border-radius:12px;background:#0a1524}.admin-maint-setting-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.admin-maint-setting-note{font-size:12px;color:#91a9c0;margin-top:4px;line-height:1.4}.admin-maint-message-editor{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.admin-maint-message-editor label{grid-column:1/-1}.admin-maint-message-editor textarea{width:100%;resize:vertical;min-height:70px;background:#071424;color:#eaf4ff;border:1px solid #34516c;border-radius:9px;padding:10px;font:inherit}.admin-maint-message-editor textarea:focus{outline:2px solid #38bdf8}.admin-maint-message-editor button{white-space:nowrap}@media(max-width:560px){.admin-maint-message-editor{grid-template-columns:1fr}.admin-maint-message-editor label{grid-column:auto}.admin-maint-message-editor button{width:100%}}
     .maintenance-icon { font-size:48px; }
     .pin-input { width:100%; background:#000; color:#ffff00; border:2px solid #38bdf8; padding:12px; font-size:20px; font-weight:900; border-radius:8px; outline:none; text-align:center; letter-spacing:6px; }
 
@@ -525,7 +528,7 @@
       #pwaInstallCard .pwa-install-subtitle { font-size: 10px; }
       #pwaInstallButton { padding: 9px 10px; font-size: 11px; }
     }
-    #pageAdminPortal *,#pageAdminDutyRegister *,#pageAdminDutyConfirm *{font-weight:700;text-shadow:0 0 4px rgba(56,189,248,.2)}
+    #pageAdminPortal *,#pageAdminDutyRegister *,#pageAdminDutyConfirm *,#pageAdminMaintenanceMode *{font-weight:700;text-shadow:0 0 4px rgba(56,189,248,.2)}
     .admin-menu-title{font-weight:900!important;color:#ffff00!important;text-shadow:0 0 7px rgba(250,204,21,.48)!important}.admin-menu-desc{font-weight:700!important;text-shadow:0 0 5px rgba(96,165,250,.3)!important}.admin-menu-num{font-weight:900!important;text-shadow:0 0 5px rgba(250,204,21,.3)}
   </style>
 </head>
@@ -703,6 +706,7 @@
         <div class="maintenance-icon">🔧</div>
         <h2>APP IS UNDER MAINTENANCE</h2>
         <p id="maintenanceMessageText">App is under Maintenance</p>
+        <div id="maintenancePhotoBox"><img id="maintenancePhoto" alt="Maintenance notice"></div>
 
         <div id="maintenanceLineupBox" style="display:none; width:100%; margin-top:6px;">
           <div style="background:#000; border:2px solid #38bdf8; border-radius:8px; overflow:hidden;">
@@ -905,6 +909,44 @@
           </div>
         </div>
       </section>
+    </div>
+
+    <div id="pageAdminMaintenanceMode" class="screen-page">
+      <div class="top-actions-bar">
+        <button class="btn-back" type="button" onclick="showPage('pageAdminPortal')">◀ Admin Portal</button>
+        <span class="admin-portal-badge">🔧 MAINTENANCE</span>
+      </div>
+      <div class="admin-reg-head">
+        <h1 class="admin-reg-title">🔧 Maintenance Mode</h1>
+        <div class="admin-reg-sub">Choose a notice photo to display on the public maintenance screen.</div>
+      </div>
+      <section class="admin-maint-photo-panel">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+          <strong>Maintenance Mode</strong>
+          <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><span id="adminMaintModeBadge" class="admin-maint-mode-badge">Checking…</span><button id="adminMaintModeToggle" class="admin-maint-mode-toggle" type="button" onclick="toggleAdminMaintenanceMode()" disabled>Loading…</button></div>
+        </div>
+        <div id="adminMaintModeStatus" class="admin-maint-photo-status" aria-live="polite">Checking Maintenance Mode status…</div>
+        <div class="admin-maint-setting-row">
+          <div><strong>Show Maintenance Lineup</strong><div class="admin-maint-setting-note">OFF hele lineup badalare maintenance message dekhajiba.</div></div>
+          <div class="admin-maint-setting-actions"><span id="adminMaintLineupBadge" class="admin-maint-mode-badge">Checking…</span><button id="adminMaintLineupToggle" class="admin-maint-mode-toggle" type="button" onclick="toggleAdminMaintenanceSetting('showMaintenanceLineup')" disabled>Loading…</button></div>
+        </div>
+        <div class="admin-maint-message-editor"><label for="adminMaintMessageInput"><strong>Maintenance Message</strong></label><textarea id="adminMaintMessageInput" maxlength="240" rows="3" placeholder="Enter a maintenance message"></textarea><button id="adminMaintMessageSave" class="admin-maint-mode-toggle" type="button" onclick="saveAdminMaintenanceMessage()">Save message</button></div>
+        <div class="admin-maint-setting-row">
+          <div><strong>Photo Publish</strong><div class="admin-maint-setting-note">ON kale photo operators nka maintenance screen re dekhajiba.</div></div>
+          <div class="admin-maint-setting-actions"><span id="adminMaintPhotoPublishBadge" class="admin-maint-mode-badge">Checking…</span><button id="adminMaintPhotoPublishToggle" class="admin-maint-mode-toggle" type="button" onclick="toggleAdminMaintenanceSetting('photoPublished')" disabled>Loading…</button></div>
+        </div>
+        <div class="admin-maint-photo-preview">
+          <img id="adminMaintPhotoPreview" alt="Selected maintenance notice">
+          <div id="adminMaintPhotoEmpty" class="admin-maint-photo-empty">No photo selected. Choose an image below to preview it.</div>
+        </div>
+        <div class="admin-maint-photo-controls">
+          <input id="adminMaintPhotoInput" type="file" accept="image/*" onchange="previewAdminMaintenancePhoto(this)">
+          <button id="adminMaintPhotoSave" class="admin-maint-photo-save" type="button" onclick="publishAdminMaintenancePhoto()" disabled>Upload / Replace photo</button>
+        </div>
+        <div id="adminMaintPhotoStatus" class="admin-maint-photo-status" aria-live="polite"></div>
+        <div style="color:#91a9c0;font-size:12px;line-height:1.5">Upload photo first, then switch Photo Publish ON when you want operators to see it. Photo Publish OFF restores the lineup/message view.</div>
+      </section>
+      <iframe id="adminMaintUploadFrame" name="adminMaintUploadFrame" title="Maintenance photo upload" style="display:none"></iframe>
     </div>
 
     <div id="pageAdminPortal" class="screen-page">
@@ -1417,8 +1459,10 @@
       message: "App is under Maintenance",
       allowedUser: "Ashok",
       showMaintenanceLineup: false,
+      photoPublished: false,
       maintenanceLineupDate: "",
-      maintenanceLineup: null
+      maintenanceLineup: null,
+      maintenanceImageUrl: ""
     };
     let maintenanceCheckComplete = false;
     let maintenanceStatusTimer = null;
@@ -1500,8 +1544,10 @@
           message: res.message || "App is under Maintenance",
           allowedUser: res.allowedUser || "Ashok",
           showMaintenanceLineup: res.showMaintenanceLineup === true,
+          photoPublished: res.photoPublished === true,
           maintenanceLineupDate: res.maintenanceLineupDate || "",
-          maintenanceLineup: res.maintenanceLineup || null
+          maintenanceLineup: res.maintenanceLineup || null,
+          maintenanceImageUrl: res.maintenanceImageUrl || ""
         };
       } else {
         // Fail closed: if maintenance status cannot be verified, do not allow
@@ -1511,8 +1557,10 @@
           message: (res && res.message) || "Unable to verify app status. Please try again later.",
           allowedUser: "Ashok",
           showMaintenanceLineup: false,
+          photoPublished: false,
           maintenanceLineupDate: "",
-          maintenanceLineup: null
+          maintenanceLineup: null,
+          maintenanceImageUrl: ""
         };
       }
 
@@ -1542,7 +1590,7 @@
       content.innerHTML = '';
       if (note) note.innerText = '';
 
-      if (!maintenanceState.showMaintenanceLineup || !maintenanceState.maintenanceLineup) return;
+      if (!maintenanceState.showMaintenanceLineup || maintenanceState.photoPublished || !maintenanceState.maintenanceLineup) return;
 
       const data = maintenanceState.maintenanceLineup;
       const headers = Array.isArray(data.headers) ? data.headers : [];
@@ -1586,6 +1634,19 @@
       }
     }
 
+    function renderMaintenancePhoto() {
+      const box = document.getElementById('maintenancePhotoBox');
+      const image = document.getElementById('maintenancePhoto');
+      const message = document.getElementById('maintenanceMessageText');
+      if (!box || !image) return;
+      const url = maintenanceState.photoPublished ? (maintenanceState.maintenanceImageUrl || '') : '';
+      if (!url) { box.style.display = 'none'; image.removeAttribute('src'); if (message) message.style.display = ''; return; }
+      image.src = url;
+      box.style.display = 'block';
+      if (message) message.style.display = 'none';
+      image.onerror = function() { box.style.display = 'none'; if (message) message.style.display = ''; };
+    }
+
     function closeMaintenanceApp() {
       // Close the standalone/PWA window when the browser permits it.
       try {
@@ -1603,6 +1664,7 @@
     function showMaintenancePage() {
       const msg = document.getElementById('maintenanceMessageText');
       if (msg) msg.innerText = maintenanceState.message || "App is under Maintenance";
+      renderMaintenancePhoto();
       renderMaintenanceLineup();
       stopPresenceHeartbeat();
       stopSupervisorMsgPolling();
@@ -2194,6 +2256,281 @@
       showPage('pageAdminPortal');
     }
 
+    function loadAdminMaintenancePhoto() {
+      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
+      const modeStatus = document.getElementById('adminMaintModeStatus');
+      const modeButton = document.getElementById('adminMaintModeToggle');
+      if (modeStatus) { modeStatus.textContent = 'Checking Maintenance Mode status…'; modeStatus.classList.remove('error'); }
+      if (modeButton) { modeButton.disabled = true; modeButton.textContent = 'Loading…'; }
+      const params = new URLSearchParams({
+        action: 'getAdminMaintenancePhoto',
+        adminName: localStorage.getItem(STORAGE_KEY) || '',
+        authToken: sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '',
+        callback: 'handleAdminMaintenancePhoto_' + Date.now()
+      });
+      const callbackName = params.get('callback');
+      const script = document.createElement('script');
+      window[callbackName] = function(res) {
+        try {
+          if (!res || res.status !== 'success') {
+            document.getElementById('adminMaintPhotoStatus').textContent = (res && res.message) || 'Could not load Maintenance Mode settings.';
+            document.getElementById('adminMaintPhotoStatus').classList.add('error');
+            return;
+          }
+          const badge = document.getElementById('adminMaintModeBadge');
+          badge.textContent = res.maintenanceMode ? 'ON' : 'OFF';
+          badge.className = 'admin-maint-mode-badge ' + (res.maintenanceMode ? 'on' : 'off');
+          updateAdminMaintenanceSettingsUI_(res);
+          document.getElementById('adminMaintMessageInput').value = res.maintenanceMessage || '';
+          window.adminMaintPhotoPublished = res.photoPublished === true;
+          window.adminMaintPhotoCurrentUrl = res.imageUrl || '';
+          const preview = document.getElementById('adminMaintPhotoPreview');
+          const empty = document.getElementById('adminMaintPhotoEmpty');
+          if (window.adminMaintPhotoCurrentUrl) {
+            preview.src = window.adminMaintPhotoCurrentUrl;
+            preview.style.display = 'block';
+            empty.style.display = 'none';
+            document.getElementById('adminMaintPhotoStatus').textContent = 'Published photo: ' + (res.fileName || 'Maintenance notice');
+          } else {
+            preview.removeAttribute('src');
+            preview.style.display = 'none';
+            empty.style.display = 'block';
+            document.getElementById('adminMaintPhotoStatus').textContent = 'No published photo yet.';
+          }
+          document.getElementById('adminMaintPhotoStatus').classList.remove('error');
+        } finally {
+          delete window[callbackName];
+          script.remove();
+        }
+      };
+      script.onerror = function() {
+        delete window[callbackName]; script.remove();
+        const status = document.getElementById('adminMaintPhotoStatus');
+        status.textContent = 'Unable to connect. Please tap the Maintenance Mode menu again.';
+        status.classList.add('error');
+        if (modeStatus) { modeStatus.textContent = 'Could not load the current mode.'; modeStatus.classList.add('error'); }
+        if (modeButton) { modeButton.disabled = true; modeButton.textContent = 'Unavailable'; }
+      };
+      script.src = SCRIPT_URL + '?' + params.toString() + '&t=' + Date.now();
+      document.head.appendChild(script);
+    }
+
+    function updateAdminMaintenanceModeUI_(isOn) {
+      const badge = document.getElementById('adminMaintModeBadge');
+      const button = document.getElementById('adminMaintModeToggle');
+      const status = document.getElementById('adminMaintModeStatus');
+      if (badge) { badge.textContent = isOn ? 'ON' : 'OFF'; badge.className = 'admin-maint-mode-badge ' + (isOn ? 'on' : 'off'); }
+      if (button) {
+        button.disabled = false;
+        button.textContent = isOn ? 'Turn Maintenance OFF' : 'Turn Maintenance ON';
+        button.className = 'admin-maint-mode-toggle ' + (isOn ? 'turn-off' : 'turn-on');
+      }
+      if (status) { status.textContent = isOn ? 'Maintenance Mode is ON. Operators will see the maintenance screen.' : 'Maintenance Mode is OFF. The normal app is available.'; status.classList.remove('error'); }
+      window.adminMaintenanceModeIsOn = !!isOn;
+    }
+
+    function updateAdminMaintenanceSettingsUI_(settings) {
+      settings = settings || {};
+      updateAdminMaintenanceModeUI_(settings.maintenanceMode === true);
+      const lineupOn = settings.showMaintenanceLineup === true;
+      const lineupBadge = document.getElementById('adminMaintLineupBadge');
+      const lineupButton = document.getElementById('adminMaintLineupToggle');
+      if (lineupBadge) { lineupBadge.textContent = lineupOn ? 'ON' : 'OFF'; lineupBadge.className = 'admin-maint-mode-badge ' + (lineupOn ? 'on' : 'off'); }
+      if (lineupButton) { lineupButton.disabled = false; lineupButton.textContent = lineupOn ? 'Turn Lineup OFF' : 'Turn Lineup ON'; lineupButton.className = 'admin-maint-mode-toggle ' + (lineupOn ? 'turn-off' : 'turn-on'); }
+      const photoOn = settings.photoPublished === true;
+      const photoBadge = document.getElementById('adminMaintPhotoPublishBadge');
+      const photoButton = document.getElementById('adminMaintPhotoPublishToggle');
+      if (photoBadge) { photoBadge.textContent = photoOn ? 'ON' : 'OFF'; photoBadge.className = 'admin-maint-mode-badge ' + (photoOn ? 'on' : 'off'); }
+      if (photoButton) { photoButton.disabled = false; photoButton.textContent = photoOn ? 'Turn Photo OFF' : 'Turn Photo ON'; photoButton.className = 'admin-maint-mode-toggle ' + (photoOn ? 'turn-off' : 'turn-on'); }
+      window.adminMaintenanceSettings = {
+        maintenanceMode: settings.maintenanceMode === true,
+        showMaintenanceLineup: lineupOn,
+        photoPublished: photoOn
+      };
+      window.adminMaintPhotoPublished = photoOn;
+    }
+
+    function toggleAdminMaintenanceMode() {
+      const turningOn = !window.adminMaintenanceModeIsOn;
+      if (!confirm(turningOn ? 'Turn Maintenance Mode ON? Operators will see the maintenance screen.' : 'Turn Maintenance Mode OFF? Operators will return to the normal app.')) return;
+      saveAdminMaintenanceSetting_('maintenanceMode', turningOn ? 'ON' : 'OFF', document.getElementById('adminMaintModeToggle'), document.getElementById('adminMaintModeStatus'));
+    }
+
+    function toggleAdminMaintenanceSetting(setting) {
+      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
+      const current = window.adminMaintenanceSettings || {};
+      const key = setting === 'showMaintenanceLineup' ? 'showMaintenanceLineup' : 'photoPublished';
+      const turningOn = !current[key];
+      if (key === 'photoPublished' && turningOn && !window.adminMaintPhotoCurrentUrl) {
+        showCustomAlert('Upload a photo first, then turn Photo Publish ON.'); return;
+      }
+      const confirmText = key === 'photoPublished'
+        ? (turningOn ? 'Publish this photo on the operator maintenance screen?' : 'Stop showing the published photo? The lineup/message view will return.')
+        : (turningOn ? 'Show the Maintenance Day Lineup to operators?' : 'Hide the lineup from operators? They will see the maintenance message or published photo.');
+      if (!confirm(confirmText)) return;
+      const buttonId = key === 'showMaintenanceLineup' ? 'adminMaintLineupToggle' : 'adminMaintPhotoPublishToggle';
+      saveAdminMaintenanceSetting_(key, turningOn ? 'ON' : 'OFF', document.getElementById(buttonId), document.getElementById('adminMaintModeStatus'));
+    }
+
+    function saveAdminMaintenanceMessage() {
+      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
+      const input = document.getElementById('adminMaintMessageInput');
+      const button = document.getElementById('adminMaintMessageSave');
+      saveAdminMaintenanceSetting_('maintenanceMessage', input.value, button, document.getElementById('adminMaintModeStatus'));
+    }
+
+    function saveAdminMaintenanceSetting_(setting, value, button, status) {
+      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
+      if (button) { button.disabled = true; button.textContent = 'Saving…'; }
+      if (status) { status.textContent = 'Saving Maintenance settings…'; status.classList.remove('error'); }
+      const callbackName = 'handleSetAdminMaintenanceMode_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+      const params = new URLSearchParams({
+        action: 'setAdminMaintenanceSetting',
+        setting: setting,
+        value: value,
+        adminName: localStorage.getItem(STORAGE_KEY) || '',
+        authToken: sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '',
+        callback: callbackName,
+        t: Date.now()
+      });
+      const script = document.createElement('script');
+      const finishError = message => {
+        delete window[callbackName]; script.remove();
+        if (button) {
+          button.disabled = false;
+          if (setting === 'maintenanceMessage') button.textContent = 'Save message';
+          else updateAdminMaintenanceSettingsUI_(window.adminMaintenanceSettings || {});
+        }
+        if (status) { status.textContent = message || 'Could not save Maintenance settings.'; status.classList.add('error'); }
+      };
+      window[callbackName] = function(res) {
+        delete window[callbackName]; script.remove();
+        if (!res || res.status !== 'success') { finishError((res && res.message) || 'Could not save Maintenance Mode.'); return; }
+        updateAdminMaintenanceSettingsUI_(res);
+        if (status) { status.textContent = res.message || 'Maintenance settings saved.'; status.classList.remove('error'); }
+        if (setting === 'maintenanceMessage') {
+          document.getElementById('adminMaintMessageInput').value = res.maintenanceMessage || value;
+          if (button) { button.disabled = false; button.textContent = 'Save message'; }
+        }
+      };
+      script.onerror = () => finishError('Unable to connect. Please try again.');
+      script.src = SCRIPT_URL + '?' + params.toString();
+      document.head.appendChild(script);
+    }
+
+    function previewAdminMaintenancePhoto(input) {
+      const file = input && input.files && input.files[0];
+      const button = document.getElementById('adminMaintPhotoSave');
+      const status = document.getElementById('adminMaintPhotoStatus');
+      const preview = document.getElementById('adminMaintPhotoPreview');
+      const empty = document.getElementById('adminMaintPhotoEmpty');
+      window.adminMaintPhotoPayload = null;
+      button.disabled = true;
+      status.classList.remove('error');
+      if (!file) { status.textContent = ''; return; }
+      if (!file.type || !file.type.startsWith('image/')) { status.textContent = 'Choose an image file.'; status.classList.add('error'); return; }
+      status.textContent = 'Preparing photo…';
+      const reader = new FileReader();
+      reader.onerror = function() { status.textContent = 'Could not read this photo.'; status.classList.add('error'); };
+      reader.onload = function() {
+        const image = new Image();
+        image.onerror = function() { status.textContent = 'This image could not be opened.'; status.classList.add('error'); };
+        image.onload = function() {
+          const scale = Math.min(1, 1600 / image.width, 1200 / image.height);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+          const context = canvas.getContext('2d');
+          context.fillStyle = '#ffffff'; context.fillRect(0, 0, canvas.width, canvas.height);
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          let dataUrl = canvas.toDataURL('image/jpeg', 0.84);
+          if (dataUrl.length > 2700000) dataUrl = canvas.toDataURL('image/jpeg', 0.68);
+          if (dataUrl.length > 2800000) {
+            status.textContent = 'This photo is still too large. Please choose a smaller image.';
+            status.classList.add('error'); return;
+          }
+          window.adminMaintPhotoPayload = {
+            imageData: dataUrl.split(',')[1],
+            fileName: (file.name || 'maintenance-photo').replace(/\.[^.]+$/, '') + '.jpg'
+          };
+          preview.src = dataUrl; preview.style.display = 'block'; empty.style.display = 'none';
+          button.disabled = false;
+          status.textContent = 'Photo ready to publish (' + Math.max(1, Math.round(dataUrl.length * 0.75 / 1024)) + ' KB).';
+        };
+        image.src = String(reader.result || '');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function publishAdminMaintenancePhoto() {
+      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
+      const payload = window.adminMaintPhotoPayload;
+      if (!payload || !payload.imageData) { showCustomAlert('Choose a photo first.'); return; }
+      const frame = document.getElementById('adminMaintUploadFrame');
+      const button = document.getElementById('adminMaintPhotoSave');
+      const status = document.getElementById('adminMaintPhotoStatus');
+      const requestId = 'maint-photo-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
+      window.adminMaintPhotoRequestId = requestId;
+      button.disabled = true;
+      button.textContent = 'Publishing photo…';
+      status.classList.remove('error');
+      status.textContent = 'Uploading and publishing your photo…';
+      if (window.adminMaintPhotoTimer) clearInterval(window.adminMaintPhotoTimer);
+      let progress = 4;
+      window.adminMaintPhotoTimer = setInterval(() => {
+        progress = Math.min(92, progress + 4);
+        status.textContent = 'Uploading and publishing photo · ' + progress + '%';
+      }, 450);
+      if (!window.adminMaintPhotoMessageBound) {
+        window.addEventListener('message', function(event) {
+          const uploadFrame = document.getElementById('adminMaintUploadFrame');
+          if (!uploadFrame || event.source !== uploadFrame.contentWindow) return;
+          const data = event.data;
+          if (!data || data.type !== 'r3-maintenance-photo-result' || data.requestId !== window.adminMaintPhotoRequestId) return;
+          if (window.adminMaintPhotoTimer) clearInterval(window.adminMaintPhotoTimer);
+          if (window.adminMaintPhotoTimeout) clearTimeout(window.adminMaintPhotoTimeout);
+          window.adminMaintPhotoTimer = null;
+          window.adminMaintPhotoTimeout = null;
+          const saveButton = document.getElementById('adminMaintPhotoSave');
+          saveButton.disabled = false; saveButton.textContent = 'Upload / Replace photo';
+          if (!data.result || data.result.status !== 'success') {
+            const msg = data.result && data.result.message || 'Photo upload failed.';
+            const statusEl = document.getElementById('adminMaintPhotoStatus');
+            statusEl.textContent = msg; statusEl.classList.add('error');
+            return;
+          }
+          const statusEl = document.getElementById('adminMaintPhotoStatus');
+          statusEl.textContent = 'Photo uploaded successfully. Turn Photo Publish ON when you want to show it.'; statusEl.classList.remove('error');
+          window.adminMaintPhotoPayload = null;
+          document.getElementById('adminMaintPhotoInput').value = '';
+          loadAdminMaintenancePhoto();
+        });
+        window.adminMaintPhotoMessageBound = true;
+      }
+      const form = document.createElement('form');
+      form.method = 'POST'; form.action = SCRIPT_URL; form.target = 'adminMaintUploadFrame'; form.style.display = 'none';
+      const formValues = {
+        action: 'saveMaintenancePhoto',
+        adminName: localStorage.getItem(STORAGE_KEY) || '',
+        authToken: sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '',
+        requestId: requestId,
+        fileName: payload.fileName,
+        mimeType: 'image/jpeg',
+        imageData: payload.imageData
+      };
+      Object.keys(formValues).forEach(key => {
+        const field = document.createElement('input'); field.type = 'hidden'; field.name = key; field.value = formValues[key]; form.appendChild(field);
+      });
+      document.body.appendChild(form); form.submit(); setTimeout(() => form.remove(), 1000);
+      window.adminMaintPhotoTimeout = setTimeout(() => {
+        if (window.adminMaintPhotoRequestId !== requestId) return;
+        if (window.adminMaintPhotoTimer) clearInterval(window.adminMaintPhotoTimer);
+        button.disabled = false; button.textContent = 'Upload / Replace photo';
+        status.textContent = 'Upload is taking longer than expected. Reopen Maintenance Mode to check whether it published.';
+        status.classList.add('error');
+      }, 90000);
+    }
+
     function selectAdminModule(btn, number, name, icon) {
       if (!isAshokAdminSession_()) {
         showCustomAlert('Admin session expired. Please login again.');
@@ -2210,6 +2547,9 @@
       if (number === 2 && name === 'Duty Register') {
         showPage('pageAdminDutyRegister');
         loadAdminDutyRegister();
+      } else if (number === 17 && name === 'Maintenance Mode') {
+        showPage('pageAdminMaintenanceMode');
+        loadAdminMaintenancePhoto();
       }
     }
 
