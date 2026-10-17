@@ -1942,6 +1942,21 @@
       }
     }
 
+    function normalizeAdminDutyDate_(value) {
+      const raw = String(value || '').trim();
+      let match = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      let year, month, day;
+      if (match) { year = Number(match[1]); month = Number(match[2]); day = Number(match[3]); }
+      else {
+        match = raw.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+        if (!match) return '';
+        day = Number(match[1]); month = Number(match[2]); year = Number(match[3]);
+      }
+      const check = new Date(Date.UTC(year, month - 1, day));
+      if (check.getUTCFullYear() !== year || check.getUTCMonth() !== month - 1 || check.getUTCDate() !== day) return '';
+      return `${String(year).padStart(4,'0')}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    }
+
     function adminDutyRegisterRequest_(action, extra) {
       const name = (localStorage.getItem(STORAGE_KEY) || '').trim();
       const token = sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '';
@@ -1966,7 +1981,7 @@
 
     function loadAdminDutyRegister() {
       if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
-      const date = document.getElementById('adminDutyRegisterDate').value;
+      const date = normalizeAdminDutyDate_(document.getElementById('adminDutyRegisterDate').value);
       if (!date) { setAdminDutyRegisterStatus_('Choose a duty date first.', false); return; }
       document.getElementById('adminDutyRegisterFields').innerHTML = '';
       document.getElementById('adminDutyRegisterSave').disabled = true;
@@ -1979,11 +1994,17 @@
       document.getElementById('adminDutyRegisterDay').textContent = res.day || '—';
       const box = document.getElementById('adminDutyRegisterFields');
       box.innerHTML = '';
+      const operators = (res.operators || JSON.parse(localStorage.getItem(CACHED_OPS_KEY) || '[]').map(op => typeof op === 'string' ? op : op.name).filter(Boolean));
       (res.positions || []).forEach((item, i) => {
         const row = document.createElement('div'); row.className = 'admin-duty-register-row';
         const label = document.createElement('label'); label.className = 'admin-duty-register-position'; label.textContent = item.position;
-        const input = document.createElement('input'); input.className = 'admin-duty-register-input'; input.type = 'text'; input.autocomplete = 'off'; input.dataset.position = item.position; input.value = item.operator || ''; input.setAttribute('aria-label', item.position + ' operator');
-        row.append(label, input); box.appendChild(row);
+        const select = document.createElement('select'); select.className = 'admin-duty-register-input'; select.dataset.position = item.position; select.setAttribute('aria-label', item.position + ' operator');
+        const blank = document.createElement('option'); blank.value = ''; blank.textContent = '— Unassigned —'; select.appendChild(blank);
+        const names = operators.slice();
+        if (item.operator && !names.some(n => String(n).toLocaleLowerCase() === String(item.operator).toLocaleLowerCase())) names.unshift(item.operator);
+        names.forEach(operator => { const option = document.createElement('option'); option.value = operator; option.textContent = operator; select.appendChild(option); });
+        select.value = item.operator || '';
+        row.append(label, select); box.appendChild(row);
       });
       document.getElementById('adminDutyRegisterSave').disabled = false;
       setAdminDutyRegisterStatus_('Loaded ' + res.displayDate + '. Make corrections and save when ready.');
@@ -1991,12 +2012,13 @@
 
     function saveAdminDutyRegister() {
       if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
-      const date = document.getElementById('adminDutyRegisterDate').value;
+      const date = normalizeAdminDutyDate_(document.getElementById('adminDutyRegisterDate').value);
+      if (!date) { setAdminDutyRegisterStatus_('Choose a valid duty date first.', false); return; }
       const assignments = {};
-      document.querySelectorAll('#adminDutyRegisterFields input[data-position]').forEach(input => assignments[input.dataset.position] = input.value.trim());
+      document.querySelectorAll('#adminDutyRegisterFields select[data-position]').forEach(select => assignments[select.dataset.position] = select.value.trim());
       const seen = {};
       for (const position in assignments) {
-        const key = assignments[position].toLocaleLowerCase();
+        const key = assignments[position].trim().replace(/\s+/g, ' ').toLocaleLowerCase();
         if (!key) continue;
         if (seen[key]) { setAdminDutyRegisterStatus_(`${assignments[position]} appears in both ${seen[key]} and ${position}. Each operator can be assigned once.`, false); return; }
         seen[key] = position;
