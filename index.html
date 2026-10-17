@@ -1992,7 +1992,7 @@
           }
           window.adminDutyRegisterData = res;
           dateInput.value = res.date || '';
-          window.adminDutyRegisterEditing = !(res.entries || []).some(x => x.value);
+          window.adminDutyRegisterEditing = !(res.entries || []).some(x => x.savedValue);
           document.getElementById('adminRegisterTableTitle').textContent = 'Duty Register · ' + (res.dateText || res.date);
           document.getElementById('adminRegisterLineupDate').textContent = res.lineupDateText ? 'Position · operator · ' + res.lineupDateText : 'Position · operator';
           renderAdminDutyRegister_(res);
@@ -2059,10 +2059,11 @@
         const position = escapeAdminDutyText_(entry.position);
         const value = String(entry.value || '');
         const valueIsOption = operators.some(o => String(o).toLowerCase() === value.toLowerCase());
-        let opts = '<option value=""' + (valueIsOption ? '' : ' selected') + '>Select operator / OT / H / M</option>';
-        opts += '<option value="__CLEAR__">Clear saved assignment</option>';
+        let opts = '<option value=""' + (valueIsOption ? '' : ' selected') + '></option>';
+        if (value) opts += '<option value="__CLEAR__">Clear assignment</option>';
         opts += operators.map(op => '<option value="' + escapeAdminDutyText_(op) + '"' + (String(op).toLowerCase() === value.toLowerCase() ? ' selected' : '') + '>' + escapeAdminDutyText_(op) + '</option>').join('');
-        const savedLabel = value ? 'Saved: ' + escapeAdminDutyText_(value) + (valueIsOption ? '' : ' · kept unless changed') : 'Not entered';
+        const savedValue = String(entry.savedValue || '');
+        const savedLabel = savedValue ? 'Saved: ' + escapeAdminDutyText_(savedValue) : (entry.suggested && value ? 'Current lineup: ' + escapeAdminDutyText_(value) : 'Not entered');
         return '<tr><td class="admin-reg-position">' + position + '</td><td><select data-index="' + i + '" aria-label="' + position + ' assignment" onchange="validateAdminDutyRegister_()"' + (editing ? '' : ' disabled') + '>' + opts + '</select></td><td><span class="admin-reg-entry-state">' + savedLabel + '</span></td></tr>';
       }).join('');
       document.getElementById('adminRegisterEditBtn').style.display = editing ? 'none' : 'inline-block';
@@ -2125,7 +2126,7 @@
             showCustomAlert((res && res.message) || 'Could not save Duty Register.');
             return;
           }
-          window.adminDutyRegisterData.entries = res.entries || entries;
+          window.adminDutyRegisterData.entries = (res.entries || entries).map(x => Object.assign({}, x, { savedValue: x.value, suggested: false }));
           window.adminDutyRegisterData.day = res.day || window.adminDutyRegisterData.day;
           window.adminDutyRegisterEditing = false;
           renderAdminDutyRegister_(window.adminDutyRegisterData);
