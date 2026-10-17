@@ -2471,6 +2471,8 @@
       const status = document.getElementById('adminMaintPhotoStatus');
       const requestId = 'maint-photo-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
       window.adminMaintPhotoRequestId = requestId;
+      window.adminMaintPhotoPreviousUrl = window.adminMaintPhotoCurrentUrl || '';
+      window.adminMaintPhotoCompletedRequestId = '';
       button.disabled = true;
       button.textContent = 'Publishing photo…';
       status.classList.remove('error');
@@ -2479,7 +2481,9 @@
       let progress = 4;
       window.adminMaintPhotoTimer = setInterval(() => {
         progress = Math.min(92, progress + 4);
-        status.textContent = 'Uploading and publishing photo · ' + progress + '%';
+        status.textContent = progress >= 92
+          ? 'Photo uploaded · 92% · Waiting for server confirmation…'
+          : 'Uploading photo · ' + progress + '%';
       }, 450);
       if (!window.adminMaintPhotoMessageBound) {
         window.addEventListener('message', function(event) {
@@ -2487,23 +2491,11 @@
           if (!uploadFrame || event.source !== uploadFrame.contentWindow) return;
           const data = event.data;
           if (!data || data.type !== 'r3-maintenance-photo-result' || data.requestId !== window.adminMaintPhotoRequestId) return;
-          if (window.adminMaintPhotoTimer) clearInterval(window.adminMaintPhotoTimer);
-          if (window.adminMaintPhotoTimeout) clearTimeout(window.adminMaintPhotoTimeout);
-          window.adminMaintPhotoTimer = null;
-          window.adminMaintPhotoTimeout = null;
-          const saveButton = document.getElementById('adminMaintPhotoSave');
-          saveButton.disabled = false; saveButton.textContent = 'Upload / Replace photo';
           if (!data.result || data.result.status !== 'success') {
-            const msg = data.result && data.result.message || 'Photo upload failed.';
-            const statusEl = document.getElementById('adminMaintPhotoStatus');
-            statusEl.textContent = msg; statusEl.classList.add('error');
+            finishMaintenancePhotoUpload_(requestId, false, (data.result && data.result.message) || 'Photo upload failed.');
             return;
           }
-          const statusEl = document.getElementById('adminMaintPhotoStatus');
-          statusEl.textContent = 'Photo uploaded successfully. Turn Photo Publish ON when you want to show it.'; statusEl.classList.remove('error');
-          window.adminMaintPhotoPayload = null;
-          document.getElementById('adminMaintPhotoInput').value = '';
-          loadAdminMaintenancePhoto();
+          finishMaintenancePhotoUpload_(requestId, true, 'Photo uploaded successfully. Turn Photo Publish ON when you want operators to see it.');
         });
         window.adminMaintPhotoMessageBound = true;
       }
@@ -2521,14 +2513,67 @@
       Object.keys(formValues).forEach(key => {
         const field = document.createElement('input'); field.type = 'hidden'; field.name = key; field.value = formValues[key]; form.appendChild(field);
       });
+      let requestSubmitted = false;
+      frame.addEventListener('load', function onMaintenanceUploadFrameLoad() {
+        if (!requestSubmitted || window.adminMaintPhotoRequestId !== requestId || window.adminMaintPhotoCompletedRequestId === requestId) return;
+        verifyAdminMaintenancePhotoUpload_(requestId, window.adminMaintPhotoPreviousUrl || '', 0);
+      }, { once: true });
+      requestSubmitted = true;
       document.body.appendChild(form); form.submit(); setTimeout(() => form.remove(), 1000);
       window.adminMaintPhotoTimeout = setTimeout(() => {
-        if (window.adminMaintPhotoRequestId !== requestId) return;
-        if (window.adminMaintPhotoTimer) clearInterval(window.adminMaintPhotoTimer);
-        button.disabled = false; button.textContent = 'Upload / Replace photo';
-        status.textContent = 'Upload is taking longer than expected. Reopen Maintenance Mode to check whether it published.';
-        status.classList.add('error');
-      }, 90000);
+        if (window.adminMaintPhotoRequestId !== requestId || window.adminMaintPhotoCompletedRequestId === requestId) return;
+        verifyAdminMaintenancePhotoUpload_(requestId, window.adminMaintPhotoPreviousUrl || '', 0);
+      }, 45000);
+    }
+
+    function finishMaintenancePhotoUpload_(requestId, success, message) {
+      if (window.adminMaintPhotoRequestId !== requestId || window.adminMaintPhotoCompletedRequestId === requestId) return;
+      window.adminMaintPhotoCompletedRequestId = requestId;
+      if (window.adminMaintPhotoTimer) clearInterval(window.adminMaintPhotoTimer);
+      if (window.adminMaintPhotoTimeout) clearTimeout(window.adminMaintPhotoTimeout);
+      window.adminMaintPhotoTimer = null; window.adminMaintPhotoTimeout = null;
+      const button = document.getElementById('adminMaintPhotoSave');
+      const status = document.getElementById('adminMaintPhotoStatus');
+      button.disabled = false; button.textContent = 'Upload / Replace photo';
+      status.textContent = message;
+      status.classList.toggle('error', !success);
+      if (success) {
+        window.adminMaintPhotoPayload = null;
+        document.getElementById('adminMaintPhotoInput').value = '';
+        loadAdminMaintenancePhoto();
+      }
+    }
+
+    function verifyAdminMaintenancePhotoUpload_(requestId, previousUrl, attempt) {
+      if (window.adminMaintPhotoRequestId !== requestId || window.adminMaintPhotoCompletedRequestId === requestId) return;
+      if (window.adminMaintPhotoVerifyPending) return;
+      window.adminMaintPhotoVerifyPending = true;
+      const callbackName = 'verifyMaintenancePhoto_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+      const params = new URLSearchParams({
+        action: 'getAdminMaintenancePhoto',
+        adminName: localStorage.getItem(STORAGE_KEY) || '',
+        authToken: sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '',
+        callback: callbackName,
+        t: Date.now()
+      });
+      const script = document.createElement('script');
+      const retryOrFail = () => {
+        window.adminMaintPhotoVerifyPending = false;
+        delete window[callbackName]; script.remove();
+        if (attempt < 4) setTimeout(() => verifyAdminMaintenancePhotoUpload_(requestId, previousUrl, attempt + 1), 1400);
+        else finishMaintenancePhotoUpload_(requestId, false, 'Photo was not confirmed by the server. In Apps Script, run authorizeMaintenancePhotoStorage() once, then deploy a new version of Code.gs and try again.');
+      };
+      window[callbackName] = function(res) {
+        window.adminMaintPhotoVerifyPending = false;
+        delete window[callbackName]; script.remove();
+        if (res && res.status === 'success' && res.imageUrl && res.imageUrl !== previousUrl) {
+          window.adminMaintPhotoCurrentUrl = res.imageUrl;
+          finishMaintenancePhotoUpload_(requestId, true, 'Photo upload confirmed. Turn Photo Publish ON when you want operators to see it.');
+        } else retryOrFail();
+      };
+      script.onerror = retryOrFail;
+      script.src = SCRIPT_URL + '?' + params.toString();
+      document.head.appendChild(script);
     }
 
     function selectAdminModule(btn, number, name, icon) {
