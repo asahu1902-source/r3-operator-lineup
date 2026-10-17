@@ -861,7 +861,7 @@
 
       <div class="admin-duty-head">
         <div class="admin-page-title">📋 CHECK POSITION &amp; CONFIRM DUTY</div>
-        <div id="adminDutyDateText" class="admin-page-subtitle">Loading today's duty confirmation status...</div>
+        <div id="adminDutyDateText" class="admin-page-subtitle">Loading duty confirmation status...</div>
       </div>
 
       <div class="admin-duty-summary">
@@ -1912,7 +1912,7 @@
       if (box) box.style.display = 'none';
 
       const dateText = document.getElementById('adminDutyDateText');
-      if (dateText) dateText.innerText = 'Live duty confirmation status · Today';
+      if (dateText) dateText.innerText = 'Live duty confirmation status · ' + (res.assignmentDateText || '');
     }
 
     function adminConfirmDuty(name, position, btn) {
