@@ -1912,7 +1912,10 @@
       if (box) box.style.display = 'none';
 
       const dateText = document.getElementById('adminDutyDateText');
-      if (dateText) dateText.innerText = 'Live duty confirmation status · ' + (res.assignmentDateText || '');
+      const boardBanner = (typeof portalData !== 'undefined' && portalData && portalData.board && portalData.board.dateBanner) ? String(portalData.board.dateBanner) : '';
+      const boardDate = boardBanner ? boardBanner.split(' - ')[0].trim() : '';
+      const assignedDate = String(res.assignmentDateText || boardDate || '').trim();
+      if (dateText) dateText.innerText = 'Live duty confirmation status' + (assignedDate ? ' · ' + assignedDate : '');
     }
 
     function adminConfirmDuty(name, position, btn) {
