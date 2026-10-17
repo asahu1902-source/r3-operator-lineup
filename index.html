@@ -525,6 +525,8 @@
       #pwaInstallCard .pwa-install-subtitle { font-size: 10px; }
       #pwaInstallButton { padding: 9px 10px; font-size: 11px; }
     }
+    #pageAdminPortal *,#pageAdminDutyRegister *,#pageAdminDutyConfirm *{font-weight:700;text-shadow:0 0 4px rgba(56,189,248,.2)}
+    .admin-menu-title{font-weight:900!important;color:#ffff00!important;text-shadow:0 0 7px rgba(250,204,21,.48)!important}.admin-menu-desc{font-weight:700!important;text-shadow:0 0 5px rgba(96,165,250,.3)!important}.admin-menu-num{font-weight:900!important;text-shadow:0 0 5px rgba(250,204,21,.3)}
   </style>
 </head>
 <body>
@@ -1575,6 +1577,8 @@
       html += '</tbody></table>';
       content.innerHTML = html;
       box.style.display = 'flex';
+      box.style.flexDirection = 'column';
+      box.style.alignItems = 'stretch';
 
       if (note) {
         const d = data.displayDate || maintenanceState.maintenanceLineupDate || '';
@@ -2015,6 +2019,8 @@
       if (!box) return;
       if (box.parentElement !== document.body) document.body.appendChild(box);
       box.style.display = 'flex';
+      box.style.flexDirection = 'column';
+      box.style.alignItems = 'stretch';
       if (saving) {
         const saveBtn = document.getElementById('adminRegisterSaveBtn');
         if (saveBtn) saveBtn.innerHTML = '<span class="admin-save-progress-ring"><span id="adminSaveProgressPercent">3%</span></span> Saving duty…';
