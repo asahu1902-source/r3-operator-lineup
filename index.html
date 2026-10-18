@@ -68,6 +68,7 @@
       display: flex; align-items: center; gap: 8px; transition: transform 0.2s ease-in-out;
     }
     #customToast.show { transform: translateX(-50%) translateY(0); }
+    .admin-confirm-overlay{position:fixed;inset:0;z-index:1000001;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.76);backdrop-filter:blur(5px)}.admin-confirm-overlay.open{display:flex}.admin-confirm-card{width:min(100%,390px);background:linear-gradient(160deg,#10233b,#07142b);border:1px solid #38bdf8;border-radius:16px;padding:20px;color:#eaf4ff;box-shadow:0 0 28px rgba(56,189,248,.28)}.admin-confirm-title{font-size:17px;font-weight:900;color:#67e8f9;margin-bottom:9px}.admin-confirm-message{font-size:14px;line-height:1.55;white-space:pre-wrap;color:#dbeafe}.admin-confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.admin-confirm-actions button{border-radius:9px;padding:10px 17px;font-weight:900;cursor:pointer}.admin-confirm-cancel{background:#17283b;color:#dbeafe;border:1px solid #49627b}.admin-confirm-ok{background:linear-gradient(100deg,#0bb48e,#087e63);color:white;border:1px solid #34d399}.admin-confirm-ok.danger{background:linear-gradient(100deg,#ef4444,#b91c1c);border-color:#f87171}
 
     @keyframes spinRefresh {
       0% { transform: rotate(0deg); }
@@ -536,6 +537,9 @@
 
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
+  <div id="adminConfirmModal" class="admin-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="adminConfirmTitle" onclick="if(event.target===this)resolveAdminConfirm_(false)">
+    <div class="admin-confirm-card"><div id="adminConfirmTitle" class="admin-confirm-title">Please confirm</div><div id="adminConfirmMessage" class="admin-confirm-message"></div><div class="admin-confirm-actions"><button type="button" class="admin-confirm-cancel" onclick="resolveAdminConfirm_(false)">Cancel</button><button type="button" id="adminConfirmAccept" class="admin-confirm-ok" onclick="resolveAdminConfirm_(true)">Continue</button></div></div>
+  </div>
   <!-- PWA INSTALL CARD: isolated from existing application logic -->
   <div id="pwaInstallCard" role="dialog" aria-label="Install Relay-3 Smart Hub">
     <button id="pwaInstallClose" type="button" aria-label="Close">×</button>
@@ -939,14 +943,10 @@
           <img id="adminMaintPhotoPreview" alt="Selected maintenance notice">
           <div id="adminMaintPhotoEmpty" class="admin-maint-photo-empty">No photo selected. Choose an image below to preview it.</div>
         </div>
-        <div class="admin-maint-photo-controls">
-          <input id="adminMaintPhotoInput" type="file" accept="image/*" onchange="previewAdminMaintenancePhoto(this)">
-          <button id="adminMaintPhotoSave" class="admin-maint-photo-save" type="button" onclick="publishAdminMaintenancePhoto()" disabled>Upload / Replace photo</button>
-        </div>
         <div id="adminMaintPhotoStatus" class="admin-maint-photo-status" aria-live="polite"></div>
+        <iframe id="adminMaintUploaderFrame" title="Choose and upload maintenance photo" style="width:100%;height:350px;border:1px solid #28435e;border-radius:12px;background:#0b1727"></iframe>
         <div style="color:#91a9c0;font-size:12px;line-height:1.5">Upload photo first, then switch Photo Publish ON when you want operators to see it. Photo Publish OFF restores the lineup/message view.</div>
       </section>
-      <iframe id="adminMaintUploaderFrame" title="Secure maintenance photo uploader" style="display:none"></iframe>
     </div>
 
     <div id="pageAdminPortal" class="screen-page">
@@ -2225,17 +2225,17 @@
       });
     }
 
-    function adminSubmitPositionLineupToRegister() {
+    async function adminSubmitPositionLineupToRegister() {
       if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
       const btn = document.querySelector('.admin-reg-submit-lineup');
       if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
       const send = overwrite => {
         showBlurLoader(true, 5, 92);
-        requestAdminDutyRegister_('adminSubmitDutyRegister', { overwrite: overwrite ? '1' : '0' }, function(res) {
+        requestAdminDutyRegister_('adminSubmitDutyRegister', { overwrite: overwrite ? '1' : '0' }, async function(res) {
         showBlurLoader(false);
         if (res && res.status === 'confirm_required') {
           const detail = (res.existing || []).map(x => x.position + ': ' + x.value).join('\n');
-          const ok = confirm('Duty Register already has entries for ' + (res.date ? res.date.split('-').reverse().join('/') : 'this date') + '.\n\n' + detail + '\n\nReplace these entries with the current Position Lineup?');
+          const ok = await showAdminConfirm_('Replace Duty Register entries?', 'Duty Register already has entries for ' + (res.date ? res.date.split('-').reverse().join('/') : 'this date') + '.\n\n' + detail + '\n\nReplace these entries with the current Position Lineup?', 'Replace', true);
           if (ok) send(true);
           else if (btn) { btn.disabled = false; btn.innerHTML = '⬇ Submit Duty'; }
           return;
@@ -2350,13 +2350,14 @@
       window.adminMaintPhotoPublished = photoOn;
     }
 
-    function toggleAdminMaintenanceMode() {
+    async function toggleAdminMaintenanceMode() {
       const turningOn = !window.adminMaintenanceModeIsOn;
-      if (!confirm(turningOn ? 'Turn Maintenance Mode ON? Operators will see the maintenance screen.' : 'Turn Maintenance Mode OFF? Operators will return to the normal app.')) return;
+      const accepted = await showAdminConfirm_(turningOn ? 'Turn Maintenance Mode ON?' : 'Turn Maintenance Mode OFF?', turningOn ? 'Operators will see the maintenance screen.' : 'Operators will return to the normal app.', turningOn ? 'Turn ON' : 'Turn OFF', !turningOn);
+      if (!accepted) return;
       saveAdminMaintenanceSetting_('maintenanceMode', turningOn ? 'ON' : 'OFF', document.getElementById('adminMaintModeToggle'), document.getElementById('adminMaintModeStatus'));
     }
 
-    function toggleAdminMaintenanceSetting(setting) {
+    async function toggleAdminMaintenanceSetting(setting) {
       if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
       const current = window.adminMaintenanceSettings || {};
       const key = setting === 'showMaintenanceLineup' ? 'showMaintenanceLineup' : 'photoPublished';
@@ -2367,7 +2368,8 @@
       const confirmText = key === 'photoPublished'
         ? (turningOn ? 'Publish this photo on the operator maintenance screen?' : 'Stop showing the published photo? The lineup/message view will return.')
         : (turningOn ? 'Show the Maintenance Day Lineup to operators?' : 'Hide the lineup from operators? They will see the maintenance message or published photo.');
-      if (!confirm(confirmText)) return;
+      const accepted = await showAdminConfirm_(key === 'photoPublished' ? 'Photo Publish' : 'Maintenance Lineup', confirmText, turningOn ? 'Turn ON' : 'Turn OFF', !turningOn);
+      if (!accepted) return;
       const buttonId = key === 'showMaintenanceLineup' ? 'adminMaintLineupToggle' : 'adminMaintPhotoPublishToggle';
       saveAdminMaintenanceSetting_(key, turningOn ? 'ON' : 'OFF', document.getElementById(buttonId), document.getElementById('adminMaintModeStatus'));
     }
@@ -2418,184 +2420,35 @@
       document.head.appendChild(script);
     }
 
-    function previewAdminMaintenancePhoto(input) {
-      const file = input && input.files && input.files[0];
-      const button = document.getElementById('adminMaintPhotoSave');
-      const status = document.getElementById('adminMaintPhotoStatus');
-      const preview = document.getElementById('adminMaintPhotoPreview');
-      const empty = document.getElementById('adminMaintPhotoEmpty');
-      window.adminMaintPhotoPayload = null;
-      button.disabled = true;
-      status.classList.remove('error');
-      if (!file) { status.textContent = ''; return; }
-      if (!file.type || !file.type.startsWith('image/')) { status.textContent = 'Choose an image file.'; status.classList.add('error'); return; }
-      status.textContent = 'Preparing photo…';
-      const reader = new FileReader();
-      reader.onerror = function() { status.textContent = 'Could not read this photo.'; status.classList.add('error'); };
-      reader.onload = function() {
-        const image = new Image();
-        image.onerror = function() { status.textContent = 'This image could not be opened.'; status.classList.add('error'); };
-        image.onload = function() {
-          const scale = Math.min(1, 1600 / image.width, 1200 / image.height);
-          const canvas = document.createElement('canvas');
-          canvas.width = Math.max(1, Math.round(image.width * scale));
-          canvas.height = Math.max(1, Math.round(image.height * scale));
-          const context = canvas.getContext('2d');
-          context.fillStyle = '#ffffff'; context.fillRect(0, 0, canvas.width, canvas.height);
-          context.drawImage(image, 0, 0, canvas.width, canvas.height);
-          let dataUrl = canvas.toDataURL('image/jpeg', 0.84);
-          if (dataUrl.length > 2700000) dataUrl = canvas.toDataURL('image/jpeg', 0.68);
-          if (dataUrl.length > 2800000) {
-            status.textContent = 'This photo is still too large. Please choose a smaller image.';
-            status.classList.add('error'); return;
-          }
-          window.adminMaintPhotoPayload = {
-            imageData: dataUrl.split(',')[1],
-            fileName: (file.name || 'maintenance-photo').replace(/\.[^.]+$/, '') + '.jpg'
-          };
-          preview.src = dataUrl; preview.style.display = 'block'; empty.style.display = 'none';
-          button.disabled = false;
-          status.textContent = 'Photo ready to publish (' + Math.max(1, Math.round(dataUrl.length * 0.75 / 1024)) + ' KB).';
-        };
-        image.src = String(reader.result || '');
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function publishAdminMaintenancePhoto() {
-      if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
-      const payload = window.adminMaintPhotoPayload;
-      if (!payload || !payload.imageData) { showCustomAlert('Choose a photo first.'); return; }
-      const button = document.getElementById('adminMaintPhotoSave');
-      const status = document.getElementById('adminMaintPhotoStatus');
-      const requestId = 'maint-photo-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
-      window.adminMaintPhotoRequestId = requestId;
-      window.adminMaintPhotoPreviousUrl = window.adminMaintPhotoCurrentUrl || '';
-      window.adminMaintPhotoCompletedRequestId = '';
-      button.disabled = true;
-      button.textContent = 'Publishing photo…';
-      status.classList.remove('error');
-      status.textContent = 'Uploading and publishing your photo…';
-      if (window.adminMaintPhotoTimer) clearInterval(window.adminMaintPhotoTimer);
-      let progress = 4;
-      window.adminMaintPhotoTimer = setInterval(() => {
-        progress = Math.min(92, progress + 4);
-        status.textContent = progress >= 92
-          ? 'Saving photo to Google Drive · 92%…'
-          : 'Uploading photo · ' + progress + '%';
-      }, 450);
-      loadAdminMaintenanceUploader_();
-      window.adminMaintPhotoPendingUpload = {
-        type: 'r3-maintenance-upload-request',
-        requestId: requestId,
-        fileName: payload.fileName,
-        imageData: payload.imageData
-      };
-      if (window.adminMaintUploaderReady) dispatchAdminMaintenancePhotoUpload_();
-      window.adminMaintPhotoTimeout = setTimeout(() => {
-        if (window.adminMaintPhotoRequestId !== requestId || window.adminMaintPhotoCompletedRequestId === requestId) return;
-        verifyAdminMaintenancePhotoUpload_(requestId, window.adminMaintPhotoPreviousUrl || '', 0);
-      }, 45000);
-    }
-
     function loadAdminMaintenanceUploader_() {
+      if (!isAshokAdminSession_()) return;
       const frame = document.getElementById('adminMaintUploaderFrame');
       if (!frame) return;
-      if (!window.adminMaintUploaderMessagesBound) {
+      if (!window.adminMaintPhotoResultListenerBound) {
         window.addEventListener('message', function(event) {
-          if (event.source !== frame.contentWindow || !event.data) return;
-          if (event.data.type === 'r3-maintenance-uploader-ready') {
-            window.adminMaintUploaderReady = true;
-            dispatchAdminMaintenancePhotoUpload_();
-            return;
-          }
-          if (event.data.type !== 'r3-maintenance-photo-result' || event.data.requestId !== window.adminMaintPhotoRequestId) return;
-          const result = event.data.result;
-          if (!result || result.status !== 'success') {
-            finishMaintenancePhotoUpload_(event.data.requestId, false, (result && result.message) || 'Photo upload failed.');
-            return;
-          }
-          window.adminMaintPhotoCurrentUrl = result.imageUrl || window.adminMaintPhotoCurrentUrl;
-          finishMaintenancePhotoUpload_(event.data.requestId, true, 'Photo uploaded successfully. Turn Photo Publish ON when you want operators to see it.');
+          const origin = String(event.origin || '');
+          if (!(origin.indexOf('googleusercontent.com') >= 0 || origin === 'https://script.google.com')) return;
+          const data = event.data;
+          if (!data || data.type !== 'r3-maintenance-photo-uploaded') return;
+          window.adminMaintPhotoCurrentUrl = data.imageUrl || window.adminMaintPhotoCurrentUrl || '';
+          const status = document.getElementById('adminMaintPhotoStatus');
+          status.textContent = 'Photo uploaded successfully (' + (data.fileName || 'photo') + '). Turn Photo Publish ON when you want operators to see it.';
+          status.classList.remove('error');
+          loadAdminMaintenancePhoto();
         });
-        window.adminMaintUploaderMessagesBound = true;
+        window.adminMaintPhotoResultListenerBound = true;
       }
       const params = new URLSearchParams({
         action: 'maintenancePhotoUploader',
         adminName: localStorage.getItem(STORAGE_KEY) || '',
-        authToken: sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '',
-        t: Date.now()
+        authToken: sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || ''
       });
       const target = SCRIPT_URL + '?' + params.toString();
-      if (frame.getAttribute('src') !== target) {
-        window.adminMaintUploaderReady = false;
+      if (window.adminMaintUploaderTarget !== target) {
+        window.adminMaintUploaderTarget = target;
         frame.src = target;
       }
     }
-
-    function dispatchAdminMaintenancePhotoUpload_() {
-      const frame = document.getElementById('adminMaintUploaderFrame');
-      const request = window.adminMaintPhotoPendingUpload;
-      if (!frame || !window.adminMaintUploaderReady || !request || request.requestId !== window.adminMaintPhotoRequestId) return;
-      try {
-        frame.contentWindow.postMessage(request, '*');
-        window.adminMaintPhotoPendingUpload = null;
-        document.getElementById('adminMaintPhotoStatus').textContent = 'Connected securely. Saving photo to Google Drive…';
-      } catch (error) {
-        finishMaintenancePhotoUpload_(request.requestId, false, 'Could not connect to the photo uploader. Reopen Maintenance Mode and try again.');
-      }
-    }
-
-    function finishMaintenancePhotoUpload_(requestId, success, message) {
-      if (window.adminMaintPhotoRequestId !== requestId || window.adminMaintPhotoCompletedRequestId === requestId) return;
-      window.adminMaintPhotoCompletedRequestId = requestId;
-      if (window.adminMaintPhotoTimer) clearInterval(window.adminMaintPhotoTimer);
-      if (window.adminMaintPhotoTimeout) clearTimeout(window.adminMaintPhotoTimeout);
-      window.adminMaintPhotoTimer = null; window.adminMaintPhotoTimeout = null;
-      const button = document.getElementById('adminMaintPhotoSave');
-      const status = document.getElementById('adminMaintPhotoStatus');
-      button.disabled = false; button.textContent = 'Upload / Replace photo';
-      status.textContent = message;
-      status.classList.toggle('error', !success);
-      if (success) {
-        window.adminMaintPhotoPayload = null;
-        document.getElementById('adminMaintPhotoInput').value = '';
-        loadAdminMaintenancePhoto();
-      }
-    }
-
-    function verifyAdminMaintenancePhotoUpload_(requestId, previousUrl, attempt) {
-      if (window.adminMaintPhotoRequestId !== requestId || window.adminMaintPhotoCompletedRequestId === requestId) return;
-      if (window.adminMaintPhotoVerifyPending) return;
-      window.adminMaintPhotoVerifyPending = true;
-      const callbackName = 'verifyMaintenancePhoto_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
-      const params = new URLSearchParams({
-        action: 'getAdminMaintenancePhoto',
-        adminName: localStorage.getItem(STORAGE_KEY) || '',
-        authToken: sessionStorage.getItem(ASHOK_AUTH_TOKEN_KEY) || '',
-        callback: callbackName,
-        t: Date.now()
-      });
-      const script = document.createElement('script');
-      const retryOrFail = () => {
-        window.adminMaintPhotoVerifyPending = false;
-        delete window[callbackName]; script.remove();
-        if (attempt < 4) setTimeout(() => verifyAdminMaintenancePhotoUpload_(requestId, previousUrl, attempt + 1), 1400);
-        else finishMaintenancePhotoUpload_(requestId, false, 'Photo did not reach Google Drive. Check Apps Script → Executions for adminUploadMaintenancePhoto, confirm Drive access is authorized, and deploy the latest Code.gs.');
-      };
-      window[callbackName] = function(res) {
-        window.adminMaintPhotoVerifyPending = false;
-        delete window[callbackName]; script.remove();
-        if (res && res.status === 'success' && res.imageUrl && res.imageUrl !== previousUrl) {
-          window.adminMaintPhotoCurrentUrl = res.imageUrl;
-          finishMaintenancePhotoUpload_(requestId, true, 'Photo upload confirmed. Turn Photo Publish ON when you want operators to see it.');
-        } else retryOrFail();
-      };
-      script.onerror = retryOrFail;
-      script.src = SCRIPT_URL + '?' + params.toString();
-      document.head.appendChild(script);
-    }
-
     function selectAdminModule(btn, number, name, icon) {
       if (!isAshokAdminSession_()) {
         showCustomAlert('Admin session expired. Please login again.');
@@ -3031,6 +2884,32 @@
     function closeCustomAlert() {
       document.getElementById('customAlertModal').style.display = 'none';
     }
+
+    function showAdminConfirm_(title, message, acceptText, danger) {
+      return new Promise(resolve => {
+        const modal = document.getElementById('adminConfirmModal');
+        document.getElementById('adminConfirmTitle').textContent = title || 'Please confirm';
+        document.getElementById('adminConfirmMessage').textContent = message || '';
+        const accept = document.getElementById('adminConfirmAccept');
+        accept.textContent = acceptText || 'Continue';
+        accept.classList.toggle('danger', !!danger);
+        window.adminConfirmResolver_ = resolve;
+        modal.classList.add('open');
+        accept.focus();
+      });
+    }
+
+    function resolveAdminConfirm_(accepted) {
+      const modal = document.getElementById('adminConfirmModal');
+      if (modal) modal.classList.remove('open');
+      const resolve = window.adminConfirmResolver_;
+      window.adminConfirmResolver_ = null;
+      if (resolve) resolve(!!accepted);
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && document.getElementById('adminConfirmModal')?.classList.contains('open')) resolveAdminConfirm_(false);
+    });
 
     function checkAndShowStatusWarning(data) {
       if (!data || !data.lineupStatus) return;
@@ -4242,7 +4121,10 @@
       initUser();
     };
 
-    window.onload = function() {
+    let startupStarted_ = false;
+    function startAppOnReady_() {
+      if (startupStarted_) return;
+      startupStarted_ = true;
       const fill = document.getElementById('splashProgressFill');
       if (fill) fill.style.width = '80%';
 
@@ -4288,7 +4170,14 @@
       setTimeout(() => {
         if (maintenanceCheckComplete) hideStartupSplash();
       }, 1500);
-    };
+    }
+    // Start as soon as the document is parsed. Waiting for window.onload can
+    // leave the splash stuck if a remote image or other resource loads slowly.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startAppOnReady_, { once: true });
+    } else {
+      startAppOnReady_();
+    }
   </script>
 
 
