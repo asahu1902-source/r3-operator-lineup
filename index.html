@@ -68,6 +68,7 @@
       display: flex; align-items: center; gap: 8px; transition: transform 0.2s ease-in-out;
     }
     #customToast.show { transform: translateX(-50%) translateY(0); }
+    .admin-confirm-overlay{position:fixed;inset:0;z-index:1000001;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.76);backdrop-filter:blur(5px)}.admin-confirm-overlay.open{display:flex}.admin-confirm-card{width:min(100%,390px);background:linear-gradient(160deg,#10233b,#07142b);border:1px solid #38bdf8;border-radius:16px;padding:20px;color:#eaf4ff;box-shadow:0 0 28px rgba(56,189,248,.28)}.admin-confirm-title{font-size:17px;font-weight:900;color:#67e8f9;margin-bottom:9px}.admin-confirm-message{font-size:14px;line-height:1.55;white-space:pre-wrap;color:#dbeafe}.admin-confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.admin-confirm-actions button{border-radius:9px;padding:10px 17px;font-weight:900;cursor:pointer}.admin-confirm-cancel{background:#17283b;color:#dbeafe;border:1px solid #49627b}.admin-confirm-ok{background:linear-gradient(100deg,#0bb48e,#087e63);color:white;border:1px solid #34d399}.admin-confirm-ok.danger{background:linear-gradient(100deg,#ef4444,#b91c1c);border-color:#f87171}
 
     @keyframes spinRefresh {
       0% { transform: rotate(0deg); }
@@ -536,6 +537,9 @@
 
   <input type="file" id="filePhotoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(event)">
   <div id="customToast">✅ <span id="toastMsg">Submitted successfully!</span></div>
+  <div id="adminConfirmModal" class="admin-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="adminConfirmTitle" onclick="if(event.target===this)resolveAdminConfirm_(false)">
+    <div class="admin-confirm-card"><div id="adminConfirmTitle" class="admin-confirm-title">Please confirm</div><div id="adminConfirmMessage" class="admin-confirm-message"></div><div class="admin-confirm-actions"><button type="button" class="admin-confirm-cancel" onclick="resolveAdminConfirm_(false)">Cancel</button><button type="button" id="adminConfirmAccept" class="admin-confirm-ok" onclick="resolveAdminConfirm_(true)">Continue</button></div></div>
+  </div>
   <!-- PWA INSTALL CARD: isolated from existing application logic -->
   <div id="pwaInstallCard" role="dialog" aria-label="Install Relay-3 Smart Hub">
     <button id="pwaInstallClose" type="button" aria-label="Close">×</button>
@@ -2221,7 +2225,7 @@
       });
     }
 
-    function adminSubmitPositionLineupToRegister() {
+    async function adminSubmitPositionLineupToRegister() {
       if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
       const btn = document.querySelector('.admin-reg-submit-lineup');
       if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
@@ -2231,7 +2235,7 @@
         showBlurLoader(false);
         if (res && res.status === 'confirm_required') {
           const detail = (res.existing || []).map(x => x.position + ': ' + x.value).join('\n');
-          const ok = confirm('Duty Register already has entries for ' + (res.date ? res.date.split('-').reverse().join('/') : 'this date') + '.\n\n' + detail + '\n\nReplace these entries with the current Position Lineup?');
+          const ok = await showAdminConfirm_('Replace Duty Register entries?', 'Duty Register already has entries for ' + (res.date ? res.date.split('-').reverse().join('/') : 'this date') + '.\n\n' + detail + '\n\nReplace these entries with the current Position Lineup?', 'Replace', true);
           if (ok) send(true);
           else if (btn) { btn.disabled = false; btn.innerHTML = '⬇ Submit Duty'; }
           return;
@@ -2346,13 +2350,14 @@
       window.adminMaintPhotoPublished = photoOn;
     }
 
-    function toggleAdminMaintenanceMode() {
+    async function toggleAdminMaintenanceMode() {
       const turningOn = !window.adminMaintenanceModeIsOn;
-      if (!confirm(turningOn ? 'Turn Maintenance Mode ON? Operators will see the maintenance screen.' : 'Turn Maintenance Mode OFF? Operators will return to the normal app.')) return;
+      const accepted = await showAdminConfirm_(turningOn ? 'Turn Maintenance Mode ON?' : 'Turn Maintenance Mode OFF?', turningOn ? 'Operators will see the maintenance screen.' : 'Operators will return to the normal app.', turningOn ? 'Turn ON' : 'Turn OFF', !turningOn);
+      if (!accepted) return;
       saveAdminMaintenanceSetting_('maintenanceMode', turningOn ? 'ON' : 'OFF', document.getElementById('adminMaintModeToggle'), document.getElementById('adminMaintModeStatus'));
     }
 
-    function toggleAdminMaintenanceSetting(setting) {
+    async function toggleAdminMaintenanceSetting(setting) {
       if (!isAshokAdminSession_()) { showCustomAlert('Admin session expired. Please login again.'); return; }
       const current = window.adminMaintenanceSettings || {};
       const key = setting === 'showMaintenanceLineup' ? 'showMaintenanceLineup' : 'photoPublished';
@@ -2363,7 +2368,8 @@
       const confirmText = key === 'photoPublished'
         ? (turningOn ? 'Publish this photo on the operator maintenance screen?' : 'Stop showing the published photo? The lineup/message view will return.')
         : (turningOn ? 'Show the Maintenance Day Lineup to operators?' : 'Hide the lineup from operators? They will see the maintenance message or published photo.');
-      if (!confirm(confirmText)) return;
+      const accepted = await showAdminConfirm_(key === 'photoPublished' ? 'Photo Publish' : 'Maintenance Lineup', confirmText, turningOn ? 'Turn ON' : 'Turn OFF', !turningOn);
+      if (!accepted) return;
       const buttonId = key === 'showMaintenanceLineup' ? 'adminMaintLineupToggle' : 'adminMaintPhotoPublishToggle';
       saveAdminMaintenanceSetting_(key, turningOn ? 'ON' : 'OFF', document.getElementById(buttonId), document.getElementById('adminMaintModeStatus'));
     }
@@ -2878,6 +2884,32 @@
     function closeCustomAlert() {
       document.getElementById('customAlertModal').style.display = 'none';
     }
+
+    function showAdminConfirm_(title, message, acceptText, danger) {
+      return new Promise(resolve => {
+        const modal = document.getElementById('adminConfirmModal');
+        document.getElementById('adminConfirmTitle').textContent = title || 'Please confirm';
+        document.getElementById('adminConfirmMessage').textContent = message || '';
+        const accept = document.getElementById('adminConfirmAccept');
+        accept.textContent = acceptText || 'Continue';
+        accept.classList.toggle('danger', !!danger);
+        window.adminConfirmResolver_ = resolve;
+        modal.classList.add('open');
+        accept.focus();
+      });
+    }
+
+    function resolveAdminConfirm_(accepted) {
+      const modal = document.getElementById('adminConfirmModal');
+      if (modal) modal.classList.remove('open');
+      const resolve = window.adminConfirmResolver_;
+      window.adminConfirmResolver_ = null;
+      if (resolve) resolve(!!accepted);
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && document.getElementById('adminConfirmModal')?.classList.contains('open')) resolveAdminConfirm_(false);
+    });
 
     function checkAndShowStatusWarning(data) {
       if (!data || !data.lineupStatus) return;
