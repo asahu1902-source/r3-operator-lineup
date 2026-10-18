@@ -2231,7 +2231,7 @@
       if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
       const send = overwrite => {
         showBlurLoader(true, 5, 92);
-        requestAdminDutyRegister_('adminSubmitDutyRegister', { overwrite: overwrite ? '1' : '0' }, function(res) {
+        requestAdminDutyRegister_('adminSubmitDutyRegister', { overwrite: overwrite ? '1' : '0' }, async function(res) {
         showBlurLoader(false);
         if (res && res.status === 'confirm_required') {
           const detail = (res.existing || []).map(x => x.position + ': ' + x.value).join('\n');
